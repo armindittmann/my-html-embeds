@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="de" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktive Reise: Der Protestantische Kapitalismusgeist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=Roboto+Slab:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #0a0a0a;
+            color: #e0e0e0;
+            font-family: 'Merriweather', serif;
+        }
+        .font-slab { font-family: 'Roboto Slab', serif; }
+        .hero-bg {
+            background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+        }
+        .section-card {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .interactive-area {
+            background: rgba(0,0,0,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+        }
+        .accent-gold { color: #fde047; } /* yellow-300 */
+        .border-gold { border-color: #fde047; }
+        .bg-gold { background-color: #fde047; }
+        .btn-gold {
+            background-color: #fde047;
+            color: #1e293b;
+            transition: all 0.3s ease;
+        }
+        .btn-gold:hover {
+            background-color: #facc15; /* yellow-400 */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(253, 224, 71, 0.2);
+        }
+
+        /* Scroll-triggered animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Gears Animation */
+        #gear1, #gear2 { transition: transform 2s ease-in-out; }
+
+        /* Franklin vs Fugger Animation */
+        #franklin-path, #fugger-path {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation-duration: 4s;
+            animation-timing-function: ease-in-out;
+            animation-fill-mode: forwards;
+        }
+        @keyframes draw-path { to { stroke-dashoffset: 0; } }
+        .franklin-active #franklin-path { animation-name: draw-path; }
+        .fugger-active #fugger-path { animation-name: draw-path; }
+        
+        #franklin-growth circle, #fugger-spend circle {
+            opacity: 0;
+            animation-duration: 3s;
+            animation-fill-mode: forwards;
+            animation-timing-function: ease-out;
+        }
+        @keyframes fade-in-up { 
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .franklin-active #franklin-growth .c1 { animation-name: fade-in-up; animation-delay: 0.5s; }
+        .franklin-active #franklin-growth .c2 { animation-name: fade-in-up; animation-delay: 1.2s; }
+        .franklin-active #franklin-growth .c3 { animation-name: fade-in-up; animation-delay: 1.9s; }
+        .franklin-active #franklin-growth .c4 { animation-name: fade-in-up; animation-delay: 2.6s; }
+
+        .fugger-active #fugger-spend .s1 { animation-name: fade-in-up; animation-delay: 0.8s; }
+        .fugger-active #fugger-spend .s2 { animation-name: fade-in-up; animation-delay: 1.6s; }
+        .fugger-active #fugger-spend .s3 { animation-name: fade-in-up; animation-delay: 2.4s; }
+
+        /* Iron Cage Animation */
+        #cage-container { height: 350px; }
+        #cage-person { transition: all 1s ease; }
+        #cage-bars .bar { 
+            stroke: #fde047;
+            stroke-width: 2;
+            transition: all 1.5s ease-in-out;
+            stroke-dasharray: 300;
+            stroke-dashoffset: 300;
+        }
+        #cage-container.caged #cage-bars .bar { stroke-dashoffset: 0; }
+        #cage-container.caged #religious-symbols { opacity: 0; }
+        #religious-symbols { transition: opacity 1.5s ease; }
+        
+        /* Debate Section */
+        .debate-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .debate-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Hero Section -->
+    <header class="h-screen w-full flex flex-col items-center justify-center text-center p-4 hero-bg relative overflow-hidden">
+        <div id="stars"></div>
+        <div id="stars2"></div>
+        <div id="stars3"></div>
+        <h1 class="text-4xl md:text-7xl font-bold font-slab tracking-tight leading-tight text-white mb-4 reveal">
+            Der Protestantische <br><span class="accent-gold">Kapitalismusgeist</span>
+        </h1>
+        <p class="text-lg md:text-2xl text-gray-300 max-w-3xl mx-auto mb-8 font-light reveal" style="transition-delay: 0.2s;">
+            Eine interaktive Reise durch Max Webers Thesen
+        </p>
+        <div class="reveal" style="transition-delay: 0.4s;">
+            <a href="#section-1" class="inline-block px-8 py-3 font-slab text-lg rounded-full btn-gold">
+                Reise beginnen
+            </a>
+        </div>
+        <div class="absolute bottom-8 text-gray-400 animate-bounce">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+        </div>
+    </header>
+
+    <main class="py-20 px-4 md:px-8">
+        
+        <!-- Section 1: Core Thesis -->
+        <section id="section-1" class="max-w-7xl mx-auto my-24 reveal">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="order-2 md:order-1">
+                    <h2 class="text-4xl font-slab font-bold mb-4 accent-gold">Die <span class="text-white">Kernhypothese</span></h2>
+                    <h3 class="text-2xl font-slab mb-6 text-gray-300">Wahlverwandtschaften</h3>
+                    <p class="mb-4">
+                        Max Weber postuliert einen engen Zusammenhang zwischen der protestantischen Ethik und dem Aufkommen des modernen Kapitalismus. Er spricht von <strong class="font-semibold text-white">„Wahlverwandtschaften“</strong>: Die religiöse Weltanschauung des asketischen Protestantismus war in hohem Maße kompatibel mit den Prinzipien des Kapitalismus.
+                    </p>
+                    <p class="text-gray-400">
+                        Diese neue Ethik schuf nicht nur die Arbeiter, sondern auch die Unternehmer, die den Gewinn nicht für Luxus ausgaben, sondern ihn systematisch reinvestierten. Sie schuf den idealen Nährboden für die Industrialisierung.
+                    </p>
+                </div>
+                <div class="order-1 md:order-2 interactive-area p-4 md:p-8 flex justify-center items-center h-[400px]">
+                    <svg id="gears-svg" viewBox="0 0 400 300" class="w-full h-full" aria-labelledby="gears-title">
+                        <title id="gears-title">Animation von zwei Zahnrädern mit der Aufschrift "Protestantische Ethik" und "Geist des Kapitalismus"</title>
+                        <defs>
+                            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                                <feMerge>
+                                    <feMergeNode in="coloredBlur"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
+                        </defs>
+                        <!-- Gear 1 -->
+                        <g id="gear1" transform="translate(130, 150)">
+                            <path d="M 0 -100 L 12 -100 L 15 -90 L 25 -90 L 28 -100 L 40 -100 L 40 -98 L 49.09 -86.06 L 57.07 -82.83 L 65.96 -86.06 L 73.94 -82.83 L 81.92 -86.06 L 86.06 -90 L 95.00 -90 L 98 -100 L 100 -100 L 100 12 L 90 15 L 90 25 L 100 28 L 100 40 L 98 40 L 86.06 49.09 L 82.83 57.07 L 86.06 65.96 L 82.83 73.94 L 86.06 81.92 L 90 86.06 L 90 95.00 L 100 98 L 100 100 L 12 100 L 15 90 L 25 90 L 28 100 L 40 100 L 40 98 L 49.09 86.06 L 57.07 82.83 L 65.96 86.06 L 73.94 82.83 L 81.92 86.06 L 86.06 90 L 95.00 90 L 98 100 L 0 100 L 0 100 L -12 100 L -15 90 L -25 90 L -28 100 L -40 100 L -40 98 L -49.09 86.06 L -57.07 82.83 L -65.96 86.06 L -73.94 82.83 L -81.92 86.06 L -86.06 90 L -95.00 90 L -98 100 L -100 100 L -100 12 L -90 15 L -90 25 L -100 28 L -100 40 L -98 40 L -86.06 49.09 L -82.83 57.07 L -86.06 65.96 L -82.83 73.94 L -86.06 81.92 L -90 86.06 L -90 95.00 L -100 98 L -100 -100 L -12 -100 L -15 -90 L -25 -90 L -28 -100 L -40 -100 L -40 -98 L -49.09 -86.06 L -57.07 -82.83 L -65.96 -86.06 L -73.94 -82.83 L -81.92 -86.06 L -86.06 -90 L -95.00 -90 L -98 -100 L 0 -100 Z" fill="rgba(253, 224, 71, 0.2)" stroke="#fde047" stroke-width="1.5" filter="url(#glow)"/>
+                            <circle cx="0" cy="0" r="40" fill="none" stroke="#fde047" stroke-width="1"/>
+                            <text x="0" y="5" fill="#fde047" font-size="16" text-anchor="middle" font-family="Roboto Slab" class="font-bold">PROTESTANTISCHE</text>
+                            <text x="0" y="25" fill="#fde047" font-size="16" text-anchor="middle" font-family="Roboto Slab" class="font-bold">ETHIK</text>
+                        </g>
+                        <!-- Gear 2 -->
+                        <g id="gear2" transform="translate(285, 150)">
+                            <path d="M 0 -60 L 7.2 -60 L 9 -54 L 15 -54 L 16.8 -60 L 24 -60 L 24 -58.8 L 29.45 -51.64 L 34.24 -49.7 L 39.58 -51.64 L 44.36 -49.7 L 49.15 -51.64 L 51.64 -54 L 57 -54 L 58.8 -60 L 60 -60 L 60 7.2 L 54 9 L 54 15 L 60 16.8 L 60 24 L 58.8 24 L 51.64 29.45 L 49.7 34.24 L 51.64 39.58 L 49.7 44.36 L 51.64 49.15 L 54 51.64 L 54 57 L 60 58.8 L 60 60 L 7.2 60 L 9 54 L 15 54 L 16.8 60 L 24 60 L 24 58.8 L 29.45 51.64 L 34.24 49.7 L 39.58 51.64 L 44.36 49.7 L 49.15 51.64 L 51.64 54 L 57 54 L 58.8 60 L 0 60 L 0 60 L -7.2 60 L -9 54 L -15 54 L -16.8 60 L -24 60 L -24 58.8 L -29.45 51.64 L -34.24 49.7 L -39.58 51.64 L -44.36 49.7 L -49.15 51.64 L -51.64 54 L -57 54 L -58.8 60 L -60 60 L -60 7.2 L -54 9 L -54 15 L -60 16.8 L -60 24 L -58.8 24 L -51.64 29.45 L -49.7 34.24 L -51.64 39.58 L -49.7 44.36 L -51.64 49.15 L -54 51.64 L -54 57 L -60 58.8 L -60 -60 L -7.2 -60 L -9 -54 L -15 -54 L -16.8 -60 L -24 -60 L -24 -58.8 L -29.45 -51.64 L -34.24 49.7 L -39.58 51.64 L -44.36 49.7 L -49.15 51.64 L -51.64 -54 L -57 -54 L -58.8 -60 L 0 -60 Z" fill="rgba(255, 255, 255, 0.1)" stroke="#e0e0e0" stroke-width="1"/>
+                            <circle cx="0" cy="0" r="25" fill="none" stroke="#e0e0e0" stroke-width="0.5"/>
+                            <text x="0" y="-3" fill="#e0e0e0" font-size="11" text-anchor="middle" font-family="Roboto Slab" class="font-bold">GEIST DES</text>
+                            <text x="0" y="11" fill="#e0e0e0" font-size="11" text-anchor="middle" font-family="Roboto Slab" class="font-bold">KAPITALISMUS</text>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Predestination & Asceticism -->
+        <section id="section-2" class="max-w-7xl mx-auto my-24 reveal">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-slab font-bold mb-4">Der <span class="accent-gold">Motor</span> der Ethik</h2>
+                <p class="text-lg max-w-3xl mx-auto text-gray-300">Calvins Prädestinationslehre erzeugte eine tiefe existentielle Angst. Die Lösung? Unermüdliche, rationale Arbeit als Zeichen der eigenen Erwählung.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-12 items-start">
+                <div class="section-card p-8 rounded-2xl">
+                    <h3 class="text-2xl font-slab font-bold mb-4"><span class="accent-gold">Prädestination:</span> Die quälende Ungewissheit</h3>
+                    <p class="mb-4">Die Lehre, dass Gott von Ewigkeit her über Heil oder Verdammnis entschieden hat, warf für den Gläubigen eine quälende Frage auf: <strong class="text-white">„Bin ich erwählt?“</strong></p>
+                    <p class="text-gray-400">Dieser Zweifel musste bekämpft werden. Die seelsorgerische Antwort war zweigeteilt: Man hatte die Pflicht, sich für erwählt zu halten, und sollte dies durch rastlose Berufsarbeit beweisen. Dies schuf einen „Heiligen“, der sein Leben methodisch führte, um Zeichen seiner Gnade zu finden.</p>
+                </div>
+
+                <div class="section-card p-8 rounded-2xl">
+                    <h3 class="text-2xl font-slab font-bold mb-4"><span class="accent-gold">Innerweltliche Askese:</span> Der heilige Alltag</h3>
+                    <p class="mb-4">Der Gottesdienst wurde auf den Alltag ausgeweitet. Erfolg im Beruf wurde zum Zeichen göttlicher Gnade. Dies erforderte eine spezifische Lebensführung:</p>
+                    <ul class="list-disc list-inside space-y-2 text-gray-300">
+                        <li><strong class="text-white">Sparsamkeit:</strong> Gewinn wurde nicht für Genuss verschwendet.</li>
+                        <li><strong class="text-white">Enthaltsamkeit:</strong> Ablehnung von Luxus und Müßiggang.</li>
+                        <li><strong class="text-white">Rastloser Fleiß:</strong> Arbeit wurde zur heiligen Pflicht und zum asketischen Mittel gegen die Angst.</li>
+                    </ul>
+                    <div id="asceticism-flow" class="interactive-area p-6 rounded-xl mt-6">
+                        <p class="text-center font-slab mb-4 text-white">Der Fluss des Kapitals</p>
+                        <svg viewBox="0 0 300 150" class="w-full" aria-labelledby="asceticism-title">
+                            <title id="asceticism-title">Flussdiagramm zum Umgang mit Gewinn durch Askese</title>
+                            <defs>
+                                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+                                    <polygon points="0 0, 10 3.5, 0 7" fill="#fde047" />
+                                </marker>
+                            </defs>
+                            <text x="35" y="20" font-size="12" fill="#e0e0e0" text-anchor="middle">Arbeit</text>
+                            <line x1="65" y1="20" x2="95" y2="50" stroke="#e0e0e0" stroke-width="1" marker-end="url(#arrowhead)"/>
+                            
+                            <text x="150" y="15" font-size="14" fill="#fde047" text-anchor="middle" class="font-bold">Gewinn</text>
+                            <path d="M100 50 H 200 L 175 90 H 125 Z" fill="rgba(253, 224, 71, 0.1)" stroke="#fde047" />
+                            <text x="150" y="75" font-size="12" fill="#fde047" text-anchor="middle">Askese</text>
+
+                            <line x1="120" y1="90" x2="80" y2="120" stroke="#e0e0e0" stroke-width="1" stroke-dasharray="4"/>
+                            <text x="65" y="135" font-size="12" fill="#9ca3af" text-anchor="middle">Luxus/Genuss</text>
+                            <path d="M 50 110 L 80 140 M 80 110 L 50 140" stroke="#ef4444" stroke-width="2"/>
+
+                            <line x1="180" y1="90" x2="220" y2="120" stroke="#fde047" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+                            <text x="245" y="135" font-size="12" fill="#fde047" text-anchor="middle" class="font-bold">Reinvestition</text>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Spirit of Capitalism / Fugger vs Franklin -->
+        <section id="section-3" class="max-w-7xl mx-auto my-24 reveal">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-slab font-bold mb-4">Der <span class="accent-gold">Geist</span> des Kapitalismus</h2>
+                <p class="text-lg max-w-3xl mx-auto text-gray-300">Weber illustriert den neuen "Geist" durch den Kontrast zweier Persönlichkeiten: Jakob Fugger und Benjamin Franklin.</p>
+            </div>
+            <div class="interactive-area p-4 sm:p-8 rounded-2xl">
+                <div class="flex justify-center mb-6 space-x-4">
+                    <button id="show-fugger" class="px-6 py-2 rounded-full font-slab transition-colors duration-300 border border-gray-500 text-gray-300" aria-pressed="false">Jakob Fugger</button>
+                    <button id="show-franklin" class="px-6 py-2 rounded-full font-slab transition-colors duration-300 border-gold bg-gold text-black" aria-pressed="true">Benjamin Franklin</button>
+                </div>
+                <div id="comparison-container" class="grid md:grid-cols-5 gap-8 items-center min-h-[450px]">
+                    <!-- Text Area -->
+                    <div class="md:col-span-2 text-center md:text-left">
+                        <div id="fugger-text" class="hidden">
+                            <h3 class="text-2xl font-slab font-bold mb-4 text-gray-200">Der Abenteurer</h3>
+                            <p class="mb-4">Jakob Fuggers Antrieb war kaufmännischer Wagemut und eine persönliche, sittlich indifferente Neigung. Sein Motto:</p>
+                            <blockquote class="border-l-4 border-gray-500 pl-4 italic text-gray-400">
+                                „Er [...] wollte gewinnen, dieweil er könnte, ...“
+                            </blockquote>
+                        </div>
+                        <div id="franklin-text">
+                            <h3 class="text-2xl font-slab font-bold mb-4 accent-gold">Der Ethiker</h3>
+                            <p class="mb-4">Franklins Maximen sind von einer eigentümlichen Ethik durchdrungen, die die Arbeit und den Erwerb zum Selbstzweck erhebt.</p>
+                            <blockquote class="border-l-4 border-gold pl-4 italic text-gray-300">
+                                „Bedenke, dass die Zeit Geld ist… Bedenke, dass Geld von einer zeugungskräftigen und fruchtbaren Natur ist…“
+                            </blockquote>
+                        </div>
+                    </div>
+                    <!-- Visualization Area -->
+                    <div class="md:col-span-3 h-[400px]">
+                        <svg id="mindset-svg" viewBox="0 0 500 400" class="w-full h-full franklin-active" aria-labelledby="mindset-title">
+                            <title id="mindset-title">Animation zum Vergleich des Umgangs mit Gewinn zwischen Fugger und Franklin.</title>
+                            <text x="250" y="30" text-anchor="middle" font-size="16" class="font-slab" fill="#e0e0e0">Der Umgang mit Gewinn</text>
+                            
+                            <!-- Fugger Visualization -->
+                            <g id="fugger-viz" class="transition-opacity duration-500 opacity-20">
+                                <circle cx="50" cy="200" r="20" fill="#e0e0e0"/>
+                                <text x="50" y="240" text-anchor="middle" fill="#e0e0e0" font-size="12">Gewinn</text>
+                                
+                                <path id="fugger-path" d="M 70 200 Q 250 100, 430 180" stroke="#9ca3af" stroke-width="2" fill="none" stroke-dasharray="5,5"/>
+                                
+                                <g id="fugger-spend">
+                                    <circle class="s1" cx="200" cy="145" r="8" fill="#ef4444"/>
+                                    <circle class="s2" cx="320" cy="140" r="10" fill="#ef4444"/>
+                                    <circle class="s3" cx="430" cy="180" r="12" fill="#ef4444"/>
+                                </g>
+                                <text x="430" y="210" text-anchor="middle" fill="#ef4444" font-size="12">Konsum & Luxus</text>
+                            </g>
+
+                            <!-- Franklin Visualization -->
+                            <g id="franklin-viz" class="transition-opacity duration-500">
+                                <circle cx="50" cy="200" r="20" fill="#fde047"/>
+                                <text x="50" y="240" text-anchor="middle" fill="#fde047" font-size="12">Gewinn</text>
+                                
+                                <path id="franklin-path" d="M 70 200 Q 250 300, 430 200" stroke="#fde047" stroke-width="2" fill="none"/>
+                                <text x="250" y="330" text-anchor="middle" fill="#fde047" font-size="12">Reinvestition & Wachstum</text>
+                                
+                                <g id="franklin-growth">
+                                    <circle class="c1" cx="150" cy="258" r="12" fill="#fde047" fill-opacity="0.8"/>
+                                    <circle class="c2" cx="250" cy="280" r="15" fill="#fde047" fill-opacity="0.8"/>
+                                    <circle class="c3" cx="350" cy="258" r="18" fill="#fde047" fill-opacity="0.8"/>
+                                    <circle class="c4" cx="430" cy="200" r="25" fill="#fde047" fill-opacity="0.8"/>
+                                </g>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Secularization / Iron Cage -->
+        <section id="section-4" class="max-w-7xl mx-auto my-32 reveal">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-slab font-bold mb-4">Vom Mantel zum <span class="accent-gold">stahlharten Gehäuse</span></h2>
+                <p class="text-lg max-w-3xl mx-auto text-gray-300">Die puritanische Ethik schuf den "modernen Wirtschaftsmenschen". Doch mit der Zeit löste sich dieser Geist von seinen religiösen Wurzeln.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                     <p class="mb-4 text-gray-300">
+                        Weber beschreibt, wie die Sorge um die äußeren Güter, die für den Puritaner nur ein <strong class="text-white">„dünner Mantel sein sollte, den man jederzeit abwerfen könne“</strong>, zu einem unentrinnbaren Zwang wurde.
+                    </p>
+                    <p class="mb-4">
+                        Der Kapitalismus, einmal etabliert, benötigt die religiöse Stütze nicht mehr. Er läuft auf mechanischer Grundlage weiter und zwingt die Individuen, sich seiner Logik zu unterwerfen, unabhängig von ihrem Glauben.
+                    </p>
+                    <p class="font-semibold text-white">
+                        „Der Puritaner wollte Berufsmensch sein, – wir müssen es sein.“
+                    </p>
+                    <p class="mt-2 text-gray-400">
+                        Aus dem leichten Mantel ist ein <strong class="accent-gold">stahlhartes Gehäuse</strong> geworden.
+                    </p>
+                </div>
+                <div id="cage-container" class="interactive-area rounded-2xl flex justify-center items-center">
+                    <svg viewBox="0 0 300 300" class="h-full w-auto" aria-labelledby="cage-title">
+                        <title id="cage-title">Animation einer Person, die in einem stahlharten Gehäuse gefangen wird, während religiöse Symbole verblassen.</title>
+                        <g id="religious-symbols">
+                            <text x="50" y="50" font-size="40" fill="#e0e0e0" opacity="0.5">✝</text>
+                            <text x="230" y="80" font-size="40" fill="#e0e0e0" opacity="0.5">📖</text>
+                        </g>
+                        <g id="cage-person" transform="translate(150, 190)">
+                             <path d="M-15-40 a15,15 0 1,1 30,0 a15,15 0 1,1 -30,0 M0-25 v45 M-30 0 h60 M0 20 l-20 50 M0 20 l20 50" stroke="#e0e0e0" stroke-width="3" fill="none" stroke-linecap="round"/>
+                        </g>
+                        <g id="cage-bars" transform="translate(0, -20)">
+                           <!-- Vertical bars -->
+                           <line class="bar" x1="80" y1="50" x2="80" y2="280" />
+                           <line class="bar" x1="120" y1="50" x2="120" y2="280" />
+                           <line class="bar" x1="180" y1="50" x2="180" y2="280" />
+                           <line class="bar" x1="220" y1="50" x2="220" y2="280" />
+                           <!-- Horizontal bars -->
+                           <line class="bar" x1="80" y1="50" x2="220" y2="50" />
+                           <line class="bar" x1="80" y1="120" x2="220" y2="120" />
+                           <line class="bar" x1="80" y1="190" x2="220" y2="190" />
+                           <line class="bar" x1="80" y1="280" x2="220" y2="280" />
+                        </g>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Reception -->
+        <section id="section-5" class="max-w-7xl mx-auto my-24 reveal">
+             <div class="text-center mb-12">
+                <h2 class="text-4xl font-slab font-bold mb-4">Die <span class="accent-gold">Debatte</span></h2>
+                <p class="text-lg max-w-3xl mx-auto text-gray-300">Webers Thesen lösten eine bis heute andauernde wissenschaftliche Debatte aus. Hier sind einige der wichtigsten Stimmen.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Criticism Column -->
+                <div>
+                    <h3 class="text-3xl font-slab font-bold mb-6 text-center text-red-400">Kritik & Widerlegung</h3>
+                    <div class="space-y-6">
+                        <div class="debate-card p-6 rounded-xl border border-red-500/30">
+                            <h4 class="font-slab text-xl font-bold mb-2">Marxistische Kritik</h4>
+                            <p class="text-gray-400">Der Kapitalismus entstand bereits vor dem Calvinismus in Italien. Nicht Religion, sondern Zwang und Enteignung waren die treibenden Kräfte zur Disziplinierung der Arbeiter.</p>
+                        </div>
+                        <div class="debate-card p-6 rounded-xl border border-red-500/30">
+                            <h4 class="font-slab text-xl font-bold mb-2">Empirische Widerlegung</h4>
+                            <p class="text-gray-400">Eine quantitative Studie von 272 deutschen Städten (1300–1900) fand keinen statistischen Beleg dafür, dass protestantische Regionen ein höheres Wirtschaftswachstum aufwiesen.</p>
+                        </div>
+                         <div class="debate-card p-6 rounded-xl border border-red-500/30">
+                            <h4 class="font-slab text-xl font-bold mb-2">Der flexible Mensch</h4>
+                            <p class="text-gray-400">Als Wirtschaftsgeschichte sei die Schrift fehlerhaft, aber als Analyse eines Charaktertypus sei sie schlüssig: Das Arbeitsethos erscheint nicht als Quelle des Glücks, sondern als eine Last.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Confirmation Column -->
+                <div>
+                    <h3 class="text-3xl font-slab font-bold mb-6 text-center text-green-400">Bestätigung & Weiterentwicklung</h3>
+                     <div class="space-y-6">
+                        <div class="debate-card p-6 rounded-xl border border-green-500/30">
+                            <h4 class="font-slab text-xl font-bold mb-2">Die Merton-These</h4>
+                            <p class="text-gray-400">Die naturwissenschaftliche Revolution des 17./18. Jhd. wurde überproportional von englischen Puritanern und deutschen Pietisten getragen – Gruppen, deren asketische Ethik Weber beschrieb.</p>
+                        </div>
+                        <div class="debate-card p-6 rounded-xl border border-green-500/30">
+                            <h4 class="font-slab text-xl font-bold mb-2">Empirische Bestätigung</h4>
+                            <p class="text-gray-400">Eine Studie in Detroit (1958) bestätigte, dass Protestanten eher im Wirtschaftssystem aufstiegen. Dies wurde auf eine durch die Reformation geförderte „intellektuelle Autonomie“ zurückgeführt.</p>
+                        </div>
+                         <div class="debate-card p-6 rounded-xl border border-green-500/30">
+                            <h4 class="font-slab text-xl font-bold mb-2">Moderne Relevanz</h4>
+                            <p class="text-gray-400">Die Ausbreitung evangelikaler Pfingstgemeinden in Lateinamerika wird als Bestätigung gesehen: Konvertiten deuten ihren sozialen Aufstieg als Ergebnis neuer, asketischer Selbstdisziplin.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+    </main>
+    
+    <footer class="text-center py-12 border-t border-gray-800">
+        <p class="text-gray-500">Eine interaktive Visualisierung basierend auf Max Webers</p>
+        <p class="text-gray-400 font-slab mt-1">"Die protestantische Ethik und der Geist des Kapitalismus"</p>
+        <p class="text-sm text-gray-500 mt-8">„Hinweis: Dieser HTML-Inhalt wurde automatisiert durch KI erstellt. Inhalte können fehlerhaft sein und müssen je nach Kontext validiert werden.“</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // --- Scroll-triggered animations ---
+            const revealElements = document.querySelectorAll('.reveal');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            revealElements.forEach(el => observer.observe(el));
+
+            // --- Gears animation ---
+            const gearsSection = document.getElementById('section-1');
+            const gear1 = document.getElementById('gear1');
+            const gear2 = document.getElementById('gear2');
+            const gearsObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        gear1.style.transform = 'translate(130, 150) rotate(360deg)';
+                        gear2.style.transform = 'translate(285, 150) rotate(-480deg)';
+                    } else {
+                        gear1.style.transform = 'translate(130, 150) rotate(0deg)';
+                        gear2.style.transform = 'translate(285, 150) rotate(0deg)';
+                    }
+                });
+            }, { threshold: 0.5 });
+            gearsObserver.observe(gearsSection);
+
+            // --- Fugger vs Franklin interactive toggle ---
+            const showFuggerBtn = document.getElementById('show-fugger');
+            const showFranklinBtn = document.getElementById('show-franklin');
+            const fuggerText = document.getElementById('fugger-text');
+            const franklinText = document.getElementById('franklin-text');
+            const fuggerViz = document.getElementById('fugger-viz');
+            const franklinViz = document.getElementById('franklin-viz');
+            const mindsetSvg = document.getElementById('mindset-svg');
+
+            function showFranklin() {
+                // Style buttons
+                showFranklinBtn.classList.add('bg-gold', 'text-black', 'border-gold');
+                showFranklinBtn.classList.remove('border-gray-500');
+                showFuggerBtn.classList.remove('bg-gray-700', 'text-white');
+                showFuggerBtn.classList.add('border-gray-500');
+                
+                // Accessibility
+                showFranklinBtn.setAttribute('aria-pressed', 'true');
+                showFuggerBtn.setAttribute('aria-pressed', 'false');
+
+                // Toggle content
+                franklinText.classList.remove('hidden');
+                fuggerText.classList.add('hidden');
+                
+                // Animate
+                franklinViz.style.opacity = '1';
+                fuggerViz.style.opacity = '0.2';
+                mindsetSvg.classList.add('franklin-active');
+                mindsetSvg.classList.remove('fugger-active');
+            }
+
+            function showFugger() {
+                // Style buttons
+                showFuggerBtn.classList.add('bg-gray-700', 'text-white');
+                showFuggerBtn.classList.remove('border-gray-500');
+                showFranklinBtn.classList.remove('bg-gold', 'text-black', 'border-gold');
+                showFranklinBtn.classList.add('border-gray-500');
+
+                // Accessibility
+                showFuggerBtn.setAttribute('aria-pressed', 'true');
+                showFranklinBtn.setAttribute('aria-pressed', 'false');
+
+                // Toggle content
+                fuggerText.classList.remove('hidden');
+                franklinText.classList.add('hidden');
+
+                // Animate
+                fuggerViz.style.opacity = '1';
+                franklinViz.style.opacity = '0.2';
+                mindsetSvg.classList.add('fugger-active');
+                mindsetSvg.classList.remove('franklin-active');
+            }
+
+            showFranklinBtn.addEventListener('click', showFranklin);
+            showFuggerBtn.addEventListener('click', showFugger);
+            
+            // --- Iron Cage animation ---
+            const cageContainer = document.getElementById('cage-container');
+            const cageObserver = new IntersectionObserver((entries) => {
+                 entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        cageContainer.classList.add('caged');
+                    } else {
+                        cageContainer.classList.remove('caged');
+                    }
+                });
+            }, { threshold: 0.6 });
+            cageObserver.observe(cageContainer);
+
+        });
+    </script>
+</body>
+</html>
