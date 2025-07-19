@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="de" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktiver Leitfaden: Genossenschaftsgründung und Umwandlung</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f4f8;
+            color: #1e293b;
+        }
+
+        /* Custom gradient text */
+        .gradient-text {
+            background: linear-gradient(90deg, #1e40af, #3b82f6, #14b8a6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+        
+        /* Hero background */
+        .hero-bg {
+            background-color: #0c1427;
+            background-image:
+                radial-gradient(at 27% 37%, hsla(215, 98%, 60%, 0.1) 0px, transparent 50%),
+                radial-gradient(at 97% 21%, hsla(165, 78%, 50%, 0.1) 0px, transparent 50%),
+                radial-gradient(at 52% 99%, hsla(355, 98%, 60%, 0.1) 0px, transparent 50%),
+                radial-gradient(at 10% 29%, hsla(256, 96%, 60%, 0.1) 0px, transparent 50%),
+                radial-gradient(at 97% 96%, hsla(38, 60%, 70%, 0.1) 0px, transparent 50%),
+                radial-gradient(at 33% 50%, hsla(222, 67%, 70%, 0.1) 0px, transparent 50%),
+                radial-gradient(at 79% 53%, hsla(343, 68%, 70%, 0.1) 0px, transparent 50%);
+        }
+
+        /* Animations for reveal on scroll */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.6s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Interactive Organs Chart */
+        .organ-chart .organ-item {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .organ-chart .organ-item:hover, .organ-chart .organ-item:focus-visible {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        .organ-chart .organ-detail {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+            opacity: 0;
+        }
+        .organ-chart .organ-item.active .organ-detail {
+            max-height: 500px;
+            opacity: 1;
+        }
+        .organ-chart .arrow-down {
+            transition: transform 0.3s ease;
+        }
+        .organ-chart .organ-item.active .arrow-down {
+            transform: rotate(180deg);
+        }
+
+        /* eG vs GmbH Comparison Toggle */
+        .comparison-card {
+            perspective: 1000px;
+            display: flex;
+            flex-direction: column;
+        }
+        .comparison-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            min-height: 220px; /* Increased for better consistency */
+            flex: 1;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .comparison-card.flipped .comparison-inner {
+            transform: rotateY(180deg);
+        }
+        .comparison-front, .comparison-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+        }
+        .comparison-back {
+            transform: rotateY(180deg);
+        }
+
+        /* Timeline for Umwandlung */
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 20px;
+            height: 100%;
+            width: 4px;
+            background: #cbd5e1;
+            border-radius: 2px;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 50px;
+        }
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+        .timeline-dot {
+            position: absolute;
+            left: 0;
+            top: 5px;
+            height: 44px;
+            width: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            border: 4px solid #f0f4f8;
+            font-weight: 600;
+            font-size: 1.25rem;
+            z-index: 10;
+        }
+        .timeline-content {
+            transition: max-height 0.7s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.5s ease;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .timeline-item.active .timeline-content {
+            max-height: 1000px; /* Adjust as needed */
+            opacity: 1;
+        }
+        .timeline-header {
+            cursor: pointer;
+        }
+        .timeline-item .timeline-header svg {
+            transition: transform 0.3s ease;
+        }
+        .timeline-item.active .timeline-header svg {
+            transform: rotate(180deg);
+        }
+        
+        /* Additional professional styles */
+        section {
+            transition: all 0.3s ease;
+        }
+        .comparison-toggle {
+            display: block;
+            margin: 1rem auto 0;
+            text-align: center;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #3b82f6;
+            background-color: #eff6ff;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .comparison-toggle:hover {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        .comparison-card:hover {
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Hero Section -->
+    <header class="hero-bg text-white relative overflow-hidden">
+        <div class="container mx-auto px-6 py-24 md:py-32 text-center">
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-4 reveal">
+                Genossenschaftsgründung & Umwandlung
+            </h1>
+            <p class="text-lg md:text-2xl text-blue-200 max-w-3xl mx-auto mb-8 reveal" style="transition-delay: 0.2s;">
+                Ein interaktiver Leitfaden zu den Grundlagen, Vorteilen und Prozessen der eingetragenen Genossenschaft (eG).
+            </p>
+            <a href="#grundlagen" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 inline-block reveal" style="transition-delay: 0.4s;">
+                Jetzt entdecken
+            </a>
+        </div>
+        <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-slate-100 to-transparent"></div>
+    </header>
+
+    <main class="container mx-auto p-6 -mt-16">
+
+        <!-- Section 1: Grundlagen der eG -->
+        <section id="grundlagen" class="bg-white rounded-xl shadow-lg p-6 md:p-10 mb-16 reveal">
+            <h2 class="text-3xl md:text-4xl font-bold mb-2 gradient-text">Grundlagen der eingetragenen Genossenschaft (eG)</h2>
+            <p class="text-slate-600 mb-8">Verstehen Sie die DNA einer Genossenschaft: Zweck, Struktur und Haftung.</p>
+
+            <div class="grid md:grid-cols-2 gap-8 mb-12">
+                <div class="reveal">
+                    <h3 class="text-2xl font-semibold text-slate-800 mb-3">1. Definition und Zweck: Die Förderung der Mitglieder</h3>
+                    <p class="mb-4">Die eG ist eine juristische Person, deren primärer Zweck nicht die Gewinnmaximierung, sondern die Förderung ihrer Mitglieder ist (§ 1 GenG). Sie basiert auf den Prinzipien der <strong class="text-blue-600">Selbsthilfe, Selbstverantwortung und Selbstverwaltung</strong>.</p>
+                    
+                    <!-- Interactive Purpose Visualization -->
+                    <div class="flex space-x-2 rounded-lg bg-slate-100 p-1 mb-4">
+                        <button id="btn-wirtschaftlich" class="purpose-toggle active bg-white text-blue-600 flex-1 py-2 px-4 rounded-md text-sm font-semibold transition-colors duration-300">Wirtschaftliche Förderung</button>
+                        <button id="btn-sozial" class="purpose-toggle flex-1 py-2 px-4 rounded-md text-sm font-semibold transition-colors duration-300">Soziale/Kulturelle Förderung</button>
+                    </div>
+                    <div id="content-wirtschaftlich" class="purpose-content bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+                        <p class="font-semibold text-blue-800">Unterstützung von Erwerb oder Wirtschaft</p>
+                        <ul class="list-disc list-inside text-blue-700 mt-2 text-sm">
+                            <li>Einkaufs- & Produktionsgenossenschaften</li>
+                            <li>Wohnungsbaugenossenschaften</li>
+                            <li>Energiegenossenschaften</li>
+                        </ul>
+                    </div>
+                    <div id="content-sozial" class="purpose-content hidden bg-teal-50 border-l-4 border-teal-500 p-4 rounded-r-lg">
+                         <p class="font-semibold text-teal-800">Verfolgung gemeinsamer Ziele</p>
+                         <ul class="list-disc list-inside text-teal-700 mt-2 text-sm">
+                            <li>Dorfläden & Nahversorgung</li>
+                            <li>Kulturzentren & soziale Projekte</li>
+                            <li>Bildungsgenossenschaften</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="reveal">
+                    <h3 class="text-2xl font-semibold text-slate-800 mb-3">3. Haftungsregelung</h3>
+                    <p class="mb-4">Die Genossenschaft ist eine Körperschaft mit eigener Rechtspersönlichkeit. Dies schafft klare Verhältnisse:</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <svg class="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                            <div>
+                                <strong class="block text-slate-700">Haftung der Genossenschaft:</strong> Für Verbindlichkeiten haftet ausschließlich das Vermögen der Genossenschaft.
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                             <svg class="w-6 h-6 text-red-500 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
+                             <div>
+                                <strong class="block text-slate-700">Keine persönliche Haftung:</strong> Eine private, unbeschränkte Haftung der Mitglieder ist ausgeschlossen. Sie haften maximal mit ihren Geschäftsanteilen.
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-6 h-6 text-yellow-500 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                             <div>
+                                <strong class="block text-slate-700">Nachschusspflicht (optional):</strong> Nur wenn die Satzung es vorsieht, kann im Insolvenzfall eine Nachschusspflicht bestehen. Diese kann aber auch explizit ausgeschlossen werden.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Interactive Organ Chart -->
+            <div class="reveal">
+                <h3 class="text-2xl font-semibold text-slate-800 mb-6 text-center">2. Die Struktur: Mitglieder und Organe</h3>
+                <div class="organ-chart max-w-4xl mx-auto">
+                    <!-- Top Level: Generalversammlung -->
+                    <div id="organ-gv" role="button" tabindex="0" aria-expanded="true" aria-controls="organ-detail-gv" class="organ-item active bg-white rounded-lg p-6 mb-8 cursor-pointer border border-slate-200">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-sm font-semibold text-blue-600">OBERSTES ORGAN</span>
+                                <h4 class="text-xl font-bold text-slate-800">Die Generalversammlung</h4>
+                            </div>
+                            <div class="text-blue-500">
+                                <svg class="w-6 h-6 arrow-down" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                        </div>
+                        <div id="organ-detail-gv" class="organ-detail mt-4 text-slate-600">
+                            <p>Das Fundament der Genossenschaft, in dem jedes Mitglied genau <strong>eine Stimme</strong> hat (demokratisches "Ein-Kopf-Prinzip").</p>
+                             <ul class="list-disc list-inside mt-2 space-y-1 text-sm">
+                                 <li><strong>Funktion:</strong> Willensbildungs- und Beschlussorgan.</li>
+                                 <li><strong>Stimmrecht:</strong> 1 Mitglied = 1 Stimme, unabhängig vom Kapital.</li>
+                                 <li><strong>Vertreterversammlung:</strong> Bei >1.500 Mitgliedern möglich, von Mitgliedern gewählt.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-center mb-4">
+                        <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                    </div>
+
+                    <!-- Second Level: Aufsichtsrat & Vorstand -->
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div id="organ-ar" role="button" tabindex="0" aria-expanded="false" aria-controls="organ-detail-ar" class="organ-item bg-white rounded-lg p-6 cursor-pointer border border-slate-200">
+                           <div class="flex justify-between items-center">
+                                <div>
+                                    <span class="text-sm font-semibold text-teal-600">KONTROLLGREMIUM</span>
+                                    <h4 class="text-xl font-bold text-slate-800">Der Aufsichtsrat</h4>
+                                </div>
+                                <div class="text-teal-500">
+                                    <svg class="w-6 h-6 arrow-down" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </div>
+                            </div>
+                            <div id="organ-detail-ar" class="organ-detail mt-4 text-slate-600">
+                                <p>Wird von der Generalversammlung gewählt, um den Vorstand zu überwachen und zu beraten.</p>
+                                <ul class="list-disc list-inside mt-2 space-y-1 text-sm">
+                                    <li><strong>Wahl:</strong> Durch General- oder Vertreterversammlung.</li>
+                                    <li><strong>Funktion:</strong> Überwachung und Beratung des Vorstands.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="organ-vs" role="button" tabindex="0" aria-expanded="false" aria-controls="organ-detail-vs" class="organ-item bg-white rounded-lg p-6 cursor-pointer border border-slate-200">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <span class="text-sm font-semibold text-indigo-600">GESCHÄFTSFÜHRUNG</span>
+                                    <h4 class="text-xl font-bold text-slate-800">Der Vorstand</h4>
+                                </div>
+                                <div class="text-indigo-500">
+                                    <svg class="w-6 h-6 arrow-down" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </div>
+                            </div>
+                             <div id="organ-detail-vs" class="organ-detail mt-4 text-slate-600">
+                                <p>Führt die operativen Geschäfte und vertritt die Genossenschaft nach außen.</p>
+                                <ul class="list-disc list-inside mt-2 space-y-1 text-sm">
+                                    <li><strong>Bestellung:</strong> Durch Generalversammlung oder Aufsichtsrat (je nach Satzung).</li>
+                                    <li><strong>Funktion:</strong> Operative Geschäftsführung und rechtliche Vertretung.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Section 2: Vergleichsanalyse eG vs. GmbH -->
+        <section id="vergleich" class="bg-white rounded-xl shadow-lg p-6 md:p-10 mb-16 reveal">
+            <h2 class="text-3xl md:text-4xl font-bold mb-2 text-center gradient-text">Vergleichsanalyse: eG vs. GmbH</h2>
+            <p class="text-slate-600 mb-8 text-center max-w-2xl mx-auto">Welche Rechtsform passt besser? Ein interaktiver Vergleich der entscheidenden Unterschiede.</p>
+
+            <div class="flex flex-wrap -mx-3">
+                <!-- Card 1: Grundzweck -->
+                <div class="comparison-card w-full md:w-1/2 lg:w-1/3 px-3 mb-6">
+                    <h3 class="text-lg font-semibold text-center mb-2 text-slate-700">Grundzweck</h3>
+                    <div class="comparison-inner rounded-lg shadow-md">
+                        <div class="comparison-front bg-blue-100 border-t-4 border-blue-500">
+                            <span class="text-2xl font-bold text-blue-800">eG</span>
+                            <p class="mt-2 text-blue-700"><strong>Förderung der Mitglieder.</strong> Stabile, auf Langfristigkeit ausgelegte Unternehmensführung.</p>
+                        </div>
+                        <div class="comparison-back bg-slate-100 border-t-4 border-slate-500">
+                            <span class="text-2xl font-bold text-slate-800">GmbH</span>
+                            <p class="mt-2 text-slate-700"><strong>Gewinnerzielung</strong> für die Gesellschafter.</p>
+                        </div>
+                    </div>
+                    <button class="comparison-toggle">Ansicht wechseln</button>
+                </div>
+                
+                <!-- Card 2: Stimmrecht -->
+                <div class="comparison-card w-full md:w-1/2 lg:w-1/3 px-3 mb-6">
+                    <h3 class="text-lg font-semibold text-center mb-2 text-slate-700">Stimmrecht</h3>
+                    <div class="comparison-inner rounded-lg shadow-md">
+                        <div class="comparison-front bg-blue-100 border-t-4 border-blue-500">
+                            <span class="text-2xl font-bold text-blue-800">eG</span>
+                            <p class="mt-2 text-blue-700">Demokratisches Prinzip: <strong>Ein Mitglied, eine Stimme.</strong> Unabhängig von der Kapitalbeteiligung.</p>
+                        </div>
+                        <div class="comparison-back bg-slate-100 border-t-4 border-slate-500">
+                            <span class="text-2xl font-bold text-slate-800">GmbH</span>
+                            <p class="mt-2 text-slate-700">Kapitalbasiertes Prinzip: Das Stimmgewicht richtet sich nach der <strong>Höhe des Geschäftsanteils.</strong></p>
+                        </div>
+                    </div>
+                    <button class="comparison-toggle">Ansicht wechseln</button>
+                </div>
+                
+                <!-- Card 3: Mitgliederwechsel -->
+                <div class="comparison-card w-full md:w-1/2 lg:w-1/3 px-3 mb-6">
+                    <h3 class="text-lg font-semibold text-center mb-2 text-slate-700">Mitglieder-/Gesellschafterwechsel</h3>
+                    <div class="comparison-inner rounded-lg shadow-md">
+                        <div class="comparison-front bg-blue-100 border-t-4 border-blue-500">
+                            <span class="text-2xl font-bold text-blue-800">eG</span>
+                            <p class="mt-2 text-blue-700"><strong>Flexibel und unbürokratisch.</strong> Beitritt/Austritt durch einfache Erklärung. Kein Notar nötig.</p>
+                        </div>
+                        <div class="comparison-back bg-slate-100 border-t-4 border-slate-500">
+                            <span class="text-2xl font-bold text-slate-800">GmbH</span>
+                            <p class="mt-2 text-slate-700"><strong>Aufwändig und kostenintensiv.</strong> Erfordert Notarvertrag und Änderung im Handelsregister.</p>
+                        </div>
+                    </div>
+                    <button class="comparison-toggle">Ansicht wechseln</button>
+                </div>
+
+                <!-- Card 4: Kapital bei Austritt -->
+                <div class="comparison-card w-full md:w-1/2 lg:w-1/3 px-3 mb-6">
+                    <h3 class="text-lg font-semibold text-center mb-2 text-slate-700">Kapital bei Austritt</h3>
+                    <div class="comparison-inner rounded-lg shadow-md">
+                        <div class="comparison-front bg-blue-100 border-t-4 border-blue-500">
+                            <span class="text-2xl font-bold text-blue-800">eG</span>
+                            <p class="mt-2 text-blue-700">Ausscheidendes Mitglied erhält nur den <strong>Nennwert des Anteils</strong> zurück. Stille Reserven bleiben im Unternehmen und schützen das Eigenkapital.</p>
+                        </div>
+                        <div class="comparison-back bg-slate-100 border-t-4 border-slate-500">
+                            <span class="text-2xl font-bold text-slate-800">GmbH</span>
+                            <p class="mt-2 text-slate-700">Anspruch auf Abfindung zum <strong>Verkehrswert des Anteils,</strong> inkl. stiller Reserven. Kann zu hohem Kapitalabfluss führen.</p>
+                        </div>
+                    </div>
+                    <button class="comparison-toggle">Ansicht wechseln</button>
+                </div>
+                
+                <!-- Card 5: Prüfung & Kontrolle -->
+                <div class="comparison-card w-full md:w-1/2 lg:w-1/3 px-3 mb-6">
+                    <h3 class="text-lg font-semibold text-center mb-2 text-slate-700">Prüfung & Kontrolle</h3>
+                    <div class="comparison-inner rounded-lg shadow-md">
+                        <div class="comparison-front bg-blue-100 border-t-4 border-blue-500">
+                            <span class="text-2xl font-bold text-blue-800">eG</span>
+                            <p class="mt-2 text-blue-700"><strong>Pflichtmitgliedschaft in einem Prüfungsverband.</strong> Regelmäßige externe Prüfung erhöht Transparenz und Sicherheit.</p>
+                        </div>
+                        <div class="comparison-back bg-slate-100 border-t-4 border-slate-500">
+                            <span class="text-2xl font-bold text-slate-800">GmbH</span>
+                            <p class="mt-2 text-slate-700">Keine generelle Pflicht zur externen Prüfung (Ausnahmen bei großen GmbHs).</p>
+                        </div>
+                    </div>
+                    <button class="comparison-toggle">Ansicht wechseln</button>
+                </div>
+
+                <!-- Card 6: Insolvenzrisiko -->
+                <div class="comparison-card w-full md:w-1/2 lg:w-1/3 px-3 mb-6">
+                    <h3 class="text-lg font-semibold text-center mb-2 text-slate-700">Insolvenzrisiko</h3>
+                    <div class="comparison-inner rounded-lg shadow-md">
+                        <div class="comparison-front bg-blue-100 border-t-4 border-blue-500">
+                            <span class="text-2xl font-bold text-blue-800">eG</span>
+                            <p class="mt-2 text-blue-700"><strong>Sehr gering.</strong> Hohe Identifikation, Fokus auf Stabilität statt auf riskante Spekulation.</p>
+                        </div>
+                        <div class="comparison-back bg-slate-100 border-t-4 border-slate-500">
+                            <span class="text-2xl font-bold text-slate-800">GmbH</span>
+                            <p class="mt-2 text-slate-700">Statistisch höher, da stärker auf Markt- und Gewinnmaximierung ausgerichtet.</p>
+                        </div>
+                    </div>
+                    <button class="comparison-toggle">Ansicht wechseln</button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Section 3: Steuerliche Besonderheiten -->
+        <section id="steuern" class="bg-white rounded-xl shadow-lg p-6 md:p-10 mb-16 reveal">
+            <h2 class="text-3xl md:text-4xl font-bold mb-2 gradient-text">Steuerliche Besonderheiten</h2>
+            <p class="text-slate-600 mb-8">Die eG kann spezifische steuerliche Vorteile ermöglichen, sofern der Förderzweck im Vordergrund steht.</p>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-slate-50 p-6 rounded-lg border border-slate-200">
+                    <h3 class="text-xl font-semibold text-slate-800 mb-3">Körperschaftsteuer</h3>
+                    <p class="text-slate-600">Ausschüttungen an Mitglieder, die aus Geschäften mit diesen Mitgliedern resultieren (sog. <strong>Rückvergütungen</strong>), können als steuerlich abzugsfähige Betriebsausgaben behandelt werden. Dies senkt den zu versteuernden Gewinn der Genossenschaft.</p>
+                </div>
+                <div class="bg-slate-50 p-6 rounded-lg border border-slate-200">
+                    <h3 class="text-xl font-semibold text-slate-800 mb-3">Gewerbesteuer</h3>
+                    <ul class="space-y-3 text-slate-600">
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-blue-500 mr-3 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                            <div><strong>Rücklagenbildung:</strong> Gewinne aus Geschäften mit Mitgliedern können unter bestimmten Umständen in eine steuermindernde Rücklage eingestellt werden.</div>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-blue-500 mr-3 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                            <div><strong>Steuerbefreiung:</strong> Genossenschaften in bestimmten Branchen (z.B. Wohnungsbau, Land- und Forstwirtschaft) können unter bestimmten Voraussetzungen vollständig von der Gewerbesteuer befreit sein.</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Der Prozess der Umwandlung -->
+        <section id="umwandlung" class="bg-white rounded-xl shadow-lg p-6 md:p-10 mb-16 reveal">
+            <h2 class="text-3xl md:text-4xl font-bold mb-2 text-center gradient-text">Der Prozess: Umwandlung einer GmbH in eine eG</h2>
+            <p class="text-slate-600 mb-12 text-center max-w-3xl mx-auto">Die Umwandlung (Formwechsel) ist ein formalisierter Prozess nach dem Umwandlungsgesetz (§§ 190 ff. UmwG). Klicken Sie die Schritte an, um die Details zu entdecken.</p>
+            
+            <div class="timeline max-w-3xl mx-auto">
+                <!-- Step 1 -->
+                <div id="timeline-item-1" class="timeline-item reveal active">
+                    <div class="timeline-dot">1</div>
+                    <div role="button" tabindex="0" aria-expanded="true" aria-controls="timeline-content-1" class="timeline-header flex justify-between items-center bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+                        <h3 class="text-xl font-semibold text-slate-800">Der Umwandlungsbeschluss</h3>
+                        <svg class="w-6 h-6 text-blue-500 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                    <div id="timeline-content-1" class="timeline-content bg-white p-6 -mt-1 rounded-b-lg border-x border-b border-slate-200">
+                        <p class="mb-4">Der Formwechsel wird durch einen <strong>notariell zu beurkundenden Beschluss</strong> der GmbH-Gesellschafter eingeleitet. Parallel müssen die Gründungsvoraussetzungen einer Genossenschaft erfüllt werden.</p>
+                        
+                        <h4 class="font-semibold text-slate-700 mb-2">Mindestinhalt des Beschlusses (§ 193 UmwG):</h4>
+                        <ul class="list-decimal list-inside space-y-2 text-slate-600 text-sm mb-4">
+                            <li>Festlegung der neuen Rechtsform: <strong>eingetragene Genossenschaft (eG)</strong></li>
+                            <li>Name (Firma) der zukünftigen Genossenschaft</li>
+                            <li>Regelung zur Beteiligung der bisherigen Gesellschafter</li>
+                            <li><strong>Barabfindungsangebot</strong> an widersprechende Gesellschafter</li>
+                            <li>Folgen für die Arbeitnehmer und deren Vertretung</li>
+                        </ul>
+                        
+                        <h4 class="font-semibold text-slate-700 mb-2">Zusätzliche Gründungsvoraussetzungen:</h4>
+                         <ul class="list-disc list-inside space-y-2 text-slate-600 text-sm">
+                            <li>Mindestens <strong>3 Gründungsmitglieder</strong></li>
+                            <li>Beschluss und Unterzeichnung der <strong>Satzung</strong></li>
+                            <li>Erstellung eines <strong>Wirtschaftskonzepts/Businessplans</strong></li>
+                            <li>Positive <strong>Gründungsprüfung</strong> durch einen Prüfungsverband</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div id="timeline-item-2" class="timeline-item reveal">
+                    <div class="timeline-dot">2</div>
+                    <div role="button" tabindex="0" aria-expanded="false" aria-controls="timeline-content-2" class="timeline-header flex justify-between items-center bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+                        <h3 class="text-xl font-semibold text-slate-800">Vollzug und Eintragung</h3>
+                        <svg class="w-6 h-6 text-blue-500 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                    <div id="timeline-content-2" class="timeline-content bg-white p-6 -mt-1 rounded-b-lg border-x border-b border-slate-200">
+                        <p class="mb-4">Nach dem positiven Beschluss und der Gründungsprüfung muss der Formwechsel vollzogen werden, um rechtswirksam zu werden.</p>
+                        <ol class="list-decimal list-inside space-y-2 text-slate-600">
+                            <li><strong>Anmeldung beim Registergericht:</strong> Der Vorstand der zukünftigen Genossenschaft meldet den Formwechsel zur Eintragung in das <strong>Genossenschaftsregister</strong> an.</li>
+                            <li><strong>Versicherung:</strong> Bei der Anmeldung muss versichert werden, dass keine Anfechtungsklage gegen den Beschluss erhoben wurde (oder die Frist abgelaufen ist).</li>
+                            <li><strong>Wirksamwerden:</strong> Die Umwandlung wird mit der <strong>Eintragung in das Genossenschaftsregister</strong> rechtswirksam. Das gesamte Vermögen der GmbH geht automatisch auf die neue Genossenschaft über.</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-800 text-slate-400 py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p>© 2024 Interaktiver Leitfaden. Dies ist eine Bildungsseite und stellt keine Rechtsberatung dar.</p>
+            <p class="mt-4 text-sm text-slate-500"><strong>Hinweis: Dieser HTML-Inhalt wurde automatisiert durch KI erstellt. Inhalte können fehlerhaft sein und müssen je nach Kontext validiert werden.</strong></p>
+        </div>
+    </footer>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    // --- Reveal on Scroll Animation ---
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+                revealObserver.unobserve(entry.target); 
+            }
+        });
+    }, {
+        threshold: 0.1
+    });
+
+    revealElements.forEach(el => {
+        revealObserver.observe(el);
+    });
+    
+
+    // --- Interactive Purpose Visualization ---
+    const purposeToggles = document.querySelectorAll('.purpose-toggle');
+    const purposeContents = document.querySelectorAll('.purpose-content');
+
+    purposeToggles.forEach(toggle => {
+        toggle.addEventListener('click', () => {
+            const currentActive = document.querySelector('.purpose-toggle.active');
+            if (currentActive && currentActive !== toggle) {
+                currentActive.classList.remove('active', 'bg-white', 'text-blue-600');
+            }
+            toggle.classList.add('active', 'bg-white', 'text-blue-600');
+            
+            const targetId = toggle.id.replace('btn-', 'content-');
+            purposeContents.forEach(content => {
+                content.classList.toggle('hidden', content.id !== targetId);
+            });
+        });
+    });
+
+
+    // --- Interactive Organ Chart ---
+    const organItems = document.querySelectorAll('.organ-item');
+    organItems.forEach(item => {
+        const toggleAccordion = () => {
+            const isActive = item.classList.toggle('active');
+            item.setAttribute('aria-expanded', isActive);
+        };
+
+        item.addEventListener('click', toggleAccordion);
+        item.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleAccordion();
+            }
+        });
+    });
+
+
+    // --- eG vs GmbH Comparison Flipper ---
+    const comparisonToggles = document.querySelectorAll('.comparison-toggle');
+    comparisonToggles.forEach(toggle => {
+        toggle.addEventListener('click', (e) => {
+            const card = e.target.closest('.comparison-card');
+            if (card) {
+                card.classList.toggle('flipped');
+            }
+        });
+    });
+
+
+    // --- Umwandlung Timeline Accordion ---
+    const timelineHeaders = document.querySelectorAll('.timeline-header');
+    timelineHeaders.forEach(header => {
+        const toggleAccordion = () => {
+            const item = header.closest('.timeline-item');
+            const isActive = item.classList.toggle('active');
+            header.setAttribute('aria-expanded', isActive);
+        };
+        
+        header.addEventListener('click', toggleAccordion);
+        header.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleAccordion();
+            }
+        });
+    });
+
+});
+</script>
+
+</body>
+</html>
