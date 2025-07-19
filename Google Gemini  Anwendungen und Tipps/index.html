@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="de" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Gemini: Interaktiver Leitfaden</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0c0a18;
+            color: #e0e0e0;
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #89f7fe, #66a6ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-bg {
+            background-image:
+                radial-gradient(at 27% 37%, hsla(215, 98%, 61%, 0.1) 0px, transparent 50%),
+                radial-gradient(at 97% 21%, hsla(125, 98%, 72%, 0.1) 0px, transparent 50%),
+                radial-gradient(at 52% 99%, hsla(355, 98%, 76%, 0.1) 0px, transparent 50%),
+                radial-gradient(at 10% 29%, hsla(256, 96%, 68%, 0.1) 0px, transparent 50%),
+                radial-gradient(at 97% 96%, hsla(38, 60%, 74%, 0.1) 0px, transparent 50%),
+                radial-gradient(at 33% 50%, hsla(222, 67%, 73%, 0.1) 0px, transparent 50%),
+                radial-gradient(at 79% 53%, hsla(343, 68%, 79%, 0.1) 0px, transparent 50%);
+            background-color: #0c0a18;
+        }
+        .card {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border-color: rgba(137, 247, 254, 0.3);
+        }
+        h2 {
+            font-weight: 700;
+            font-size: 2.5rem;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+        h3 {
+            font-weight: 600;
+            font-size: 1.5rem;
+            line-height: 1.3;
+        }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .nav-link {
+            transition: all 0.2s ease;
+            position: relative;
+            opacity: 0.7;
+        }
+        .nav-link:hover, .nav-link.active {
+            opacity: 1;
+            color: #89f7fe;
+        }
+        .nav-link.active::before {
+            content: '';
+            position: absolute;
+            left: -1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(180deg, #89f7fe, #66a6ff);
+            border-radius: 3px;
+        }
+
+        /* Custom interactive styles */
+        .gemini-toggle {
+            background-color: #2a2546;
+        }
+        .gemini-toggle-handle {
+            background-color: #66a6ff;
+            transition: transform 0.3s ease-in-out;
+        }
+        input:checked + .gemini-toggle-handle {
+            transform: translateX(100%);
+            background-color: #89f7fe;
+        }
+        .prompt-part {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .prompt-part:hover {
+            background-color: rgba(137, 247, 254, 0.2);
+        }
+        .prompt-part.selected {
+            background-color: #66a6ff;
+            color: #0c0a18;
+        }
+        .chat-bubble {
+            max-width: 80%;
+            animation: pop-in 0.3s ease-out forwards;
+        }
+        @keyframes pop-in {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        #youtube-progress-bar { transition: width 0.5s linear; }
+        .source-hover:hover .source-tooltip, .source-hover:focus .source-tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .workspace-tab.active {
+            border-color: #66a6ff;
+            background-color: rgba(102, 166, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="hero-bg">
+
+    <div class="fixed top-0 left-0 h-screen w-64 hidden xl:flex flex-col items-end pt-32 pr-8 text-right">
+        <nav id="side-nav" class="flex flex-col space-y-4">
+            <a href="#section-1" class="nav-link">Modellwahl</a>
+            <a href="#section-2" class="nav-link">Visuelle Inhalte</a>
+            <a href="#section-3" class="nav-link">Reiseplanung</a>
+            <a href="#section-4" class="nav-link">YouTube-Videos</a>
+            <a href="#section-5" class="nav-link">Recherche</a>
+            <a href="#section-6" class="nav-link">Notebook LM</a>
+            <a href="#section-7" class="nav-link">Workspace</a>
+            <a href="#section-8" class="nav-link">Gems</a>
+            <a href="#section-9" class="nav-link">Kosten</a>
+        </nav>
+    </div>
+
+    <div class="max-w-4xl mx-auto px-4 py-16 sm:py-24">
+
+        <header class="text-center mb-24 fade-in">
+            <h1 class="text-5xl md:text-7xl font-black mb-4">
+                Google <span class="gradient-text">Gemini</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-300">Ein interaktiver Leitfaden für produktive Anwendungen</p>
+        </header>
+
+        <main class="space-y-24">
+
+            <!-- 1. Modellwahl -->
+            <section id="section-1" class="fade-in">
+                <h2 class="mb-8"><span class="text-gray-500">1.</span> Die richtige Wahl des Modells</h2>
+                <div class="card p-8 rounded-2xl">
+                    <p class="mb-6">Gemini bietet zwei Modelle für unterschiedliche Anforderungen. Die Wahl ist entscheidend für Qualität und Geschwindigkeit. Testen Sie den Unterschied live:</p>
+                    <div class="flex items-center justify-center space-x-4 mb-6">
+                        <span id="flash-label" class="text-lg font-semibold text-cyan-300">Flash</span>
+                        <label for="model-toggle" class="cursor-pointer">
+                            <input type="checkbox" id="model-toggle" class="hidden" role="switch">
+                            <div class="w-14 h-8 rounded-full gemini-toggle flex items-center p-1">
+                                <div class="w-6 h-6 rounded-full gemini-toggle-handle"></div>
+                            </div>
+                        </label>
+                        <span id="pro-label" class="text-lg font-semibold text-gray-500">Pro</span>
+                    </div>
+                    <div id="model-output" class="min-h-[120px] bg-gray-900/50 rounded-lg p-4 font-mono text-sm relative overflow-hidden border border-white/10">
+                        <div id="output-flash" class="transition-opacity duration-300">
+                            <h4 class="font-bold text-cyan-300 mb-2">⚡ Gemini Flash Output:</h4>
+                            <p>Schnell. Einfach. Gut für Grundlegendes.</p>
+                        </div>
+                        <div id="output-pro" class="absolute inset-0 p-4 transition-opacity duration-300 opacity-0">
+                            <h4 class="font-bold text-blue-400 mb-2">🧠 Gemini Pro Output:</h4>
+                            <p>Tiefgehende Analyse, die komplexe Zusammenhänge berücksichtigt und detailliertere, nuanciertere Einblicke für anspruchsvolle Aufgaben bietet.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Visuelle Inhalte -->
+            <section id="section-2" class="fade-in">
+                <h2 class="mb-8"><span class="text-gray-500">2.</span> Visuelle Inhalte erstellen</h2>
+                <div class="card p-8 rounded-2xl">
+                    <p class="mb-6">Gemini kann mit Imagen professionelle Bilder generieren. Der Schlüssel ist ein präziser Prompt. Bauen Sie Ihren eigenen Prompt und sehen Sie, wie das Ergebnis spezifischer wird:</p>
+                    <div class="space-y-4 mb-6">
+                        <div>
+                            <span class="font-semibold text-gray-400">Subjekt:</span>
+                            <div class="flex flex-wrap gap-2 mt-1">
+                                <button class="prompt-part p-2 rounded-md bg-white/5" data-type="subject" data-value="Ein Golden Retriever">Ein Golden Retriever</button>
+                                <button class="prompt-part p-2 rounded-md bg-white/5" data-type="subject" data-value="Eine Katze">Eine Katze</button>
+                                <button class="prompt-part p-2 rounded-md bg-white/5" data-type="subject" data-value="Ein Roboter">Ein Roboter</button>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="font-semibold text-gray-400">Handlung:</span>
+                            <div class="flex flex-wrap gap-2 mt-1">
+                                <button class="prompt-part p-2 rounded-md bg-white/5" data-type="action" data-value="der in einem gemütlichen Café sitzt">sitzt in einem Café</button>
+                                <button class="prompt-part p-2 rounded-md bg-white/5" data-type="action" data-value="der ein Buch liest">liest ein Buch</button>
+                                <button class="prompt-part p-2 rounded-md bg-white/5" data-type="action" data-value="der auf dem Mond spazieren geht">geht auf dem Mond spazieren</button>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="font-semibold text-gray-400">Stil:</span>
+                            <div class="flex flex-wrap gap-2 mt-1">
+                                <button class="prompt-part p-2 rounded-md bg-white/5" data-type="style" data-value="im Stil von Van Gogh">im Stil von Van Gogh</button>
+                                <button class="prompt-part p-2 rounded-md bg-white/5" data-type="style" data-value="als fotorealistisches Bild">fotorealistisch</button>
+                                <button class="prompt-part p-2 rounded-md bg-white/5" data-type="style" data-value="als minimalistische Vektorgrafik">als Vektorgrafik</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-900/50 rounded-lg p-4 border border-white/10">
+                        <p class="font-mono text-sm mb-4 text-cyan-300">Prompt: <span id="prompt-display">...</span></p>
+                        <div id="image-preview" class="w-full aspect-video bg-gray-800 rounded-md flex items-center justify-center transition-all duration-300">
+                             <span class="text-gray-500">Wählen Sie Teile, um ein Bild zu generieren</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Reiseplanung -->
+            <section id="section-3" class="fade-in">
+                <h2 class="mb-8"><span class="text-gray-500">3.</span> Umfassende Reiseplanung</h2>
+                <div class="card p-8 rounded-2xl">
+                     <p class="mb-6">Planen Sie eine Reise in einem einzigen Chat, indem Sie verschiedene Google-Dienste integrieren. Klicken Sie auf die Buttons, um eine Reisesuche zu simulieren.</p>
+                     <div id="travel-chat-window" class="h-96 bg-gray-900/50 rounded-lg p-4 border border-white/10 flex flex-col space-y-3 overflow-y-auto">
+                        <div class="chat-bubble self-start bg-blue-600/50 rounded-lg p-3">Hallo! Wie kann ich bei deiner Reise helfen?</div>
+                     </div>
+                     <div class="flex flex-wrap gap-2 mt-4">
+                        <button id="find-flights" class="flex-grow p-3 bg-white/5 rounded-md hover:bg-white/10 transition-colors">✈️ @Google flights suchen</button>
+                        <button id="find-hotels" class="flex-grow p-3 bg-white/5 rounded-md hover:bg-white/10 transition-colors">🏨 @Google Hotels finden</button>
+                        <button id="find-activities" class="flex-grow p-3 bg-white/5 rounded-md hover:bg-white/10 transition-colors">🗺️ @Google Maps Aktivitäten</button>
+                     </div>
+                </div>
+            </section>
+            
+            <!-- 4. YouTube-Zusammenfassung -->
+            <section id="section-4" class="fade-in">
+                <h2 class="mb-8"><span class="text-gray-500">4.</span> YouTube-Videos zusammenfassen</h2>
+                <div class="card p-8 rounded-2xl">
+                    <p class="mb-6">Fügen Sie einen YouTube-Link ein und lassen Sie Gemini den Inhalt analysieren. Klicken Sie auf "Zusammenfassen", um zu sehen, wie es funktioniert.</p>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                             <div class="aspect-video bg-black rounded-lg p-2 border border-white/10">
+                                 <div class="w-full h-full bg-gray-800 rounded-sm flex items-center justify-center text-red-500">
+                                     <svg class="w-16 h-16" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+                                 </div>
+                             </div>
+                             <div class="w-full bg-gray-700 h-1.5 rounded-full mt-2">
+                                <div id="youtube-progress-bar" class="bg-red-500 h-1.5 rounded-full" style="width: 10%;"></div>
+                             </div>
+                             <button id="summarize-video" class="w-full mt-4 p-3 bg-white/5 rounded-md hover:bg-white/10 transition-colors">📝 @YouTube Zusammenfassen</button>
+                        </div>
+                        <div id="summary-output" class="bg-gray-900/50 rounded-lg p-4 border border-white/10 h-full min-h-[200px]">
+                           <span class="text-gray-500">Die Zusammenfassung erscheint hier...</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. Recherche mit Quellen -->
+            <section id="section-5" class="fade-in">
+                <h2 class="mb-8"><span class="text-gray-500">5.</span> Recherche mit Quellenangaben</h2>
+                 <div class="card p-8 rounded-2xl">
+                    <p class="mb-6">Gemini kann Recherchen mit verifizierbaren Quellen durchführen, um die Vertrauenswürdigkeit zu erhöhen. Bewegen Sie den Mauszeiger über die markierten Aussagen, um die Quellen anzuzeigen.</p>
+                    <div class="bg-gray-900/50 rounded-lg p-6 border border-white/10 space-y-4">
+                        <h3 class="font-bold">Top-Produktivitätstrends 2025</h3>
+                        <p>Ein wesentlicher Trend ist die <span class="source-hover text-cyan-300 cursor-help relative" tabindex="0">KI-gestützte Automatisierung von Routineaufgaben<span class="source-tooltip absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-xs bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 visibility-hidden transition-all duration-300">Quelle: tech-reports.com</span></span>, wodurch Fachkräfte mehr Zeit für strategische Tätigkeiten haben.</p>
+                        <p>Des Weiteren gewinnt <span class="source-hover text-cyan-300 cursor-help relative" tabindex="0">"Deep Work" in flexiblen Arbeitsumgebungen<span class="source-tooltip absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-xs bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 visibility-hidden transition-all duration-300">Quelle: futureofwork.org</span></span> zunehmend an Bedeutung. Unternehmen fördern gezielt Phasen ungestörter Konzentration.</p>
+                        <p>Auch die <span class="source-hover text-cyan-300 cursor-help relative" tabindex="0">Analyse von Mitarbeiterdaten zur Optimierung von Workflows<span class="source-tooltip absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-xs bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 visibility-hidden transition-all duration-300">Quelle: business-insights.dev</span></span> ist ein aufkommender, wenn auch kontrovers diskutierter, Trend.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. Notebook LM -->
+            <section id="section-6" class="fade-in">
+                <h2 class="mb-8"><span class="text-gray-500">6.</span> NotebookLM: Ihr Wissenszentrum</h2>
+                <div class="card p-8 rounded-2xl">
+                     <p class="mb-6">NotebookLM ist Ihr persönlicher Rechercheassistent. Ziehen Sie fiktive Dokumente in den Quellbereich, um Fragen zu stellen oder eine Audio-Zusammenfassung zu erstellen.</p>
+                     <div class="grid md:grid-cols-2 gap-8">
+                        <div class="space-y-4">
+                            <h3 class="font-semibold">Dokumente</h3>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div id="doc1" draggable="true" class="h-24 bg-blue-500/20 border border-blue-400 rounded-lg flex flex-col items-center justify-center cursor-grab active:cursor-grabbing">
+                                    <span class="text-2xl">📄</span><span class="text-sm">Studie.pdf</span>
+                                </div>
+                                <div id="doc2" draggable="true" class="h-24 bg-green-500/20 border border-green-400 rounded-lg flex flex-col items-center justify-center cursor-grab active:cursor-grabbing">
+                                    <span class="text-2xl">📈</span><span class="text-sm">Report.docx</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="notebooklm-dropzone" class="min-h-[150px] bg-gray-900/50 rounded-lg p-4 border-2 border-dashed border-white/20 flex flex-col items-center justify-center transition-colors">
+                            <p class="text-gray-400 text-center">Quellen hierher ziehen</p>
+                        </div>
+                     </div>
+                     <div id="notebooklm-controls" class="mt-4 text-center hidden">
+                        <button id="generate-audio" class="p-3 bg-white/5 rounded-md hover:bg-white/10 transition-colors">🎧 Audio-Zusammenfassung erstellen</button>
+                        <div id="audio-player" class="mt-4 hidden">
+                            <p class="text-sm text-gray-400">KI-Podcast wird abgespielt...</p>
+                             <div class="w-full bg-gray-700 h-2 rounded-full mt-2 overflow-hidden">
+                                <div id="audio-progress" class="bg-gradient-to-r from-cyan-400 to-blue-500 h-2 rounded-full animate-pulse w-full"></div>
+                            </div>
+                        </div>
+                     </div>
+                </div>
+            </section>
+
+            <!-- 7. Workspace Integration -->
+            <section id="section-7" class="fade-in">
+                <h2 class="mb-8"><span class="text-gray-500">7.</span> Integration in Google Workspace</h2>
+                <div class="card p-8 rounded-2xl">
+                    <p class="mb-6">Gemini ist tief in Google Workspace integriert. Wechseln Sie zwischen den Tabs, um zu sehen, wie Gemini in Docs, Sheets und Slides als KI-Mitarbeiter fungiert.</p>
+                    <div class="flex border-b border-white/10 mb-4" role="tablist">
+                        <button id="tab-docs" class="workspace-tab p-4 text-lg font-semibold border-b-2 border-transparent active" data-target="docs" role="tab" aria-selected="true" aria-controls="workspace-docs">Docs</button>
+                        <button id="tab-sheets" class="workspace-tab p-4 text-lg font-semibold border-b-2 border-transparent" data-target="sheets" role="tab" aria-selected="false" aria-controls="workspace-sheets">Sheets</button>
+                        <button id="tab-slides" class="workspace-tab p-4 text-lg font-semibold border-b-2 border-transparent" data-target="slides" role="tab" aria-selected="false" aria-controls="workspace-slides">Slides</button>
+                    </div>
+                    <div id="workspace-content" class="min-h-[250px] bg-gray-900/50 rounded-lg p-4 border border-white/10">
+                        <!-- Docs Content -->
+                        <div class="workspace-pane" id="workspace-docs" role="tabpanel" aria-labelledby="tab-docs">
+                             <p class="text-gray-300" id="docs-text">Die Implementierung neuer Technologien ist für das Unternehmenswachstum von entscheidender Bedeutung.</p>
+                             <button id="gemini-docs-btn" class="mt-4 p-2 bg-blue-600/50 text-sm rounded-md hover:bg-blue-600/80">✨ Formuliere das unterhaltsamer</button>
+                        </div>
+                        <!-- Sheets Content -->
+                        <div class="workspace-pane hidden" id="workspace-sheets" role="tabpanel" aria-labelledby="tab-sheets">
+                             <img src="https://via.placeholder.com/600x300/10B981/0c0a18?text=Beispieltabelle" alt="Beispieltabelle mit Verkaufsdaten" class="rounded-md border border-white/10"/>
+                             <button id="gemini-sheets-btn" class="mt-4 p-2 bg-blue-600/50 text-sm rounded-md hover:bg-blue-600/80">✨ Welchen Trend siehst du?</button>
+                             <p id="sheets-insight" class="mt-2 text-cyan-300 opacity-0 transition-opacity">Insight: Der Umsatz in Q4 ist signifikant gestiegen, hauptsächlich durch Produkt B.</p>
+                        </div>
+                        <!-- Slides Content -->
+                        <div class="workspace-pane hidden" id="workspace-slides" role="tabpanel" aria-labelledby="tab-slides">
+                            <div id="slides-output" class="aspect-video bg-white rounded-md p-8 text-black flex flex-col justify-center items-center text-center">
+                                <span class="text-gray-500">Klicke, um eine Folie zu generieren</span>
+                            </div>
+                            <button id="gemini-slides-btn" class="mt-4 p-2 bg-blue-600/50 text-sm rounded-md hover:bg-blue-600/80">✨ Erstelle eine Folie über die Vorteile von Bienen</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 8. Gems -->
+            <section id="section-8" class="fade-in">
+                <h2 class="mb-8"><span class="text-gray-500">8.</span> Gems: Ihre KI-Assistenten</h2>
+                <div class="card p-8 rounded-2xl">
+                    <p class="mb-6">"Gems" sind benutzerdefinierte Versionen von Gemini. Erstellen Sie hier einen einfachen "Schreibassistenten" und testen Sie ihn.</p>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="font-semibold mb-2">Erstelle deinen Gem</h3>
+                            <div class="space-y-3">
+                                <input id="gem-name" type="text" placeholder="Name (z.B. Schreibassistent)" class="w-full p-2 bg-gray-900/50 rounded-md border border-white/10">
+                                <textarea id="gem-instructions" rows="4" placeholder="Anweisungen (z.B. 'Antworte immer kurz, prägnant und in einem professionellen Ton.')" class="w-full p-2 bg-gray-900/50 rounded-md border border-white/10"></textarea>
+                                <button id="create-gem-btn" class="w-full p-3 bg-white/5 rounded-md hover:bg-white/10 transition-colors">💎 Gem erstellen</button>
+                            </div>
+                        </div>
+                        <div id="gem-chat-area" class="bg-gray-900/50 rounded-lg border border-white/10 p-4 flex flex-col opacity-50 transition-opacity">
+                            <h3 id="gem-chat-title" class="font-bold text-center mb-2">Dein Gem</h3>
+                            <div id="gem-chat-history" class="flex-grow h-32 overflow-y-auto mb-2 text-sm space-y-2">
+                                <p class="text-gray-500">Chat ist inaktiv. Erstelle zuerst einen Gem.</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <input id="gem-chat-input" type="text" placeholder="Stelle eine Frage..." class="flex-grow p-2 bg-gray-800 rounded-md border border-white/10" disabled>
+                                <button id="gem-chat-send" class="p-2 bg-blue-600/50 rounded-md" disabled>Senden</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 9. Kosten -->
+            <section id="section-9" class="fade-in">
+                 <h2 class="mb-8"><span class="text-gray-500">9.</span> Kostenübersicht</h2>
+                 <div class="card p-8 rounded-2xl">
+                    <p class="mb-6">Ein Großteil der Gemini-Funktionen ist kostenlos verfügbar. Kostenpflichtig sind vor allem erweiterte Workspace-Integrationen und höhere Nutzungslimits.</p>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="bg-green-500/10 border border-green-500/30 p-6 rounded-lg">
+                            <h3 class="text-2xl font-bold text-green-300 mb-4">Kostenlos</h3>
+                            <ul class="space-y-2 list-none p-0">
+                                <li class="flex items-center gap-3">✅ <span class="text-green-200">Bilderzeugung</span></li>
+                                <li class="flex items-center gap-3">✅ <span class="text-green-200">Recherche mit Quellen</span></li>
+                                <li class="flex items-center gap-3">✅ <span class="text-green-200">YouTube-Zusammenfassungen</span></li>
+                                <li class="flex items-center gap-3">✅ <span class="text-green-200">Grundlegende "Gems"</span></li>
+                                <li class="flex items-center gap-3">✅ <span class="text-green-200">Reiseplanung</span></li>
+                                <li class="flex items-center gap-3">✅ <span class="text-green-200">NotebookLM</span></li>
+                            </ul>
+                        </div>
+                         <div class="bg-orange-500/10 border border-orange-500/30 p-6 rounded-lg">
+                            <h3 class="text-2xl font-bold text-orange-300 mb-4">Kostenpflichtig (Advanced)</h3>
+                            <ul class="space-y-2 list-none p-0">
+                                <li class="flex items-center gap-3">⭐ <span class="text-orange-200">Erweiterte Workspace-Integrationen</span></li>
+                                <li class="flex items-center gap-3">⭐ <span class="text-orange-200">Höhere Nutzungslimits</span></li>
+                                <li class="flex items-center gap-3">⭐ <span class="text-orange-200">Zugang zu neuesten Modellen</span></li>
+                                <li class="flex items-center gap-3">🎁 <span class="text-orange-200">Kostenlose Testversion verfügbar</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+        <footer class="text-center text-xs text-gray-500 mt-24 py-8 border-t border-white/10">
+            <p>„Hinweis: Dieser HTML-Inhalt wurde automatisiert durch KI erstellt. Inhalte können fehlerhaft sein und müssen je nach Kontext validiert werden.“</p>
+        </footer>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    // --- General: Animate on scroll ---
+    const fadeInObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                // observer.unobserve(entry.target); // Optional: unobserve after first time
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in').forEach(el => fadeInObserver.observe(el));
+
+    // --- General: Side Navigation ---
+    const navLinks = document.querySelectorAll('#side-nav a');
+    const sections = document.querySelectorAll('main section');
+
+    const navObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                navLinks.forEach(link => {
+                    link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                });
+            }
+        });
+    }, { rootMargin: '-50% 0px -50% 0px' });
+
+    sections.forEach(section => navObserver.observe(section));
+
+    // --- 1. Modellwahl ---
+    const modelToggle = document.getElementById('model-toggle');
+    const outputFlash = document.getElementById('output-flash');
+    const outputPro = document.getElementById('output-pro');
+    const flashLabel = document.getElementById('flash-label');
+    const proLabel = document.getElementById('pro-label');
+
+    modelToggle.addEventListener('change', () => {
+        if (modelToggle.checked) { // Pro selected
+            outputFlash.style.opacity = '0';
+            outputPro.style.opacity = '1';
+            flashLabel.classList.remove('text-cyan-300');
+            flashLabel.classList.add('text-gray-500');
+            proLabel.classList.remove('text-gray-500');
+            proLabel.classList.add('text-blue-400');
+        } else { // Flash selected
+            outputFlash.style.opacity = '1';
+            outputPro.style.opacity = '0';
+            flashLabel.classList.add('text-cyan-300');
+            flashLabel.classList.remove('text-gray-500');
+            proLabel.classList.add('text-gray-500');
+            proLabel.classList.remove('text-blue-400');
+        }
+    });
+
+    // --- 2. Visuelle Inhalte ---
+    const promptParts = document.querySelectorAll('.prompt-part');
+    const promptDisplay = document.getElementById('prompt-display');
+    const imagePreview = document.getElementById('image-preview');
+    let currentPrompt = { subject: '', action: '', style: '' };
+    
+    const imageMap = {
+        'Ein Golden Retriever': 'https://via.placeholder.com/800x450/FBBF24/0c0a18?text=Golden+Retriever',
+        'Eine Katze': 'https://via.placeholder.com/800x450/A3A3A3/0c0a18?text=Katze',
+        'Ein Roboter': 'https://via.placeholder.com/800x450/60A5FA/0c0a18?text=Roboter'
+    };
+
+    promptParts.forEach(part => {
+        part.addEventListener('click', () => {
+            const type = part.dataset.type;
+            const value = part.dataset.value;
+
+            // Deselect others of the same type
+            document.querySelectorAll(`.prompt-part[data-type="${type}"]`).forEach(p => p.classList.remove('selected'));
+            part.classList.add('selected');
+
+            currentPrompt[type] = value;
+            updatePromptDisplay();
+        });
+    });
+
+    function updatePromptDisplay() {
+        const { subject, action, style } = currentPrompt;
+        const fullPrompt = `${subject || '...'} ${action || '...'} ${style || '...'}.`;
+        promptDisplay.textContent = fullPrompt;
+
+        if (subject && imageMap[subject]) {
+            imagePreview.innerHTML = `<img src="${imageMap[subject]}" alt="${fullPrompt}" class="w-full h-full object-cover rounded-md" />`;
+            imagePreview.style.filter = style ? 'none' : 'grayscale(100%)';
+            imagePreview.style.opacity = action ? '1' : '0.5';
+        } else {
+             imagePreview.innerHTML = `<span class="text-gray-500">Wählen Sie Teile, um ein Bild zu generieren</span>`;
+        }
+    }
+    
+    // --- 3. Reiseplanung ---
+    const travelChatWindow = document.getElementById('travel-chat-window');
+    const findFlightsBtn = document.getElementById('find-flights');
+    const findHotelsBtn = document.getElementById('find-hotels');
+    const findActivitiesBtn = document.getElementById('find-activities');
+
+    const addBotMessage = (html) => {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'chat-bubble self-start bg-blue-600/50 rounded-lg p-3';
+        msgDiv.innerHTML = html;
+        travelChatWindow.appendChild(msgDiv);
+        travelChatWindow.scrollTop = travelChatWindow.scrollHeight;
+    };
+    
+    const addUserMessage = (text) => {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'chat-bubble self-end bg-gray-700 rounded-lg p-3';
+        msgDiv.textContent = text;
+        travelChatWindow.appendChild(msgDiv);
+        travelChatWindow.scrollTop = travelChatWindow.scrollHeight;
+    };
+
+    findFlightsBtn.addEventListener('click', () => {
+        addUserMessage('Finde Flüge von LA nach New York');
+        setTimeout(() => addBotMessage(`Sicher! Hier sind Flüge für nächstes Wochenende:<br>
+            - Airline A: 320€<br>
+            - Airline B: 350€<br>
+            - Airline C: 380€`), 1000);
+    });
+    findHotelsBtn.addEventListener('click', () => {
+        addUserMessage('Finde ein Hotel im West Village');
+        setTimeout(() => addBotMessage(`Ok, ich habe diese Hotels gefunden:<br>
+            - The Urban Nest: 250€/Nacht<br>
+            - City View Inn: 300€/Nacht`), 1000);
+    });
+    findActivitiesBtn.addEventListener('click', () => {
+        addUserMessage('Was sind die besten Cafés in der Nähe?');
+        setTimeout(() => addBotMessage(`Hier ist eine Karte mit den besten Cafés in der Umgebung.<br><img src="https://via.placeholder.com/400x150/3B82F6/FFFFFF?text=Karte+mit+Cafes" alt="Karte mit Cafés" class="rounded-md mt-2 h-24 object-cover w-full" />`), 1000);
+    });
+
+    // --- 4. YouTube-Zusammenfassung ---
+    const summarizeBtn = document.getElementById('summarize-video');
+    const summaryOutput = document.getElementById('summary-output');
+    const progressBar = document.getElementById('youtube-progress-bar');
+    
+    summarizeBtn.addEventListener('click', () => {
+        summaryOutput.innerHTML = `<span class="text-gray-400">Analysiere Video...</span>`;
+        setTimeout(() => {
+            summaryOutput.innerHTML = `
+                <h4 class="font-bold mb-2">Kernpunkte:</h4>
+                <ul class="space-y-2 text-sm list-none p-0">
+                    <li><button type="button" class="summary-ts text-cyan-300 hover:underline text-left w-full" data-time="25">0:45 - Wichtigkeit der Problemdefinition</button></li>
+                    <li><button type="button" class="summary-ts text-cyan-300 hover:underline text-left w-full" data-time="50">1:30 - Methoden zur Lösungsfindung</button></li>
+                    <li><button type="button" class="summary-ts text-cyan-300 hover:underline text-left w-full" data-time="85">2:55 - Implementierung und Testen</button></li>
+                </ul>
+            `;
+            document.querySelectorAll('.summary-ts').forEach(ts => {
+                ts.addEventListener('click', () => {
+                    progressBar.style.width = `${ts.dataset.time}%`;
+                });
+            });
+        }, 1500);
+    });
+    
+    // --- 6. Notebook LM ---
+    const dropzone = document.getElementById('notebooklm-dropzone');
+    const controls = document.getElementById('notebooklm-controls');
+    const generateAudioBtn = document.getElementById('generate-audio');
+    const audioPlayer = document.getElementById('audio-player');
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropzone.addEventListener(eventName, e => {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+    });
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropzone.addEventListener(eventName, () => dropzone.classList.add('border-cyan-400', 'bg-cyan-500/10'));
+    });
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropzone.addEventListener(eventName, () => dropzone.classList.remove('border-cyan-400', 'bg-cyan-500/10'));
+    });
+
+    let droppedItems = 0;
+    dropzone.addEventListener('drop', e => {
+        droppedItems++;
+        dropzone.innerHTML = `<p class="text-green-400">${droppedItems} Quelle(n) hinzugefügt!</p>`;
+        controls.classList.remove('hidden');
+    });
+
+    ['doc1', 'doc2'].forEach(id => {
+        document.getElementById(id).addEventListener('dragstart', e => {
+            e.dataTransfer.setData('text/plain', id);
+        });
+    });
+    
+    generateAudioBtn.addEventListener('click', () => {
+        audioPlayer.classList.remove('hidden');
+    });
+
+    // --- 7. Workspace Integration ---
+    const workspaceTabs = document.querySelectorAll('.workspace-tab');
+    const workspacePanes = document.querySelectorAll('.workspace-pane');
+    
+    workspaceTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            workspaceTabs.forEach(t => {
+                t.classList.remove('active');
+                t.setAttribute('aria-selected', 'false');
+            });
+            tab.classList.add('active');
+            tab.setAttribute('aria-selected', 'true');
+            
+            workspacePanes.forEach(pane => {
+                pane.classList.toggle('hidden', pane.id !== `workspace-${tab.dataset.target}`);
+            });
+        });
+    });
+
+    document.getElementById('gemini-docs-btn').addEventListener('click', () => {
+        document.getElementById('docs-text').textContent = "Aufgepasst, Technik-Fans! Der richtige Tech-Stack ist wie der perfekte Superhelden-Sidekick für Ihr Unternehmen – absolut unersetzlich für den großen Erfolg!";
+    });
+    document.getElementById('gemini-sheets-btn').addEventListener('click', () => {
+        document.getElementById('sheets-insight').style.opacity = '1';
+    });
+    document.getElementById('gemini-slides-btn').addEventListener('click', () => {
+        document.getElementById('slides-output').innerHTML = `
+            <h3 class="text-2xl font-bold text-gray-800">Die Vorteile von Bienen</h3>
+            <p class="text-gray-600 mt-2">Bestäubung, Honigproduktion & Biodiversität</p>`;
+    });
+
+    // --- 8. Gems ---
+    const createGemBtn = document.getElementById('create-gem-btn');
+    const gemChatArea = document.getElementById('gem-chat-area');
+    const gemChatTitle = document.getElementById('gem-chat-title');
+    const gemChatHistory = document.getElementById('gem-chat-history');
+    const gemChatInput = document.getElementById('gem-chat-input');
+    const gemChatSend = document.getElementById('gem-chat-send');
+    let gemInstructions = '';
+
+    createGemBtn.addEventListener('click', () => {
+        const name = document.getElementById('gem-name').value || 'Mein Gem';
+        gemInstructions = document.getElementById('gem-instructions').value;
+        
+        gemChatArea.style.opacity = '1';
+        gemChatTitle.textContent = name;
+        gemChatInput.disabled = false;
+        gemChatSend.disabled = false;
+        gemChatHistory.innerHTML = `<p class="text-green-400">Dein Gem "${name}" ist jetzt aktiv!</p>`;
+    });
+    
+    gemChatSend.addEventListener('click', () => {
+        const input = gemChatInput.value.trim();
+        if (!input) return;
+
+        const userMsgEl = document.createElement('p');
+        userMsgEl.className = 'text-right text-gray-300';
+        userMsgEl.textContent = `Du: ${input}`;
+        gemChatHistory.appendChild(userMsgEl);
+
+        gemChatInput.value = '';
+
+        let response = 'Das ist eine interessante Frage.';
+        if (gemInstructions.includes('kurz')) {
+            response = 'Ja.';
+        } else if (gemInstructions.includes('professionell')) {
+            response = 'In Anbetracht Ihrer Anfrage lässt sich folgendes festhalten...';
+        }
+        
+        setTimeout(() => {
+            const botMsgEl = document.createElement('p');
+            botMsgEl.className = 'text-left text-cyan-300';
+            botMsgEl.textContent = `Gem: ${response}`;
+            gemChatHistory.appendChild(botMsgEl);
+            gemChatHistory.scrollTop = gemChatHistory.scrollHeight;
+        }, 800);
+    });
+});
+</script>
+</body>
+</html>
