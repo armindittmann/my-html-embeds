@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kunstwerk und Künstler trennen: Eine interaktive Auseinandersetzung</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Source Sans 3', sans-serif;
+            background-color: #0a0a0a;
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+        }
+        .hero {
+            height: 100vh;
+            background-image: linear-gradient(to top, rgba(10, 10, 10, 1), rgba(10, 10, 10, 0.2)), url('https://placehold.co/1920x1080/0a0a0a/e0e0e0?text=Dissonanz');
+            background-size: cover;
+            background-position: center;
+        }
+        .content-section {
+            padding: 8rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .text-shadow {
+            text-shadow: 0 2px 15px rgba(0,0,0,0.7);
+        }
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Rowling Slider */
+        #rowling-slider-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        #rowling-werk, #rowling-kuenstler {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+        #rowling-werk {
+            background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://placehold.co/800x600/3a5a78/e0e0e0?text=Das+Werk');
+            clip-path: inset(0 50% 0 0);
+        }
+        #rowling-kuenstler {
+            background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://placehold.co/800x600/7a2a2a/e0e0e0?text=Die+Künstlerin');
+            clip-path: inset(0 0 0 50%);
+        }
+        #rowling-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 400px;
+            background: transparent;
+            outline: none;
+            position: absolute;
+            cursor: col-resize;
+        }
+        #rowling-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 6px;
+            height: 400px;
+            background: #fff;
+            cursor: col-resize;
+            box-shadow: 0 0 10px rgba(255,255,255,0.8);
+        }
+        #rowling-slider::-moz-range-thumb {
+            width: 6px;
+            height: 400px;
+            background: #fff;
+            cursor: col-resize;
+            border: none;
+            box-shadow: 0 0 10px rgba(255,255,255,0.8);
+        }
+
+        /* Whedon Flipper Card */
+        .flipper-container { perspective: 1000px; }
+        .flipper {
+            position: relative;
+            width: 100%;
+            height: 450px;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+        .flipper-container:hover .flipper, .flipper-container:focus-within .flipper { transform: rotateY(180deg); }
+        .flipper-front, .flipper-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            padding: 2rem;
+        }
+        .flipper-front {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://placehold.co/600x450/1a4a6a/e0e0e0?text=Öffentliches+Bild') center/cover;
+        }
+        .flipper-back {
+            background-color: #4a0404;
+            color: #f0f0f0;
+            transform: rotateY(180deg);
+        }
+
+        /* Messenger Animation */
+        #messenger-viz {
+            position: relative;
+            height: 300px;
+            width: 100%;
+            max-width: 600px;
+            margin: 2rem auto;
+        }
+        .viz-element { position: absolute; }
+        #truth-source {
+            width: 50px;
+            height: 50px;
+            background: radial-gradient(circle, #fff, #ffd700);
+            border-radius: 50%;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            box-shadow: 0 0 30px #ffd700;
+        }
+        #artist-prism {
+            width: 0;
+            height: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 86.6px solid rgba(255,255,255,0.5);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(90deg);
+            filter: blur(1px);
+        }
+        #art-beam, .spectrum-ray {
+            height: 4px;
+            background: white;
+            top: 50%;
+            transform-origin: left center;
+        }
+        
+        .scroll-down {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            width: 24px;
+            height: 24px;
+            border-left: 2px solid white;
+            border-bottom: 2px solid white;
+            transform: translateX(-50%) rotate(-45deg);
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0) rotate(-45deg);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-15px) rotate(-45deg);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-10px) rotate(-45deg);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          *, ::before, ::after {
+            animation-delay: -1ms !important;
+            animation-duration: 1ms !important;
+            animation-iteration-count: 1 !important;
+            background-attachment: initial !important;
+            scroll-behavior: auto !important;
+            transition-duration: 0s !important;
+            transition-delay: 0s !important;
+          }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- HERO SECTION -->
+    <header class="hero flex items-center justify-center text-center text-white">
+        <div class="p-4">
+            <h1 class="text-5xl md:text-7xl font-bold text-shadow leading-tight animate-fade-in-up">Die Dissonanz zwischen Kunstwerk und Künstler</h1>
+            <p class="mt-4 text-xl md:text-2xl max-w-3xl mx-auto text-shadow font-light animate-fade-in-up-delay">Eine interaktive Auseinandersetzung mit einem komplexen Dilemma</p>
+        </div>
+        <div class="scroll-down"></div>
+    </header>
+
+    <!-- INTRO TEXT -->
+    <section class="content-section">
+        <div class="max-w-3xl mx-auto text-lg leading-relaxed">
+            <p class="section-intro">Der Genuss von Kunst, sei es Literatur, Film oder Musik, kann tiefgreifend sein. Doch was geschieht, wenn die Schöpfer dieser Werke durch ihre persönlichen Ansichten oder Handlungen enttäuschen? Dies führt zu einem inneren Konflikt: Wie kann man die Bewunderung für das Werk mit der Ablehnung gegenüber dem Künstler in Einklang bringen?</p>
+        </div>
+    </section>
+
+    <!-- CASE STUDY 1: J.K. ROWLING -->
+    <section class="content-section bg-black bg-opacity-20">
+        <h2 class="text-4xl text-center font-bold mb-4 text-amber-300">Fallstudie 1: J.K. Rowling</h2>
+        <p class="text-center text-xl mb-12 max-w-3xl mx-auto">Position versus Haltung</p>
+        
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div class="text-base leading-loose">
+                <h4 class="text-2xl font-bold mb-2">Die Kontroverse</h4>
+                <p class="mb-4">J.K. Rowling, die Schöpferin der Harry-Potter-Welt, hat öffentlich die Position vertreten, dass Trans-Männer und -Frauen nicht auf die gleiche Weise klassifiziert werden sollten wie Cis-Männer und -Frauen. Diese Haltung hat bei vielen Menschen für große Bestürzung gesorgt.</p>
+                <h4 class="text-2xl font-bold mb-2">Analyse der Problematik</h4>
+                <p>Der eigentliche Konflikt entsteht aus dem Widerspruch zwischen dem öffentlichen Auftreten der Autorin und den Werten, die in ihren Werken vermittelt werden – Mitgefühl, Akzeptanz von Außenseitern und die Kraft der Freundlichkeit.</p>
+            </div>
+            
+            <div class="relative">
+                <div id="rowling-slider-container">
+                    <div id="rowling-werk" class="flex items-center justify-center">
+                        <div class="text-white text-center p-4 bg-black bg-opacity-50 rounded">
+                            <h3 class="text-2xl font-bold">Das Werk</h3>
+                            <p>"Mitgefühl, Loyalität, Mut"</p>
+                        </div>
+                    </div>
+                    <div id="rowling-kuenstler" class="flex items-center justify-center">
+                         <div class="text-white text-center p-4 bg-black bg-opacity-50 rounded">
+                            <h3 class="text-2xl font-bold">Die Künstlerin</h3>
+                            <p>"Kontroverse, Haltung, Widerspruch"</p>
+                        </div>
+                    </div>
+                    <input type="range" id="rowling-slider" min="0" max="100" value="50" aria-label="Perspektive zwischen Werk und Künstlerin verschieben">
+                </div>
+                <p class="text-center mt-4 text-sm text-gray-400">Ziehen Sie den Regler, um die Perspektiven zu verschieben.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CASE STUDY 2: JOSS WHEDON -->
+    <section class="content-section">
+        <h2 class="text-4xl text-center font-bold mb-4 text-cyan-300">Fallstudie 2: Joss Whedon</h2>
+        <p class="text-center text-xl mb-12 max-w-3xl mx-auto">Der Bruch zwischen Ideal und Realität</p>
+
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div class="flipper-container" tabindex="0" role="region" aria-label="Interaktive Karte: Öffentliches Bild und private Vorwürfe von Joss Whedon.">
+                <div class="flipper">
+                    <div class="flipper-front">
+                        <div>
+                            <h3 class="text-3xl font-bold text-shadow">Das öffentliche Bild</h3>
+                            <p class="mt-2 text-lg text-shadow">Feministische Ikone, Schöpfer starker Frauenfiguren.</p>
+                            <p class="mt-8 text-sm text-shadow opacity-70">(Karte fokussieren, um die Rückseite anzuzeigen)</p>
+                        </div>
+                    </div>
+                    <div class="flipper-back">
+                        <div>
+                            <h3 class="text-3xl font-bold">Die Vorwürfe</h3>
+                            <ul class="mt-4 text-left list-disc list-inside space-y-2">
+                                <li>Verbaler & emotionaler Missbrauch</li>
+                                <li>Toxisches Arbeitsumfeld</li>
+                                <li>Machtmissbrauch & Untreue</li>
+                                <li>Fehlende Reue</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-base leading-loose">
+                 <h4 class="text-2xl font-bold mb-2">Psychologische Interpretation</h4>
+                <p>Joss Whedon erscheint als eine komplexe Persönlichkeit. Eine mögliche Interpretation ist, dass er in seinen Werken Ideale projizierte, die er als gut und wahr erkannte, aber in seinem eigenen Leben aufgrund persönlicher Schwächen nicht umsetzen konnte. Sein Verhalten wird als unentschuldbar angesehen, doch gleichzeitig enthalten seine Drehbücher eine bemerkenswerte Weisheit und Schönheit. Sein Versäumnis, Verantwortung zu übernehmen, verhinderte eine mögliche Rehabilitation.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- IDEALIZED PROJECTION -->
+    <section class="content-section bg-black bg-opacity-20 relative overflow-hidden" id="spotlight-section">
+        <div class="absolute inset-0" id="spotlight-bg"></div>
+        <div class="relative z-10">
+            <h2 class="text-4xl text-center font-bold mb-4 text-yellow-500">Das Konzept der idealisierten Projektion</h2>
+            <p class="text-center text-xl mb-12 max-w-3xl mx-auto">Wenn die Schöpfung den Schöpfer übertrifft</p>
+            <div class="max-w-3xl mx-auto text-lg text-center leading-relaxed space-y-4">
+                <p>Künstler projizieren oft ihre Ideale und das Beste in sich auf ihre Charaktere und Werke. Sie sind jedoch auch nur Menschen und kämpfen möglicherweise damit, diesen hohen Standards im wirklichen Leben gerecht zu werden. Unsere Schöpfungen können das Beste in uns zum Ausdruck bringen, selbst wenn wir als Individuen daran scheitern.</p>
+                <blockquote class="border-l-4 border-yellow-500 pl-4 italic text-left my-8 glassmorphism p-6 rounded-r-lg">
+                    "Ich habe jahrelang versucht zu beweisen, dass ich mehr bin als nur Rocky, nur um am Ende zu erkennen, dass Rocky mehr ist als ich. Er ist das Reinste, was ich je geschaffen habe – sanft, bescheiden, liebevoll und gütig. Rocky inspiriert mich, ein besserer Mensch zu sein."
+                    <cite class="block not-italic mt-2 text-right">- Sylvester Stallone</cite>
+                </blockquote>
+                 <p class="text-sm text-gray-400 pt-8">(Ein dekorativer Effekt ist bei Mausbewegung sichtbar)</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEELING OF BETRAYAL -->
+    <section class="content-section">
+         <h2 class="text-4xl text-center font-bold mb-12">Das Gefühl des Verrats</h2>
+         <div class="max-w-4xl mx-auto text-center">
+            <p class="text-xl mb-8">Warum empfinden wir die Verfehlungen von Künstlern als so persönlich? Anders als bei einem Koch oder Architekten bewegen, erheben und erleuchten uns ihre Werke. Wenn ihre Kunst uns zu Güte inspiriert, fühlt sich ihr persönliches Scheitern wie ein Verrat an.</p>
+            <div class="relative h-64" id="betrayal-cloud">
+                 <!-- Words will be injected here by JS -->
+            </div>
+         </div>
+    </section>
+
+    <!-- SOLUTION -->
+    <div class="bg-gray-900 py-20">
+        <section class="content-section pt-0 pb-0">
+            <h2 class="text-4xl text-center font-bold mb-4 text-emerald-300">Ein Lösungsansatz</h2>
+            <p class="text-center text-xl mb-12 max-w-3xl mx-auto">Die Trennung von Kunst und "Wahrheit"</p>
+
+            <div class="space-y-16">
+                <!-- 1. Boycott -->
+                <div class="glassmorphism p-8 rounded-lg">
+                    <h3 class="text-3xl font-bold mb-4">1. Die Frage des Boykotts</h3>
+                    <p class="mb-6">Ein Boykott ist eine legitime Reaktion. Jedoch trifft er oft ein ganzes Ökosystem von unbeteiligten Menschen, während der finanzielle Schaden für den oft bereits wohlhabenden Künstler gering ist.</p>
+                </div>
+                
+                <!-- 2. Universal Virtues -->
+                <div class="glassmorphism p-8 rounded-lg">
+                    <h3 class="text-3xl font-bold mb-4">2. Universelle Tugenden als unabhängige Wahrheit</h3>
+                    <p class="mb-6">Tugenden wie Integrität, Freundlichkeit oder Mitgefühl sind universelle Wahrheiten. Sie existieren unabhängig von dem Künstler, der sie darstellt. Diese Prinzipien sind die wahre Quelle der Inspiration.</p>
+                    <div id="virtues-container" class="flex flex-wrap justify-center gap-3 text-center">
+                        <!-- Virtues will be injected by JS -->
+                    </div>
+                </div>
+
+                <!-- 3. Artist as Messenger -->
+                <div class="glassmorphism p-8 rounded-lg">
+                    <h3 class="text-3xl font-bold mb-4">3. Der Künstler als Überbringer</h3>
+                    <p class="mb-6">Betrachten Sie den Künstler als talentierten Überbringer dieser Wahrheiten. Er gibt den universellen Prinzipien eine neue, ansprechende "Verpackung". Die Wahrheit selbst stammt nicht vom Künstler.</p>
+                    <div id="messenger-viz-container">
+                        <div id="messenger-viz">
+                            <div id="truth-source" class="viz-element"></div>
+                            <div id="art-beam" class="viz-element"></div>
+                            <div id="artist-prism" class="viz-element"></div>
+                            <!-- Spectrum rays will be added by JS -->
+                        </div>
+                        <div class="flex justify-between text-xs text-gray-400 px-4 max-w-xl mx-auto">
+                            <span>Universelle Wahrheit</span>
+                            <span>Künstler</span>
+                            <span>Kunstwerk</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- PRACTICAL APPLICATION -->
+    <section class="content-section">
+        <h2 class="text-4xl text-center font-bold mb-4 text-sky-300">Praktische Anwendung des Konzepts</h2>
+        <p class="text-center text-xl mb-12 max-w-3xl mx-auto">So können Sie die Kunst weiterhin genießen</p>
+        <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <div class="text-center p-6 border border-sky-300/30 rounded-lg hover:bg-sky-300/10 transition-colors duration-300">
+                <h3 class="text-2xl font-bold mb-2">Genuss des Werkes</h3>
+                <p>Man kann weiterhin Harry Potter lesen, Buffy lieben oder die Werte im Werk schätzen. Der Wert des Werkes bleibt bestehen.</p>
+            </div>
+            <div class="text-center p-6 border border-sky-300/30 rounded-lg hover:bg-sky-300/10 transition-colors duration-300">
+                <h3 class="text-2xl font-bold mb-2">Feier der Wahrheit</h3>
+                <p>Im Zentrum steht die Anerkennung der Werte, die der Künstler vermittelt hat, selbst wenn er ihnen nicht gerecht wurde.</p>
+            </div>
+            <div class="text-center p-6 border border-sky-300/30 rounded-lg hover:bg-sky-300/10 transition-colors duration-300">
+                <h3 class="text-2xl font-bold mb-2">Inspiration durch Charaktere</h3>
+                <p>Orientieren Sie sich an den Idealen der Figuren: an Harrys Freundlichkeit, Buffys Mut oder Rons Loyalität.</p>
+            </div>
+        </div>
+        <p class="mt-16 text-center text-lg max-w-3xl mx-auto">Die Hoffnung bleibt, dass die Künstler selbst die Demut und Integrität finden, die so oft in ihren Figuren zu finden ist, um die wahren und erstaunlichen Botschaften ihrer eigenen Kunst besser zu leben.</p>
+    </section>
+
+    <footer class="text-center py-8 text-sm text-gray-500">
+        <p>Eine interaktive Erkundung zur Trennung von Kunst und Künstler.</p>
+        <p class="mt-4">„Hinweis: Dieser HTML-Inhalt wurde automatisiert durch KI erstellt. Inhalte können fehlerhaft sein und müssen je nach Kontext validiert werden.“</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        // --- HERO ANIMATION ---
+        gsap.from(".animate-fade-in-up", {
+            duration: 1,
+            y: 50,
+            opacity: 0,
+            stagger: 0.2,
+            ease: "power3.out",
+            delay: 0.5
+        });
+        gsap.from(".hero", {
+            duration: 1.5,
+            scale: 1.1,
+            ease: "power2.out"
+        });
+
+        // --- GENERAL SECTION FADE-INS ---
+        const sections = gsap.utils.toArray('section');
+        sections.forEach(section => {
+            gsap.from(section, {
+                opacity: 0,
+                y: 50,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: section,
+                    start: "top 85%",
+                    toggleActions: "play none none none"
+                }
+            });
+        });
+
+        // --- ROWLING SLIDER ---
+        const slider = document.getElementById('rowling-slider');
+        const werk = document.getElementById('rowling-werk');
+        const kuenstler = document.getElementById('rowling-kuenstler');
+        slider.addEventListener('input', (e) => {
+            const value = e.target.value;
+            werk.style.clipPath = `inset(0 ${100 - value}% 0 0)`;
+            kuenstler.style.clipPath = `inset(0 0 0 ${value}%)`;
+        });
+
+        // --- SPOTLIGHT EFFECT ---
+        const spotlightSection = document.getElementById('spotlight-section');
+        const spotlightBg = document.getElementById('spotlight-bg');
+        spotlightSection.addEventListener('mousemove', (e) => {
+            const { left, top } = spotlightSection.getBoundingClientRect();
+            const x = e.clientX - left;
+            const y = e.clientY - top;
+            spotlightBg.style.background = `radial-gradient(circle at ${x}px ${y}px, transparent 100px, rgba(0,0,0,0.95) 350px)`;
+        });
+        spotlightSection.addEventListener('mouseleave', () => {
+            spotlightBg.style.background = ``;
+        });
+
+        // --- BETRAYAL WORD CLOUD ---
+        const cloudContainer = document.getElementById('betrayal-cloud');
+        const words = ['Verrat', 'Enttäuschung', 'Inspiration', 'Güte', 'Konflikt', 'Bewunderung', 'Ablehnung', 'Widerspruch'];
+
+        words.forEach(word => {
+            const span = document.createElement('span');
+            span.textContent = word;
+            span.className = 'absolute text-lg opacity-0';
+            span.style.color = `hsl(${Math.random() * 360}, 70%, 80%)`;
+            cloudContainer.appendChild(span);
+            
+            const containerWidth = cloudContainer.offsetWidth;
+            const containerHeight = cloudContainer.offsetHeight;
+
+            gsap.set(span, {
+                x: Math.random() * Math.max(0, containerWidth - 100),
+                y: Math.random() * Math.max(0, containerHeight - 50)
+            });
+
+            gsap.to(span, {
+                x: `+=${(Math.random() - 0.5) * 200}`,
+                y: `+=${(Math.random() - 0.5) * 100}`,
+                opacity: 0.7,
+                duration: 10 + Math.random() * 10,
+                repeat: -1,
+                yoyo: true,
+                ease: 'sine.inOut'
+            });
+        });
+        
+        gsap.from(cloudContainer.children, {
+            opacity: 0,
+            scale: 0.5,
+            duration: 1,
+            stagger: 0.1,
+            scrollTrigger: {
+                trigger: cloudContainer,
+                start: "top 80%",
+            }
+        });
+
+        // --- VIRTUES ---
+        const virtuesContainer = document.getElementById('virtues-container');
+        const virtues = ['Integrität', 'Ehrlichkeit', 'Freundlichkeit', 'Aufopferung', 'Mitgefühl', 'Vergebung', 'Resilienz'];
+        virtues.forEach(virtue => {
+            const div = document.createElement('div');
+            div.className = 'px-4 py-2 border border-emerald-300/30 rounded-full cursor-default hover:bg-emerald-300/20 hover:scale-105 transition-all duration-300';
+            div.textContent = virtue;
+            virtuesContainer.appendChild(div);
+        });
+
+        // --- MESSENGER ANIMATION ---
+        const messengerViz = document.getElementById('messenger-viz-container');
+        const beam = document.getElementById('art-beam');
+        const prism = document.getElementById('artist-prism');
+        const source = document.getElementById('truth-source');
+        const viz = document.getElementById('messenger-viz');
+        
+        const spectrumColors = ['#ff595e', '#ffca3a', '#8ac926', '#1982c4', '#6a4c93'];
+        for (let i = 0; i < 5; i++) {
+            const ray = document.createElement('div');
+            ray.className = 'spectrum-ray viz-element';
+            ray.style.background = spectrumColors[i];
+            viz.appendChild(ray);
+        }
+        const spectrumRays = gsap.utils.toArray('.spectrum-ray');
+
+        const tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: messengerViz,
+                start: 'top 70%',
+                end: 'bottom 60%',
+                scrub: 1,
+                invalidateOnRefresh: true
+            }
+        });
+
+        tl.fromTo(beam, { 
+            width: 0, 
+            left: () => source.offsetLeft + source.offsetWidth / 2 
+        }, {
+            width: () => prism.offsetLeft - (source.offsetLeft + source.offsetWidth / 2),
+            ease: 'none'
+        })
+        .fromTo(spectrumRays, {
+            width: 0,
+            left: () => prism.offsetLeft,
+            rotation: 0,
+            opacity: 0
+        }, {
+            width: '50%',
+            opacity: 1,
+            stagger: 0.05,
+            rotation: (i) => (i - 2) * 8, // i is the index, spreads rays
+            ease: 'none'
+        }, "-=0.2");
+
+    </script>
+</body>
+</html>
