@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schritt für Schritt Programmieren lernen: Python</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Zusätzliche Stile für bessere Lesbarkeit und Optik */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Tailwind gray-50 */
+        }
+        /* Style für Code-Blöcke */
+        pre {
+            background-color: #1e293b; /* Tailwind slate-800 */
+            color: #f1f5f9; /* Tailwind slate-100 */
+            padding: 1rem;
+            border-radius: 0.5rem; /* rounded-lg */
+            overflow-x: auto; /* Horizontal scrollbar if needed */
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        code {
+             font-family: 'Courier New', Courier, monospace;
+        }
+        /* Style für inline Code */
+        code:not(pre > code) {
+            background-color: #e2e8f0; /* Tailwind slate-200 */
+            color: #1e293b; /* Tailwind slate-800 */
+            padding: 0.2em 0.4em;
+            border-radius: 0.25rem; /* rounded-sm */
+            font-size: 0.9em;
+        }
+        /* Akkordeon Styling */
+        .accordion-header {
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .accordion-header:hover {
+            background-color: #e2e8f0; /* Tailwind slate-200 */
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+        .accordion-content.open {
+             /* Erhöhte max-height, um Abschneiden zu verhindern */
+            max-height: 2000px; /* War vorher 1000px */
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+        .accordion-arrow {
+            transition: transform 0.3s ease;
+        }
+        .accordion-header.active .accordion-arrow {
+            transform: rotate(90deg);
+        }
+
+        /* Fade-in Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md fade-in">
+        <div class="container mx-auto px-6 py-8">
+            <h1 class="text-4xl font-bold mb-2">Schritt für Schritt Programmieren lernen</h1>
+            <h2 class="text-2xl font-light">Dein Einstieg in die Welt von Python</h2>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-10">
+
+        <section class="mb-12 fade-in" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-semibold mb-4 border-b-2 border-indigo-500 pb-2">Willkommen!</h2>
+            <p class="text-lg mb-4">
+                Du möchtest Programmieren lernen und hast Python ins Auge gefasst? Ausgezeichnete Wahl! Python ist eine beliebte, vielseitige und anfängerfreundliche Programmiersprache. Diese Seite führt dich Schritt für Schritt durch die Grundlagen.
+            </p>
+            <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded-md" role="alert">
+                <p class="font-bold">Keine Vorkenntnisse nötig!</p>
+                <p>Wir fangen ganz von vorne an. Alles, was du brauchst, ist Neugier und ein Computer.</p>
+            </div>
+        </section>
+
+        <div id="learningAccordion" class="space-y-4">
+
+            <div class="bg-white rounded-lg shadow-md overflow-hidden fade-in" style="animation-delay: 0.4s;">
+                <div class="accordion-header flex justify-between items-center p-5 border-b">
+                    <h3 class="text-xl font-semibold text-indigo-700">Schritt 1: Was ist Programmieren & Python?</h3>
+                    <span class="accordion-arrow text-indigo-500 text-2xl transform transition-transform duration-300">&#x276F;</span>
+                </div>
+                <div class="accordion-content">
+                    <h4 class="text-lg font-semibold mb-2">Was ist Programmieren?</h4>
+                    <p class="mb-3">Stell dir vor, du gibst einem Computer eine detaillierte Anleitung, um eine bestimmte Aufgabe zu erledigen. Genau das ist Programmieren! Du schreibst diese Anleitungen (den sogenannten "Code") in einer speziellen Sprache, die der Computer verstehen kann.</p>
+
+                    <h4 class="text-lg font-semibold mb-2">Was ist Python?</h4>
+                    <p class="mb-3">Python ist eine solche Programmiersprache. Sie wurde von Guido van Rossum entwickelt und 1991 veröffentlicht. Python zeichnet sich durch eine klare und gut lesbare Syntax (die "Grammatik" der Sprache) aus, was sie besonders für Anfänger geeignet macht.</p>
+
+                    <h4 class="text-lg font-semibold mb-2">Warum Python lernen?</h4>
+                    <ul class="list-disc list-inside mb-3 space-y-1">
+                        <li><strong>Anfängerfreundlich:</strong> Die Syntax ist relativ einfach zu verstehen.</li>
+                        <li><strong>Vielseitig:</strong> Webentwicklung, Datenanalyse, künstliche Intelligenz, Spieleentwicklung, Automatisierung – Python kann fast alles!</li>
+                        <li><strong>Große Community:</strong> Viele Entwickler nutzen Python, es gibt unzählige Hilfsquellen und fertige Code-Bausteine (Bibliotheken).</li>
+                        <li><strong>Hohe Nachfrage:</strong> Python-Kenntnisse sind auf dem Arbeitsmarkt sehr gefragt.</li>
+                    </ul>
+
+                     <h4 class="text-lg font-semibold mb-2">Python installieren</h4>
+                     <p>Um Python-Code auf deinem Computer auszuführen, musst du es zuerst installieren. Besuche die offizielle Python-Website und lade dir die passende Version für dein Betriebssystem herunter:</p>
+                     <a href="https://www.python.org/downloads/" target="_blank" class="inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-300 my-2">
+                         Python herunterladen
+                     </a>
+                     <p class="text-sm text-gray-600">Folge den Installationsanweisungen auf der Website. Für den Anfang reicht die Standardinstallation.</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md overflow-hidden fade-in" style="animation-delay: 0.6s;">
+                <div class="accordion-header flex justify-between items-center p-5 border-b">
+                    <h3 class="text-xl font-semibold text-indigo-700">Schritt 2: Dein erstes Python-Programm</h3>
+                    <span class="accordion-arrow text-indigo-500 text-2xl transform transition-transform duration-300">&#x276F;</span>
+                </div>
+                <div class="accordion-content">
+                    <p class="mb-3">Traditionell beginnt man mit einem Programm, das "Hallo, Welt!" ausgibt. Öffne einen Texteditor (nicht Word, sondern z.B. Notepad unter Windows, TextEdit unter macOS oder einen Code-Editor wie VS Code) und tippe Folgendes ein:</p>
+                    <pre><code class="language-python">print("Hallo, Welt!")</code></pre>
+                    <p class="mb-3">Speichere die Datei unter einem Namen wie <code>hallo.py</code> (die Endung <code>.py</code> ist wichtig!).</p>
+                    <p class="mb-3">Öffne nun die Kommandozeile (Terminal oder Eingabeaufforderung) auf deinem Computer, navigiere in den Ordner, in dem du die Datei gespeichert hast, und führe sie mit dem Befehl aus:</p>
+                    <pre><code class="language-bash">python hallo.py</code></pre>
+                    <p class="mb-3">Wenn alles geklappt hat, sollte der Text <code>Hallo, Welt!</code> auf dem Bildschirm erscheinen. Herzlichen Glückwunsch, du hast dein erstes Python-Programm geschrieben und ausgeführt!</p>
+                     <h4 class="text-lg font-semibold mb-2">Was ist hier passiert?</h4>
+                     <ul class="list-disc list-inside mb-3 space-y-1">
+                         <li><code>print()</code> ist eine eingebaute <strong>Funktion</strong> in Python. Funktionen sind wiederverwendbare Code-Blöcke, die eine bestimmte Aufgabe erledigen – in diesem Fall etwas auf dem Bildschirm ausgeben.</li>
+                         <li><code>"Hallo, Welt!"</code> ist ein <strong>String</strong>, also eine Zeichenkette (Text). Strings werden in Python in Anführungszeichen (<code>"</code> oder <code>'</code>) gesetzt.</li>
+                     </ul>
+                     <h4 class="text-lg font-semibold mb-2">Kommentare</h4>
+                     <p class="mb-3">Du kannst Notizen in deinem Code hinterlassen, die Python ignoriert. Diese nennt man Kommentare. Sie beginnen mit einem <code>#</code>:</p>
+                     <pre><code class="language-python"># Dies ist ein Kommentar und wird ignoriert
+print("Dieser Text wird ausgegeben.") # Auch hier kann ein Kommentar stehen</code></pre>
+                     <p>Kommentare sind wichtig, um deinen Code für dich und andere verständlich zu machen.</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md overflow-hidden fade-in" style="animation-delay: 0.8s;">
+                <div class="accordion-header flex justify-between items-center p-5 border-b">
+                    <h3 class="text-xl font-semibold text-indigo-700">Schritt 3: Variablen und Datentypen</h3>
+                     <span class="accordion-arrow text-indigo-500 text-2xl transform transition-transform duration-300">&#x276F;</span>
+                </div>
+                <div class="accordion-content">
+                    <h4 class="text-lg font-semibold mb-2">Variablen: Container für Daten</h4>
+                    <p class="mb-3">Variablen sind wie beschriftete Boxen, in denen du Werte speichern kannst, um sie später wiederzuverwenden. Du erstellst eine Variable, indem du ihr einen Namen gibst und ihr mit dem Gleichheitszeichen (<code>=</code>) einen Wert zuweist:</p>
+                    <pre><code class="language-python">name = "Alice"
+alter = 30
+groesse_in_m = 1.75
+ist_student = False
+
+# Variablenwerte ausgeben
+print(name)
+print(alter)</code></pre>
+                    <p class="mb-3">Hier haben wir vier Variablen erstellt: <code>name</code>, <code>alter</code>, <code>groesse_in_m</code> und <code>ist_student</code>.</p>
+
+                    <h4 class="text-lg font-semibold mb-2">Wichtige Datentypen</h4>
+                    <p class="mb-3">Jeder Wert in Python hat einen bestimmten Typ. Die wichtigsten für den Anfang sind:</p>
+                    <ul class="list-disc list-inside mb-3 space-y-1">
+                        <li><strong>String (<code>str</code>):</strong> Text, in Anführungszeichen. Beispiel: <code>"Hallo"</code>, <code>'Python'</code>.</li>
+                        <li><strong>Integer (<code>int</code>):</strong> Ganze Zahlen. Beispiel: <code>10</code>, <code>-5</code>, <code>0</code>.</li>
+                        <li><strong>Float (<code>float</code>):</strong> Gleitkommazahlen (Zahlen mit Nachkommastellen). Beispiel: <code>3.14</code>, <code>-0.5</code>. Wichtig: Dezimaltrennzeichen ist der Punkt (<code>.</code>)!</li>
+                        <li><strong>Boolean (<code>bool</code>):</strong> Wahrheitswerte, können nur <code>True</code> (wahr) oder <code>False</code> (falsch) sein. Nützlich für Entscheidungen im Code.</li>
+                    </ul>
+                    <p class="mb-3">Python erkennt den Typ meist automatisch, wenn du einer Variablen einen Wert zuweist. Du kannst den Typ einer Variablen mit der Funktion <code>type()</code> überprüfen:</p>
+                    <pre><code class="language-python">print(type(name))     # Gibt <class 'str'> aus
+print(type(alter))    # Gibt <class 'int'> aus
+print(type(groesse_in_m)) # Gibt <class 'float'> aus
+print(type(ist_student))# Gibt <class 'bool'> aus</code></pre>
+                </div>
+            </div>
+
+             <div class="bg-white rounded-lg shadow-md overflow-hidden fade-in" style="animation-delay: 1.0s;">
+                <div class="accordion-header flex justify-between items-center p-5 border-b">
+                    <h3 class="text-xl font-semibold text-indigo-700">Schritt 4: Operatoren</h3>
+                     <span class="accordion-arrow text-indigo-500 text-2xl transform transition-transform duration-300">&#x276F;</span>
+                </div>
+                <div class="accordion-content">
+                    <p class="mb-3">Operatoren sind spezielle Symbole, die Operationen (wie Rechnen oder Vergleichen) durchführen.</p>
+
+                    <h4 class="text-lg font-semibold mb-2">Arithmetische Operatoren</h4>
+                    <p class="mb-3">Zum Rechnen mit Zahlen:</p>
+                    <ul class="list-disc list-inside mb-3 space-y-1">
+                        <li><code>+</code> : Addition (<code>5 + 3</code> ergibt <code>8</code>)</li>
+                        <li><code>-</code> : Subtraktion (<code>5 - 3</code> ergibt <code>2</code>)</li>
+                        <li><code>*</code> : Multiplikation (<code>5 * 3</code> ergibt <code>15</code>)</li>
+                        <li><code>/</code> : Division (<code>5 / 3</code> ergibt <code>1.666...</code>)</li>
+                        <li><code>//</code> : Ganzzahl-Division (<code>5 // 3</code> ergibt <code>1</code>, Rest wird verworfen)</li>
+                        <li><code>%</code> : Modulo (Rest der Division, <code>5 % 3</code> ergibt <code>2</code>)</li>
+                        <li><code>**</code> : Potenzierung (<code>5 ** 3</code> ergibt <code>125</code>, also 5 hoch 3)</li>
+                    </ul>
+                    <pre><code class="language-python">zahl1 = 10
+zahl2 = 3
+print(zahl1 + zahl2) # Ausgabe: 13
+print(zahl1 / zahl2) # Ausgabe: 3.333...</code></pre>
+
+                    <h4 class="text-lg font-semibold mb-2">Vergleichsoperatoren</h4>
+                    <p class="mb-3">Zum Vergleichen von Werten. Das Ergebnis ist immer ein Boolean (<code>True</code> oder <code>False</code>).</p>
+                     <ul class="list-disc list-inside mb-3 space-y-1">
+                        <li><code>==</code> : Gleich (<code>5 == 3</code> ist <code>False</code>)</li>
+                        <li><code>!=</code> : Ungleich (<code>5 != 3</code> ist <code>True</code>)</li>
+                        <li><code>></code> : Größer als (<code>5 > 3</code> ist <code>True</code>)</li>
+                        <li><code><</code> : Kleiner als (<code>5 < 3</code> ist <code>False</code>)</li>
+                        <li><code>>=</code> : Größer oder gleich (<code>5 >= 5</code> ist <code>True</code>)</li>
+                        <li><code><=</code> : Kleiner oder gleich (<code>5 <= 3</code> ist <code>False</code>)</li>
+                    </ul>
+                     <pre><code class="language-python">alter = 20
+print(alter >= 18) # Ausgabe: True</code></pre>
+
+                    <h4 class="text-lg font-semibold mb-2">Logische Operatoren</h4>
+                    <p class="mb-3">Zum Verknüpfen von Boolean-Werten:</p>
+                     <ul class="list-disc list-inside mb-3 space-y-1">
+                         <li><code>and</code> : Logisches UND (<code>True and False</code> ist <code>False</code>) - Beide Seiten müssen wahr sein.</li>
+                         <li><code>or</code> : Logisches ODER (<code>True or False</code> ist <code>True</code>) - Mindestens eine Seite muss wahr sein.</li>
+                         <li><code>not</code> : Logisches NICHT (<code>not True</code> ist <code>False</code>) - Kehrt den Wahrheitswert um.</li>
+                     </ul>
+                      <pre><code class="language-python">hat_fuehrerschein = True
+ist_volljaehrig = True
+darf_fahren = hat_fuehrerschein and ist_volljaehrig
+print(darf_fahren) # Ausgabe: True</code></pre>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md overflow-hidden fade-in" style="animation-delay: 1.2s;">
+                <div class="accordion-header flex justify-between items-center p-5 border-b">
+                    <h3 class="text-xl font-semibold text-indigo-700">Schritt 5: Entscheidungen treffen (if/else)</h3>
+                     <span class="accordion-arrow text-indigo-500 text-2xl transform transition-transform duration-300">&#x276F;</span>
+                </div>
+                <div class="accordion-content">
+                    <p class="mb-3">Oft soll Code nur unter bestimmten Bedingungen ausgeführt werden. Dafür gibt es die <code>if</code>-Anweisung.</p>
+                    <pre><code class="language-python">alter = 17
+
+if alter >= 18:
+    print("Du bist volljährig.")
+    print("Du darfst wählen.")
+else:
+    print("Du bist noch nicht volljährig.")
+
+print("Dieser Text wird immer ausgegeben.")</code></pre>
+                    <h4 class="text-lg font-semibold mb-2">Wie funktioniert das?</h4>
+                    <ul class="list-disc list-inside mb-3 space-y-1">
+                        <li>Nach <code>if</code> steht eine Bedingung (etwas, das <code>True</code> oder <code>False</code> ergibt), gefolgt von einem Doppelpunkt (<code>:</code>).</li>
+                        <li>Der Code-Block, der ausgeführt werden soll, WENN die Bedingung <code>True</code> ist, wird <strong>eingerückt</strong> (meist 4 Leerzeichen). Die Einrückung ist in Python sehr wichtig!</li>
+                        <li>Optional kann ein <code>else:</code> folgen. Der Code-Block darunter wird ausgeführt, WENN die <code>if</code>-Bedingung <code>False</code> ist.</li>
+                         <li>Mit <code>elif</code> (kurz für "else if") kannst du weitere Bedingungen prüfen:</li>
+                    </ul>
+                     <pre><code class="language-python">note = 2
+
+if note == 1:
+    print("Sehr gut!")
+elif note == 2:
+    print("Gut.")
+elif note == 3:
+    print("Befriedigend.")
+elif note == 4:
+    print("Ausreichend.")
+else:
+    print("Nicht bestanden.")</code></pre>
+                </div>
+            </div>
+
+             <div class="bg-white rounded-lg shadow-md overflow-hidden fade-in" style="animation-delay: 1.4s;">
+                <div class="accordion-header flex justify-between items-center p-5 border-b">
+                    <h3 class="text-xl font-semibold text-indigo-700">Schritt 6: Wiederholungen (Schleifen)</h3>
+                     <span class="accordion-arrow text-indigo-500 text-2xl transform transition-transform duration-300">&#x276F;</span>
+                </div>
+                <div class="accordion-content">
+                     <p class="mb-3">Schleifen erlauben es, Code-Blöcke mehrmals auszuführen.</p>
+
+                    <h4 class="text-lg font-semibold mb-2">Die <code>for</code>-Schleife</h4>
+                    <p class="mb-3">Ideal, wenn man weiß, wie oft etwas wiederholt werden soll, oder wenn man über Elemente einer Sequenz (z.B. Zahlen) gehen will.</p>
+                     <pre><code class="language-python"># Zähle von 0 bis 4
+print("Zählen von 0 bis 4:")
+for i in range(5): # range(5) erzeugt die Zahlen 0, 1, 2, 3, 4
+    print(i)
+
+print("\nQuadratzahlen:")
+# Gib die Quadratzahlen von 1 bis 5 aus
+for zahl in range(1, 6): # range(1, 6) erzeugt 1, 2, 3, 4, 5
+    print(f"{zahl} im Quadrat ist {zahl * zahl}") # f-String für formatierte Ausgabe</code></pre>
+                     <p class="mb-3">Die Variable <code>i</code> (oder <code>zahl</code> im zweiten Beispiel) nimmt nacheinander jeden Wert aus der Sequenz (hier von <code>range()</code> erzeugt) an. Der eingerückte Block wird für jeden dieser Werte ausgeführt.</p>
+
+                    <h4 class="text-lg font-semibold mb-2">Die <code>while</code>-Schleife</h4>
+                    <p class="mb-3">Wird ausgeführt, solange eine Bedingung <code>True</code> ist. Vorsicht: Man muss sicherstellen, dass die Bedingung irgendwann <code>False</code> wird, sonst entsteht eine Endlosschleife!</p>
+                    <pre><code class="language-python"># Countdown von 5 bis 1
+print("\nCountdown:")
+counter = 5
+while counter > 0:
+    print(counter)
+    counter = counter - 1 # Wichtig: Zähler verändern!
+
+print("Start!")</code></pre>
+                </div>
+            </div>
+
+             <div class="bg-white rounded-lg shadow-md overflow-hidden fade-in" style="animation-delay: 1.6s;">
+                <div class="accordion-header flex justify-between items-center p-5 border-b">
+                    <h3 class="text-xl font-semibold text-indigo-700">Schritt 7: Eigene Werkzeuge bauen (Funktionen)</h3>
+                     <span class="accordion-arrow text-indigo-500 text-2xl transform transition-transform duration-300">&#x276F;</span>
+                </div>
+                <div class="accordion-content">
+                    <p class="mb-3">Funktionen sind benannte Code-Blöcke, die du definieren und dann immer wieder aufrufen kannst. Das macht deinen Code organisierter und wiederverwendbar.</p>
+                    <p class="mb-3">Du kennst bereits die eingebaute Funktion <code>print()</code>. Jetzt erstellen wir unsere eigene.</p>
+
+                    <h4 class="text-lg font-semibold mb-2">Funktion definieren</h4>
+                    <p class="mb-3">Man verwendet das Schlüsselwort <code>def</code>, gefolgt vom Funktionsnamen, Klammern <code>()</code> und einem Doppelpunkt <code>:</code>. Der Code der Funktion wird eingerückt.</p>
+                    <pre><code class="language-python"># Definiert eine einfache Funktion
+def begruessung():
+    print("Hallo!")
+    print("Willkommen zum Python-Kurs.")
+
+# Definiert eine Funktion mit einem Parameter (Eingabewert)
+def persoenliche_begruessung(name):
+    print(f"Hallo, {name}!") # f-String nutzt den Wert des Parameters
+
+# Definiert eine Funktion, die einen Wert zurückgibt
+def addiere(zahl1, zahl2):
+    summe = zahl1 + zahl2
+    return summe # Gibt das Ergebnis zurück</code></pre>
+
+                     <h4 class="text-lg font-semibold mb-2">Funktion aufrufen</h4>
+                     <p class="mb-3">Um eine Funktion auszuführen, schreibst du ihren Namen gefolgt von Klammern. Wenn die Funktion Parameter erwartet, übergibst du die Werte in den Klammern.</p>
+                     <pre><code class="language-python"># Rufe die Funktionen auf
+begruessung()
+
+print("-" * 10) # Trennlinie
+
+persoenliche_begruessung("Max")
+persoenliche_begruessung("Anna")
+
+print("-" * 10)
+
+ergebnis = addiere(5, 3) # Speichere den Rückgabewert in einer Variable
+print(f"5 + 3 = {ergebnis}")
+
+print(f"10 + 20 = {addiere(10, 20)}") # Direkte Verwendung des Rückgabewerts</code></pre>
+                     <p class="mb-3">Funktionen helfen enorm dabei, komplexe Probleme in kleinere, handhabbare Teile zu zerlegen.</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md overflow-hidden fade-in" style="animation-delay: 1.8s;">
+                <div class="accordion-header flex justify-between items-center p-5 border-b">
+                    <h3 class="text-xl font-semibold text-indigo-700">Nächste Schritte & Ausblick</h3>
+                     <span class="accordion-arrow text-indigo-500 text-2xl transform transition-transform duration-300">&#x276F;</span>
+                </div>
+                <div class="accordion-content">
+                    <p class="mb-3">Super! Du hast die grundlegendsten Konzepte von Python kennengelernt: Ausgabe, Variablen, Datentypen, Operatoren, Bedingungen, Schleifen und Funktionen. Das ist eine solide Basis!</p>
+
+                    <h4 class="text-lg font-semibold mb-2">Was kommt danach?</h4>
+                    <p class="mb-3">Die Welt der Programmierung ist riesig. Hier sind einige Themen, mit denen du weitermachen könntest:</p>
+                    <ul class="list-disc list-inside mb-3 space-y-1">
+                        <li><strong>Listen und Dictionaries:</strong> Mächtige Datentypen, um Sammlungen von Werten zu speichern.</li>
+                        <li><strong>Module und Bibliotheken:</strong> Wie man Code von anderen nutzt (z.B. für Mathematik, Zufallszahlen, Webzugriffe).</li>
+                        <li><strong>Objektorientierte Programmierung (OOP):</strong> Ein fortgeschrittenes Konzept zur Strukturierung von Code.</li>
+                        <li><strong>Dateiverarbeitung:</strong> Lesen und Schreiben von Dateien.</li>
+                        <li><strong>Fehlerbehandlung:</strong> Wie man mit Fehlern im Programm umgeht (<code>try...except</code>).</li>
+                        <li><strong>Projekte:</strong> Wende dein Wissen an! Programmiere einen einfachen Taschenrechner, ein kleines Text-Adventure oder automatisiere eine Aufgabe.</li>
+                    </ul>
+
+                     <h4 class="text-lg font-semibold mb-2">Wo finde ich mehr Informationen?</h4>
+                     <ul class="list-disc list-inside mb-3 space-y-1">
+                         <li><strong>Offizielle Python-Dokumentation:</strong> <a href="https://docs.python.org/3/" target="_blank" class="text-blue-600 hover:underline">docs.python.org</a> (Sehr umfassend, auch auf Deutsch verfügbar)</li>
+                         <li><strong>Online-Kurse:</strong> Plattformen wie Coursera, Udemy, edX, Codecademy bieten Python-Kurse an.</li>
+                         <li><strong>Bücher:</strong> Es gibt viele gute Python-Bücher für Anfänger.</li>
+                         <li><strong>YouTube-Tutorials:</strong> Viele Kanäle erklären Python-Konzepte.</li>
+                         <li><strong>Übungsplattformen:</strong> Seiten wie HackerRank oder LeetCode bieten Programmieraufgaben.</li>
+                     </ul>
+                     <div class="mt-6 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-md">
+                        <p class="font-bold">Bleib dran und übe regelmäßig!</p>
+                        <p>Der Schlüssel zum Erfolg beim Programmieren ist kontinuierliches Üben und Ausprobieren. Viel Spaß auf deiner weiteren Lernreise!</p>
+                    </div>
+                </div>
+            </div>
+
+        </div> </main>
+
+    <footer class="bg-gray-800 text-gray-300 mt-12 py-6 fade-in" style="animation-delay: 2.0s;">
+        <div class="container mx-auto px-6 text-center text-sm">
+            <p>&copy; 2025 Dein Python Lernpfad. Erstellt, um den Einstieg zu erleichtern.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
+
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', function () {
+                    const content = this.nextElementSibling;
+                    const isOpen = content.classList.contains('open');
+
+                    // Optional: Close other open accordions
+                    // document.querySelectorAll('.accordion-content.open').forEach(openContent => {
+                    //     if (openContent !== content) {
+                    //         openContent.classList.remove('open');
+                    //         openContent.previousElementSibling.classList.remove('active');
+                    //     }
+                    // });
+
+                    // Toggle current accordion
+                    content.classList.toggle('open');
+                    this.classList.toggle('active'); // For styling the active header/arrow
+                });
+            });
+
+            // Optional: Open the first accordion section by default
+            const firstHeader = document.querySelector('.accordion-header');
+             if (firstHeader) {
+                 firstHeader.click(); // Simulate a click to open it
+             }
+        });
+    </script>
+
+</body>
+</html>
