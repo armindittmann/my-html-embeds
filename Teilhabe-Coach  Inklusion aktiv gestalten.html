@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="de" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teilhabe-Coach: Inklusion aktiv gestalten</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+            color: #334155; /* slate-700 */
+        }
+        h1, h2, h3, h4 {
+            font-family: 'Poppins', sans-serif;
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, rgba(20, 184, 166, 0.8), rgba(2, 132, 199, 0.8));
+        }
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: #0d9488; /* teal-600 */
+            margin-top: 0.75rem;
+            border-radius: 2px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2.75rem;
+            top: 0.25rem;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #f1f5f9; /* slate-100 */
+            border: 4px solid #0d9488; /* teal-600 */
+            z-index: 10;
+        }
+        .timeline-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: -2.2rem;
+            top: 1.5rem;
+            width: 2px;
+            height: calc(100% + 2rem); /* 100% + gap */
+            background-color: #cbd5e1; /* slate-300 */
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+        .accordion-content-open {
+            max-height: 1000px; /* Large enough value */
+        }
+        .role-node {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .role-node:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+        }
+        .role-node.active {
+            transform: scale(1.05);
+            border-color: #f59e0b; /* amber-500 */
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.3);
+        }
+        .tab-button.active {
+            background-color: #0d9488; /* teal-600 */
+            color: white;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (prefers-reduced-motion: reduce) {
+          html {
+            scroll-behavior: auto;
+          }
+        }
+    </style>
+</head>
+<body id="page-top" class="bg-slate-50 text-slate-700">
+
+    <!-- Header & Navigation -->
+    <header class="bg-white/80 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 shadow-md">
+        <div class="container mx-auto px-6 py-3">
+            <div class="flex justify-between items-center">
+                <a href="#page-top" class="text-2xl font-bold text-teal-700">Teilhabe-Coach</a>
+                <nav class="hidden md:flex space-x-6 items-center">
+                    <a href="#berufsbild" class="text-slate-600 hover:text-teal-600 transition-colors">Berufsbild</a>
+                    <a href="#zielgruppen" class="text-slate-600 hover:text-teal-600 transition-colors">Zielgruppen</a>
+                    <a href="#leistungen" class="text-slate-600 hover:text-teal-600 transition-colors">Leistungen</a>
+                    <a href="#finanzierung" class="text-slate-600 hover:text-teal-600 transition-colors">Finanzierung</a>
+                    <a href="#fahrplan" class="text-slate-600 hover:text-teal-600 transition-colors">Fahrplan</a>
+                    <a href="#chancen" class="text-slate-600 hover:text-teal-600 transition-colors">Chancen & Risiken</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="relative min-h-screen flex items-center justify-center text-white text-center p-6 pt-24">
+            <div class="absolute inset-0 hero-gradient"></div>
+            <div class="absolute inset-0 bg-black/20"></div>
+            <div class="relative z-10">
+                <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-4">Teilhabe-Coach</h1>
+                <p class="text-xl md:text-3xl font-light">Inklusion aktiv gestalten</p>
+                <div class="mt-8 max-w-3xl mx-auto text-lg text-teal-100 font-light">
+                    Ein spezialisierter Coaching-Service, der Demokratie und Teilhabe im Alltag erlebbar macht – für Menschen mit Behinderung, ihre Angehörigen und das gesamte gesellschaftliche Umfeld.
+                </div>
+                <div class="mt-12">
+                    <svg aria-hidden="true" class="animate-bounce w-10 h-10 mx-auto text-white" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                        <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Das Berufsbild -->
+        <section id="berufsbild" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center text-slate-800 section-title mx-auto">Das Berufsbild: Teilhabe-Coach</h2>
+                <p class="mt-8 text-lg text-center max-w-3xl mx-auto">
+                    Ein Teilhabe-Coach fördert aktiv die Teilhabe von Menschen mit Behinderung im gesellschaftlichen Leben. Der Ansatz vereint Sensibilisierung, Methodenkenntnis und praktische Begleitung, um Selbstbestimmung und Integration zu stärken.
+                </p>
+                
+                <div class="mt-16">
+                    <h3 class="text-3xl font-semibold text-center text-teal-700 mb-4">Leitbild: Problemlösung und Befähigung</h3>
+                    <p class="text-center max-w-2xl mx-auto mb-12">Das Berufsbild vereint mehrere zentrale Rollen. Klicken Sie auf eine Rolle, um mehr zu erfahren.</p>
+
+                    <div class="flex flex-col lg:flex-row items-center justify-center gap-8">
+                        <!-- Interactive Role Diagram -->
+                        <div class="w-full lg:w-1/2 relative flex justify-center items-center min-h-[320px]">
+                            <div class="w-48 h-48 bg-teal-600 text-white rounded-full flex items-center justify-center text-center p-4 shadow-lg">
+                                <span class="font-bold text-xl">Teilhabe-Coach</span>
+                            </div>
+                            <!-- Roles around the central node -->
+                            <div id="role-nodes" class="absolute w-48 h-48">
+                                <button type="button" class="role-node cursor-pointer absolute bg-white p-3 rounded-lg shadow-md border-2 border-slate-200" style="top: -1.5rem; left: 50%; transform: translateX(-50%);" data-role="begleitung">Persönl. Begleitung</button>
+                                <button type="button" class="role-node cursor-pointer absolute bg-white p-3 rounded-lg shadow-md border-2 border-slate-200" style="right: -3rem; top: 50%; transform: translateY(-50%);" data-role="job">Job-Coaching</button>
+                                <button type="button" class="role-node cursor-pointer absolute bg-white p-3 rounded-lg shadow-md border-2 border-slate-200" style="bottom: -1.5rem; left: 50%; transform: translateX(-50%);" data-role="familie">Familienarbeit</button>
+                                <button type="button" class="role-node cursor-pointer absolute bg-white p-3 rounded-lg shadow-md border-2 border-slate-200" style="left: -3rem; top: 50%; transform: translateY(-50%);" data-role="beratung">Inklusionsberatung</button>
+                            </div>
+                        </div>
+
+                        <!-- Role Description Panel -->
+                        <div class="w-full lg:w-1/2 p-8 bg-slate-100 rounded-xl shadow-inner min-h-[280px]">
+                            <div id="role-description" class="text-left">
+                                <div data-role-content="begleitung" class="hidden fade-in">
+                                    <h4 class="text-xl font-bold text-slate-800 mb-2">Persönliche Begleitung</h4>
+                                    <p>Der Coach ist direkt an der Seite der Klientinnen und Klienten. Er zeigt, erklärt und übt mit ihnen alle für sie wichtigen Tätigkeiten des Alltags und Berufslebens, um ihre Selbstständigkeit im Lebensumfeld zu fördern.</p>
+                                </div>
+                                <div data-role-content="job" class="hidden fade-in">
+                                    <h4 class="text-xl font-bold text-slate-800 mb-2">Job-Coaching</h4>
+                                    <p>Aktive Unterstützung beim Einstieg in einen neuen Arbeitsplatz. Der Coach hilft bei Problemen mit Kollegen, besucht die Klienten regelmäßig und reduziert die Begleitung schrittweise, bis eine selbstständige Arbeitsweise erreicht ist (Dauer ca. 6-8 Monate).</p>
+                                </div>
+                                <div data-role-content="familie" class="hidden fade-in">
+                                    <h4 class="text-xl font-bold text-slate-800 mb-2">Familien- und Netzwerkarbeit</h4>
+                                    <p>Angehörige werden bewusst in den Prozess einbezogen. Sie erhalten Impulse und Beratung, wie sie Teilhabe und Selbstbestimmung im familiären Umfeld fördern können, ohne in Überfürsorge zu verfallen.</p>
+                                </div>
+                                <div data-role-content="beratung" class="hidden fade-in">
+                                    <h4 class="text-xl font-bold text-slate-800 mb-2">Inklusionsberatung</h4>
+                                    <p>Betriebe und soziale Einrichtungen werden beraten, wie sie ihre Strukturen inklusiver gestalten können. Ziel ist es, eine vielfältige, inklusionsfreundliche Kultur zu etablieren und Diskriminierung zu erkennen und abzubauen.</p>
+                                </div>
+                                <div id="role-placeholder">
+                                    <p class="text-slate-500 italic">Wählen Sie eine Rolle aus, um die Beschreibung anzuzeigen.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Zielgruppen -->
+        <section id="zielgruppen" class="py-20 bg-slate-50">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center text-slate-800 section-title mx-auto">Die Zielgruppen</h2>
+                <p class="mt-8 text-lg text-center max-w-3xl mx-auto">
+                    Das Teilhabe-Coaching richtet sich an unterschiedliche Akteure im sozialen und beruflichen Umfeld, die alle spezifische Bedarfe und Nutzen haben.
+                </p>
+                <div id="accordion-container" class="mt-16 max-w-4xl mx-auto space-y-4">
+                    <!-- Accordion Item 1 -->
+                    <div class="accordion-item bg-white rounded-lg shadow-md overflow-hidden">
+                        <button id="accordion-header-1" aria-controls="accordion-content-1" aria-expanded="false" class="accordion-header w-full flex justify-between items-center text-left p-6 font-semibold text-xl text-teal-800 hover:bg-teal-50 transition-colors">
+                            <span>Menschen mit Behinderung</span>
+                            <svg aria-hidden="true" class="accordion-icon w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div id="accordion-content-1" role="region" aria-labelledby="accordion-header-1" class="accordion-content">
+                            <div class="p-6 pt-0 text-slate-600 space-y-2">
+                                <p><strong>Bedarf:</strong> Individuelle Begleitung zur Alltagsbewältigung, Stärkung der Selbstbestimmung und berufliche Orientierung, insbesondere am Übergang Schule-Beruf oder bei Überforderung im Job.</p>
+                                <p><strong>Nutzen:</strong> Das Job-Coaching hilft ihnen, einen Ausbildungs- oder Arbeitsplatz auf dem allgemeinen Arbeitsmarkt zu finden und langfristig zu behalten.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Accordion Item 2 -->
+                    <div class="accordion-item bg-white rounded-lg shadow-md overflow-hidden">
+                        <button id="accordion-header-2" aria-controls="accordion-content-2" aria-expanded="false" class="accordion-header w-full flex justify-between items-center text-left p-6 font-semibold text-xl text-teal-800 hover:bg-teal-50 transition-colors">
+                            <span>Angehörige & Betreuer</span>
+                            <svg aria-hidden="true" class="accordion-icon w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div id="accordion-content-2" role="region" aria-labelledby="accordion-header-2" class="accordion-content">
+                            <div class="p-6 pt-0 text-slate-600 space-y-2">
+                                <p><strong>Bedarf:</strong> Orientierung bei der Nutzung von Sozialleistungen (z.B. Persönliches Budget), Unterstützung in der Behördenkommunikation und Ratschläge zur Förderung der Selbstständigkeit ohne Überfürsorge.</p>
+                                <p><strong>Nutzen:</strong> Klare Handlungsstrategien, Entlastung im Alltag und Sicherheit im Umgang mit Ämtern und Finanzen.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Accordion Item 3 -->
+                    <div class="accordion-item bg-white rounded-lg shadow-md overflow-hidden">
+                        <button id="accordion-header-3" aria-controls="accordion-content-3" aria-expanded="false" class="accordion-header w-full flex justify-between items-center text-left p-6 font-semibold text-xl text-teal-800 hover:bg-teal-50 transition-colors">
+                            <span>Sozial- & Bildungsträger</span>
+                            <svg aria-hidden="true" class="accordion-icon w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div id="accordion-content-3" role="region" aria-labelledby="accordion-header-3" class="accordion-content">
+                            <div class="p-6 pt-0 text-slate-600 space-y-2">
+                                <p><strong>Bedarf:</strong> Externe Expertise durch Inhouse-Schulungen und Beratung zur Verankerung einer inklusiven Haltung im Team. Externe Begleitung ihrer Klienten zur Sicherung von Arbeitsverhältnissen.</p>
+                                <p><strong>Nutzen:</strong> Praxisnahe Workshops zur Demokratiestärkung und Vielfalt sowie Sicherung der Arbeitsplätze ihrer Klienten durch professionelles Job-Coaching.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Accordion Item 4 -->
+                    <div class="accordion-item bg-white rounded-lg shadow-md overflow-hidden">
+                        <button id="accordion-header-4" aria-controls="accordion-content-4" aria-expanded="false" class="accordion-header w-full flex justify-between items-center text-left p-6 font-semibold text-xl text-teal-800 hover:bg-teal-50 transition-colors">
+                            <span>Kommunen & Kostenträger</span>
+                            <svg aria-hidden="true" class="accordion-icon w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div id="accordion-content-4" role="region" aria-labelledby="accordion-header-4" class="accordion-content">
+                            <div class="p-6 pt-0 text-slate-600 space-y-2">
+                                <p><strong>Bedarf:</strong> Externe Fachkräfte, die Teilhabemaßnahmen zielgerichtet, effizient und nachweislich erfolgreich umsetzen.</p>
+                                <p><strong>Nutzen:</strong> Der Teilhabe-Coach stellt sicher, dass Menschen mit Behinderung die notwendige Unterstützung erhalten, um am allgemeinen Arbeitsmarkt teilzunehmen, was ein zentrales Ziel der Sozialgesetzgebung ist.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Section: Kernleistungen -->
+        <section id="leistungen" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center text-slate-800 section-title mx-auto">Die Kernleistungen</h2>
+                <p class="mt-8 text-lg text-center max-w-3xl mx-auto">
+                    Die Leistungen sind in vier flexible Bausteine gegliedert, die je nach Bedarf einzeln oder kombiniert genutzt werden können.
+                </p>
+                <div class="mt-16 max-w-5xl mx-auto">
+                    <div id="tabs-container" role="tablist" aria-label="Kernleistungen" class="flex flex-wrap justify-center gap-4 mb-8">
+                        <button id="tab-btn-1" role="tab" aria-controls="tab-content-1" aria-selected="true" data-tab="1" class="tab-button active px-6 py-3 font-semibold rounded-full bg-slate-200 text-slate-700 hover:bg-teal-500 hover:text-white transition-all duration-300">Einzel- & Familiencoaching</button>
+                        <button id="tab-btn-2" role="tab" aria-controls="tab-content-2" aria-selected="false" data-tab="2" class="tab-button px-6 py-3 font-semibold rounded-full bg-slate-200 text-slate-700 hover:bg-teal-500 hover:text-white transition-all duration-300">Job-Coaching</button>
+                        <button id="tab-btn-3" role="tab" aria-controls="tab-content-3" aria-selected="false" data-tab="3" class="tab-button px-6 py-3 font-semibold rounded-full bg-slate-200 text-slate-700 hover:bg-teal-500 hover:text-white transition-all duration-300">Schulungen & Workshops</button>
+                        <button id="tab-btn-4" role="tab" aria-controls="tab-content-4" aria-selected="false" data-tab="4" class="tab-button px-6 py-3 font-semibold rounded-full bg-slate-200 text-slate-700 hover:bg-teal-500 hover:text-white transition-all duration-300">Organisationsberatung</button>
+                    </div>
+                    <div id="tabs-content" class="bg-slate-50 p-8 rounded-xl shadow-inner">
+                        <div id="tab-content-1" role="tabpanel" aria-labelledby="tab-btn-1" data-tab-content="1" class="tab-content fade-in">
+                            <h3 class="text-2xl font-bold text-teal-700 mb-4">1. Einzel- und Familiencoaching</h3>
+                            <ul class="space-y-3 list-disc list-inside text-slate-600">
+                                <li><strong>Bedarfsanalyse und Zielplanung:</strong> Gemeinsame Erstellung eines Hilfeplans mit Methoden wie Lebensrad oder Werteanalyse.</li>
+                                <li><strong>Alltagscoaching:</strong> Praktische Unterstützung bei Tagesstruktur, Haushalt, Mobilität und Behördenkommunikation direkt vor Ort.</li>
+                                <li><strong>Familien- und Angehörigenberatung:</strong> Schulung zur Stärkung der Selbstbestimmung und Vermeidung von Überfürsorge, inkl. Hinweis auf Entlastungsleistungen.</li>
+                            </ul>
+                        </div>
+                        <div id="tab-content-2" role="tabpanel" aria-labelledby="tab-btn-2" data-tab-content="2" class="tab-content hidden fade-in">
+                            <h3 class="text-2xl font-bold text-teal-700 mb-4">2. Job-Coaching</h3>
+                            <ul class="space-y-3 list-disc list-inside text-slate-600">
+                                <li><strong>Berufliche Orientierung:</strong> Analyse von Interessen und Fähigkeiten, Beratung zu Ausbildung, Qualifizierung und dem Budget für Arbeit.</li>
+                                <li><strong>Betriebliche Qualifizierung:</strong> Direkte Begleitung im Betrieb, schrittweise Anleitung und Reduzierung der Präsenz mit wachsender Selbstständigkeit.</li>
+                                <li><strong>Konflikt- und Krisenintervention:</strong> Vermittlung von Kommunikationstechniken und Moderation bei Schwierigkeiten im Team.</li>
+                                <li><strong>Nachsorge:</strong> Begleitung über 6-8 Monate zur nachhaltigen Sicherung des Arbeitsplatzes mit Dokumentation des Fortschritts.</li>
+                            </ul>
+                        </div>
+                        <div id="tab-content-3" role="tabpanel" aria-labelledby="tab-btn-3" data-tab-content="3" class="tab-content hidden fade-in">
+                             <h3 class="text-2xl font-bold text-teal-700 mb-4">3. Schulungen & Workshops für Einrichtungen</h3>
+                            <ul class="space-y-3 list-disc list-inside text-slate-600">
+                                <li><strong>Demokratie- und Inklusionsworkshops:</strong> Sensibilisierung von Mitarbeitenden zur Stärkung von Beteiligung, Vielfalt und Inklusion im Arbeitsalltag.</li>
+                                <li><strong>Deeskalation & Low-Arousal-Ansatz:</strong> Training zur gewaltfreien Kommunikation und zum professionellen Umgang mit herausforderndem Verhalten.</li>
+                                <li><strong>Team-Supervision & Reflexion:</strong> Moderierte Teamsitzungen zur Fallbesprechung und Reflexion der eigenen pädagogischen Haltung.</li>
+                            </ul>
+                        </div>
+                        <div id="tab-content-4" role="tabpanel" aria-labelledby="tab-btn-4" data-tab-content="4" class="tab-content hidden fade-in">
+                             <h3 class="text-2xl font-bold text-teal-700 mb-4">4. Organisationsberatung</h3>
+                            <ul class="space-y-3 list-disc list-inside text-slate-600">
+                                <li><strong>Inklusionskonzepte:</strong> Unterstützung von Kommunen, Schulen oder Unternehmen bei der Entwicklung strategischer Teilhabekonzepte.</li>
+                                <li><strong>Begleitung von „Demokratie-Experimenten“:</strong> Konzeptionelle und praktische Begleitung von Praxisprojekten zur Demokratiestärkung in Organisationen.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Section: Finanzierung -->
+        <section id="finanzierung" class="py-20 bg-slate-50">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center text-slate-800 section-title mx-auto">Finanzierung & Abrechnung</h2>
+                <p class="mt-8 text-lg text-center max-w-3xl mx-auto">
+                    Die Finanzierung basiert auf einer Mischkalkulation aus verschiedenen Quellen, um eine stabile und flexible Umsatzbasis zu gewährleisten.
+                </p>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16">
+                    <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow transform hover:-translate-y-1">
+                        <h3 class="text-xl font-bold text-teal-700 mb-2">Einzel- & Familiencoaching</h3>
+                        <p class="text-3xl font-bold text-slate-800">45-75€<span class="text-lg font-normal"> / Std.</span></p>
+                        <p class="text-sm text-slate-500 mt-2">Abrechnung privat, über Entlastungsleistungen (§ 45a SGB XI) oder Persönliches Budget.</p>
+                    </div>
+                     <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow transform hover:-translate-y-1">
+                        <h3 class="text-xl font-bold text-teal-700 mb-2">Job-Coaching (LTA)</h3>
+                        <p class="text-3xl font-bold text-slate-800">60-90€<span class="text-lg font-normal"> / Std.</span></p>
+                        <p class="text-sm text-slate-500 mt-2">Über Kostenträger wie Eingliederungshilfe, Integrationsamt. Antrag und Genehmigung erforderlich.</p>
+                    </div>
+                     <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow transform hover:-translate-y-1">
+                        <h3 class="text-xl font-bold text-teal-700 mb-2">Schulungen & Workshops</h3>
+                        <p class="text-3xl font-bold text-slate-800">900-1600€<span class="text-lg font-normal"> / Tag</span></p>
+                        <p class="text-sm text-slate-500 mt-2">Tagessätze für Einrichtungen. Sonderpreise für gemeinnützige Träger und Webinare möglich.</p>
+                    </div>
+                     <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow transform hover:-translate-y-1">
+                        <h3 class="text-xl font-bold text-teal-700 mb-2">Organisationsberatung</h3>
+                        <p class="text-3xl font-bold text-slate-800">600-1200€<span class="text-lg font-normal"> / Tag</span></p>
+                        <p class="text-sm text-slate-500 mt-2">Projekt- oder Tageshonorare, abhängig vom Umfang. Zielkunden: Kommunen, Verbände, Unternehmen.</p>
+                    </div>
+                     <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow transform hover:-translate-y-1">
+                        <h3 class="text-xl font-bold text-teal-700 mb-2">Onlineprodukte</h3>
+                        <p class="text-3xl font-bold text-slate-800">ab 19€</p>
+                        <p class="text-sm text-slate-500 mt-2">Skalierbare Angebote wie Checklisten, E-Books oder Webinare zur Neukundengewinnung.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Fahrplan -->
+        <section id="fahrplan" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center text-slate-800 section-title mx-auto">Fahrplan zur Gründung</h2>
+                <p class="mt-8 text-lg text-center max-w-3xl mx-auto">
+                    Ein strukturierter Weg in die Selbstständigkeit als Teilhabe-Coach. Jeder Schritt baut auf dem vorherigen auf und sichert einen erfolgreichen Start.
+                </p>
+                <div class="mt-16 max-w-2xl mx-auto">
+                    <div class="relative pl-12 flex flex-col gap-8">
+                        <!-- Timeline Item 1 -->
+                        <div class="timeline-item">
+                            <h3 class="text-xl font-bold text-teal-700">1. Markt- & Zielgruppenanalyse</h3>
+                            <p class="text-slate-600 mt-1">Bedarf in der Zielregion recherchieren, potenzielle Kunden und Kooperationspartner identifizieren und erste Kontakte knüpfen.</p>
+                        </div>
+                        <!-- Timeline Item 2 -->
+                        <div class="timeline-item">
+                            <h3 class="text-xl font-bold text-teal-700">2. Qualifikation & Weiterbildung</h3>
+                            <p class="text-slate-600 mt-1">Fehlende Qualifikationen (z.B. Coaching-Ausbildung) erwerben und Fortbildungen in relevanten Bereichen besuchen.</p>
+                        </div>
+                        <!-- Timeline Item 3 -->
+                        <div class="timeline-item">
+                            <h3 class="text-xl font-bold text-teal-700">3. Businessplan erstellen</h3>
+                            <p class="text-slate-600 mt-1">Leistungen definieren, Preise kalkulieren, Wirtschaftlichkeit berechnen und Finanzierung (z.B. Gründungszuschuss) klären.</p>
+                        </div>
+                        <!-- Timeline Item 4 -->
+                        <div class="timeline-item">
+                            <h3 class="text-xl font-bold text-teal-700">4. Rechtsform & Steuern klären</h3>
+                            <p class="text-slate-600 mt-1">Entscheidung für Rechtsform treffen, Anmeldung beim Finanzamt/Gewerbeamt vornehmen und notwendige Versicherungen abschließen.</p>
+                        </div>
+                         <!-- Timeline Item 5 -->
+                        <div class="timeline-item">
+                            <h3 class="text-xl font-bold text-teal-700">5. Marketingstart</h3>
+                            <p class="text-slate-600 mt-1">Marke entwickeln, Website und Social-Media-Profile erstellen. Das eigene Netzwerk aktivieren und Erstkunden gewinnen.</p>
+                        </div>
+                         <!-- Timeline Item 6 -->
+                        <div class="timeline-item">
+                            <h3 class="text-xl font-bold text-teal-700">6. Qualitätssicherung</h3>
+                            <p class="text-slate-600 mt-1">Dokumentationssystem einführen, systematisches Feedback einholen und regelmäßige Supervision zur Reflexion nutzen.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Chancen & Risiken -->
+        <section id="chancen" class="py-20 bg-slate-50">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center text-slate-800 section-title mx-auto">Chancen & Risiken</h2>
+                <p class="mt-8 text-lg text-center max-w-3xl mx-auto">
+                    Eine ausgewogene Betrachtung der Erfolgsfaktoren und potenziellen Herausforderungen ist entscheidend für eine nachhaltige Selbstständigkeit.
+                </p>
+                <div class="grid md:grid-cols-2 gap-12 mt-16 max-w-5xl mx-auto">
+                    <!-- Chancen -->
+                    <div class="bg-teal-50/50 p-8 rounded-lg border-l-4 border-teal-500">
+                        <h3 class="text-3xl font-bold text-teal-800 mb-6 flex items-center gap-3">
+                            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                            Erfolgsfaktoren
+                        </h3>
+                        <ul class="space-y-4 text-slate-700">
+                            <li><strong>Hoher Fachkräftebedarf:</strong> Viele Kooperationsmöglichkeiten durch Mangel in Pflege und Eingliederungshilfe.</li>
+                            <li><strong>Ganzheitlicher Ansatz:</strong> Einzigartige Kombination aus Alltags-, Familien- und Job-Coaching hebt das Angebot ab.</li>
+                            <li><strong>Verzahnung mit Kostenträgern:</strong> Gute Vernetzung sichert den Zugang zu finanzierten Projekten und Aufträgen.</li>
+                        </ul>
+                    </div>
+                    <!-- Risiken -->
+                    <div class="bg-amber-50/50 p-8 rounded-lg border-l-4 border-amber-500">
+                         <h3 class="text-3xl font-bold text-amber-800 mb-6 flex items-center gap-3">
+                            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.257 3.099c.636-1.21 2.242-1.21 2.878 0l5.482 10.473c.636 1.21-.242 2.678-1.638 2.678H4.413c-1.396 0-2.274-1.468-1.638-2.678L8.257 3.099zM9 13a1 1 0 112 0 1 1 0 01-2 0zm1-4a1 1 0 00-1 1v1a1 1 0 102 0v-1a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+                            Potenzielle Risiken
+                        </h3>
+                        <ul class="space-y-4 text-slate-700">
+                            <li><strong>Scheinselbstständigkeit:</strong> Risiko bei Arbeit für nur einen Auftraggeber. Vermeidung durch klare Verträge und mehrere Kunden.</li>
+                            <li><strong>Einstufung als Gewerbe:</strong> Mögliche Gewerbesteuerpflicht. Frühzeitige steuerliche Beratung und Rücklagenbildung empfohlen.</li>
+                            <li><strong>Emotionale Belastung:</strong> Die Arbeit erfordert hohe psychische Stabilität und regelmäßige Supervision zur Entlastung.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+    </main>
+    
+    <footer class="bg-slate-800 text-slate-300 py-12">
+        <div class="container mx-auto px-6 text-center">
+            <h3 class="text-2xl font-bold text-white mb-2">Teilhabe-Coach</h3>
+            <p class="mb-6">Inklusion aktiv gestalten. Gemeinsam Barrieren überwinden.</p>
+            <p class="text-sm text-slate-400">&copy; 2024. Eine interaktive Bildungsseite. Alle Rechte vorbehalten.</p>
+            <p class="mt-8 text-sm text-slate-400">„Hinweis: Dieser HTML-Inhalt wurde automatisiert durch KI erstellt. Inhalte können fehlerhaft sein und müssen je nach Kontext validiert werden.“</p>
+        </div>
+    </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // --- Smooth Scrolling for Nav Links ---
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // --- Interactive Role Diagram ---
+        const roleNodes = document.querySelectorAll('.role-node');
+        const roleDescriptionContainer = document.getElementById('role-description');
+        const roleDescriptions = document.querySelectorAll('[data-role-content]');
+        const rolePlaceholder = document.getElementById('role-placeholder');
+        
+        if (roleNodes.length > 0) {
+            roleNodes.forEach(node => {
+                node.addEventListener('click', () => {
+                    const role = node.dataset.role;
+
+                    // Toggle active state for nodes
+                    roleNodes.forEach(n => n.classList.remove('active'));
+                    node.classList.add('active');
+
+                    // Hide placeholder
+                    if (rolePlaceholder) rolePlaceholder.classList.add('hidden');
+                    
+                    // Show selected description
+                    roleDescriptions.forEach(desc => {
+                        if (desc.dataset.roleContent === role) {
+                            desc.classList.remove('hidden');
+                        } else {
+                            desc.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+        }
+
+        // --- Accordion for Target Groups ---
+        const accordionHeaders = document.querySelectorAll('.accordion-header');
+        accordionHeaders.forEach(header => {
+            header.addEventListener('click', () => {
+                const content = document.getElementById(header.getAttribute('aria-controls'));
+                const icon = header.querySelector('.accordion-icon');
+                const isExpanded = header.getAttribute('aria-expanded') === 'true';
+
+                // Close all other accordions
+                accordionHeaders.forEach(otherHeader => {
+                    if (otherHeader !== header) {
+                        const otherContent = document.getElementById(otherHeader.getAttribute('aria-controls'));
+                        otherHeader.setAttribute('aria-expanded', 'false');
+                        otherContent.classList.remove('accordion-content-open');
+                        otherHeader.querySelector('.accordion-icon').classList.remove('rotate-180');
+                    }
+                });
+                
+                // Toggle current accordion
+                header.setAttribute('aria-expanded', !isExpanded);
+                content.classList.toggle('accordion-content-open');
+                icon.classList.toggle('rotate-180');
+            });
+        });
+
+        // --- Tabs for Core Services ---
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        if (tabButtons.length > 0) {
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.dataset.tab;
+
+                    // Update button styles and ARIA states
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                        btn.setAttribute('aria-selected', 'false');
+                    });
+                    button.classList.add('active');
+                    button.setAttribute('aria-selected', 'true');
+                    
+                    // Update content visibility
+                    tabContents.forEach(content => {
+                        if (content.dataset.tabContent === tabId) {
+                            content.classList.remove('hidden');
+                        } else {
+                            content.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+        }
+    });
+    </script>
+</body>
+</html>
