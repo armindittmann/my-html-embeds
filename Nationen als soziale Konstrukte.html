@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="de" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nationen als soziale Konstrukte: Eine interaktive Reise durch Benedict Andersons Theorie</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Styles & Tailwind Configuration */
+        :root {
+            --bg-color: #0f172a; /* Slate 900 */
+            --text-color: #cbd5e1; /* Slate 300 */
+            --heading-color: #f8fafc; /* Slate 50 */
+            --accent-color: #38bdf8; /* Sky 400 */
+            --accent-light: #7dd3fc; /* Sky 300 */
+            --border-color: #334155; /* Slate 700 */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            color: var(--heading-color);
+            text-wrap: balance;
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, var(--accent-light), #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .prose-custom {
+            color: var(--text-color);
+        }
+        .prose-custom h1, .prose-custom h2, .prose-custom h3, .prose-custom h4, .prose-custom strong {
+            color: var(--heading-color);
+        }
+        .prose-custom a {
+            color: var(--accent-color);
+            transition: color 0.3s ease;
+        }
+        .prose-custom a:hover {
+            color: var(--accent-light);
+        }
+        .prose-custom blockquote {
+            border-left-color: var(--accent-color);
+            color: var(--text-color);
+        }
+        .prose-custom code {
+            color: var(--accent-light);
+            background-color: rgba(56, 189, 248, 0.1);
+            padding: 0.1em 0.3em;
+            border-radius: 4px;
+        }
+
+        /* Animation utilities */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s cubic-bezier(0.645, 0.045, 0.355, 1), transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+        }
+        .fade-in-up.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Interactive Visualization Specific Styles */
+        #imagined-community-vis svg .node {
+            transition: fill 0.3s ease;
+        }
+        #imagined-community-vis svg .link {
+            stroke: var(--accent-color);
+            stroke-opacity: 0;
+            transition: stroke-opacity 0.5s ease;
+        }
+        #imagined-community-vis:hover svg .link {
+            stroke-opacity: 0.5;
+        }
+
+        #limited-community-vis svg #landmass {
+            fill: var(--accent-color);
+            opacity: 0.3;
+        }
+        #limited-community-vis svg #border {
+            fill: none;
+            stroke: var(--accent-light);
+            stroke-width: 2;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            transition: stroke-dashoffset 2s ease-in-out;
+        }
+        #limited-community-vis.is-visible svg #border {
+            stroke-dashoffset: 0;
+        }
+
+        #sovereign-community-vis .icon-container {
+            transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+        }
+        
+        #print-capitalism-vis .dialect {
+            transition: transform 1s ease-in-out, opacity 1s ease-in-out, background-color 0.5s ease;
+        }
+
+        #zkm-vis .zkm-state {
+            display: none;
+        }
+        #zkm-vis .zkm-state.active {
+            display: block;
+        }
+        #zkm-vis .zkm-artifact, #zkm-vis .zkm-person, #zkm-vis .zkm-border {
+            transition: all 1s ease-in-out;
+        }
+
+        #theorists-vis .theorist-card {
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        #critique-vis .critique-layer {
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            pointer-events: none;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            top: 1rem;
+            left: -1.35rem;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            border: 2px solid var(--bg-color);
+        }
+    </style>
+</head>
+<body class="w-full overflow-x-hidden">
+
+    <!-- Header Section -->
+    <header class="min-h-screen flex flex-col items-center justify-center text-center p-8 relative overflow-hidden">
+        <div class="absolute inset-0 bg-grid-slate-800 [mask-image:linear-gradient(to_bottom,white_20%,transparent_100%)]"></div>
+        <div class="z-10">
+            <h2 class="text-xl md:text-2xl text-accent-color mb-4 font-sans tracking-widest uppercase">Benedict Andersons Theorie</h2>
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 max-w-4xl mx-auto leading-tight">
+                Nationen als soziale <span class="gradient-text">Konstrukte</span>
+            </h1>
+            <p class="max-w-2xl mx-auto text-lg md:text-xl text-slate-400">
+                Eine interaktive Aufbereitung, um zu verstehen, warum eine Nation mehr ist als nur ein Territorium – sie ist eine Idee in unseren Köpfen.
+            </p>
+            <div class="mt-12 animate-bounce">
+                <a href="#kernidee" class="inline-block p-2 text-slate-400 hover:text-white transition-colors" aria-label="Zur Kernidee scrollen">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-16 md:py-24 space-y-24 md:space-y-32">
+
+        <!-- 1. Die Kernidee -->
+        <section id="kernidee" class="scroll-mt-20">
+            <div class="text-center max-w-3xl mx-auto fade-in-up">
+                <h2 class="text-4xl md:text-5xl mb-4">Die Kernidee: Nation in drei Begriffen</h2>
+                <p class="text-lg text-slate-400">
+                    Benedict Andersons zentrale These ist, dass Nationen keine naturgegebenen Entitäten sind, sondern soziale Konstrukte. Er fasst dieses Verständnis in drei wesentlichen Merkmalen zusammen.
+                </p>
+            </div>
+
+            <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Vorgestellte Gemeinschaft -->
+                <div class="bg-slate-800/50 p-6 rounded-lg border border-slate-700 fade-in-up" style="transition-delay: 100ms;">
+                    <h3 class="text-2xl mb-4 text-accent-light">Vorgestellte Gemeinschaft</h3>
+                    <p class="prose-custom mb-4">Die Mitglieder einer Nation werden sich nie alle kennenlernen. Doch in ihren Köpfen existiert ein Bild ihrer Gemeinschaft. Diese Verbundenheit mit Unbekannten wird über geteilte Symbole und Narrative hergestellt.</p>
+                    <div id="imagined-community-vis" class="w-full h-48 bg-slate-900 rounded-md p-4 cursor-pointer" title="Bewegen Sie die Maus darüber, um die Verbindungen zu sehen.">
+                        <svg width="100%" height="100%" viewBox="0 0 200 100"></svg>
+                    </div>
+                    <p class="text-xs text-center text-slate-500 mt-2">Interaktive Visualisierung: Jede Kugel ist ein Mitglied der Nation.</p>
+                </div>
+
+                <!-- Begrenzte Gemeinschaft -->
+                <div class="bg-slate-800/50 p-6 rounded-lg border border-slate-700 fade-in-up" style="transition-delay: 200ms;">
+                    <h3 class="text-2xl mb-4 text-accent-light">Begrenzte Gemeinschaft</h3>
+                    <p class="prose-custom mb-4">Jede Nation stellt sich als begrenzt vor, mit Grenzen, jenseits derer andere Nationen liegen. Es gibt immer ein konzeptionelles "Innen" und "Außen", das die eigene Gemeinschaft von anderen abgrenzt.</p>
+                    <div id="limited-community-vis" class="w-full h-48 bg-slate-900 rounded-md p-4 flex items-center justify-center">
+                        <svg width="100%" height="100%" viewBox="0 0 100 100">
+                           <path id="landmass" d="M 10 50 C 10 20, 40 10, 50 10 S 90 20, 90 50 S 70 90, 50 90 S 10 80, 10 50 Z" />
+                           <path id="border" d="M 10 50 C 10 20, 40 10, 50 10 S 90 20, 90 50 S 70 90, 50 90 S 10 80, 10 50 Z" />
+                        </svg>
+                    </div>
+                     <p class="text-xs text-center text-slate-500 mt-2">Die Grenze definiert die Gemeinschaft.</p>
+                </div>
+
+                <!-- Souveräne Gemeinschaft -->
+                <div class="bg-slate-800/50 p-6 rounded-lg border border-slate-700 fade-in-up" style="transition-delay: 300ms;">
+                    <h3 class="text-2xl mb-4 text-accent-light">Souveräne Gemeinschaft</h3>
+                    <p class="prose-custom mb-4">Die Nation versteht sich als souverän. Das Volk tritt an die Stelle von göttlich legitimierter Herrschaft. Die Nation wird zur obersten Autorität, die sich aus sich selbst heraus rechtfertigt.</p>
+                    <div id="sovereign-community-vis" class="w-full h-48 bg-slate-900 rounded-md p-4 flex items-center justify-center relative cursor-pointer">
+                        <div id="crown" class="icon-container absolute opacity-100 transform scale-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-amber-400" viewBox="0 0 20 20" fill="currentColor" role="img">
+                                <title>Krone (Monarchie)</title>
+                                <path d="M10 3a1 1 0 00-1.31.874L8.13 8.356a1 1 0 00.435.986l3.585 2.151a1 1 0 001.31-.874L13.87 6.144A1 1 0 0012.56 5.16l-3.585-2.15A1 1 0 0010 3zM4 12a1 1 0 00-1 1v4a1 1 0 001 1h12a1 1 0 001-1v-4a1 1 0 00-1-1H4z" />
+                                <path d="M2 5a3 3 0 013-3h10a3 3 0 013 3v.54a1 1 0 00.31.72l.436.435a1 1 0 010 1.414l-2.122 2.12a1 1 0 00-.28.678V12h-2V9.414a1 1 0 00-.293-.707l-2.12-2.121A1 1 0 018.586 6H7V5a1 1 0 00-1-1H5a1 1 0 00-1 1v1H2.56A1 1 0 001.84 7.31L2 7.47v-2.47z" />
+                            </svg>
+                        </div>
+                        <div id="flag" class="icon-container absolute opacity-0 transform scale-50">
+                             <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-accent-light" viewBox="0 0 20 20" fill="currentColor" role="img">
+                                <title>Flagge (Nation)</title>
+                                <path fill-rule="evenodd" d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+                    <p class="text-xs text-center text-slate-500 mt-2">Die Macht wechselt vom Monarchen zum Volk.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Mechanismen der Nationenbildung -->
+        <section id="mechanismen" class="scroll-mt-20">
+             <div class="text-center max-w-3xl mx-auto fade-in-up">
+                <h2 class="text-4xl md:text-5xl mb-4">Wie entstehen Nationen?</h2>
+                <p class="text-lg text-slate-400">
+                    Anderson identifiziert mehrere historische und mediale Mechanismen, die die Entstehung dieser vorgestellten Gemeinschaften ermöglichten.
+                </p>
+            </div>
+
+            <div class="mt-16 space-y-16">
+
+                <!-- Printkapitalismus -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center fade-in-up">
+                    <div class="lg:pr-8">
+                        <h3 class="text-3xl mb-4 text-accent-light">Printkapitalismus</h3>
+                        <p class="prose-custom">Die Kombination aus Buchdruck und Marktwirtschaft war entscheidend. Der Zeitungs- und Buchmarkt standardisierte Volkssprachen und schuf große Lesepublika. Durch die tägliche Lektüre derselben Inhalte entstand eine alltägliche, vorgestellte Kontaktfläche zwischen Menschen, die sich nie begegneten.</p>
+                        <button id="print-capitalism-btn" class="mt-4 px-4 py-2 border border-accent-color text-accent-color rounded hover:bg-accent-color hover:text-slate-900 transition-colors">Simulation starten</button>
+                    </div>
+                    <div id="print-capitalism-vis" class="w-full h-64 bg-slate-800/50 rounded-lg border border-slate-700 p-4 relative overflow-hidden">
+                        <div id="print-press" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-slate-600 opacity-0 transition-opacity duration-1000" style="font-size: 8rem;" role="img" aria-label="Zeitungsstapel">&#x1F4F0;</div>
+                    </div>
+                </div>
+
+                <!-- Homogene, leere Zeit -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center fade-in-up">
+                    <div class="lg:order-2 lg:pl-8">
+                        <h3 class="text-3xl mb-4 text-accent-light">"Homogene, leere Zeit"</h3>
+                        <p class="prose-custom">Roman und Zeitung inszenieren Gleichzeitigkeit. Sie präsentieren Ereignisse, die zur selben kalendarischen Zeit an unterschiedlichen Orten stattfinden. Dies erzeugt bei Lesenden das Gefühl eines geteilten "Heute" und stiftet ein Wir-Gefühl, das räumliche Distanzen überbrückt.</p>
+                    </div>
+                    <div id="homo-time-vis" class="lg:order-1 w-full h-auto bg-slate-800/50 rounded-lg border border-slate-700 p-6">
+                        <div class="text-center mb-4 font-bold text-lg text-slate-300">Ein Tag in der Nation</div>
+                        <div class="grid grid-cols-3 gap-4 text-center">
+                            <div><h4 class="font-bold text-white mb-2">Berlin</h4></div>
+                            <div><h4 class="font-bold text-white mb-2">Hamburg</h4></div>
+                            <div><h4 class="font-bold text-white mb-2">München</h4></div>
+                        </div>
+                        <div class="relative h-40">
+                            <!-- Events will be injected here by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Zensus, Karte, Museum -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center fade-in-up">
+                    <div>
+                        <h3 class="text-3xl mb-4 text-accent-light">Zensus, Karte, Museum</h3>
+                        <p class="prose-custom">Der moderne Staat nutzt drei Instrumente, um die Nation zu verkörpern: Der <strong class="text-accent-light">Zensus</strong> zählt und klassifiziert die Bevölkerung. Die <strong class="text-accent-light">Karte</strong> visualisiert das Territorium als klares Eigentum. Das <strong class="text-accent-light">Museum</strong> kuratiert eine offizielle Geschichte und legitimiert die Gegenwart.</p>
+                         <div id="zkm-controls" class="mt-4 flex flex-wrap gap-2" role="tablist" aria-label="Instrumente der Nationenbildung">
+                             <button id="zensus-tab" data-target="zensus" class="zkm-btn px-4 py-2 border border-accent-color text-accent-color rounded bg-accent-color/20 transition-colors" role="tab" aria-selected="true" aria-controls="zensus-state">Zensus</button>
+                             <button id="karte-tab" data-target="karte" class="zkm-btn px-4 py-2 border border-slate-600 text-slate-400 rounded hover:border-accent-color hover:text-accent-color transition-colors" role="tab" aria-selected="false" aria-controls="karte-state">Karte</button>
+                             <button id="museum-tab" data-target="museum" class="zkm-btn px-4 py-2 border border-slate-600 text-slate-400 rounded hover:border-accent-color hover:text-accent-color transition-colors" role="tab" aria-selected="false" aria-controls="museum-state">Museum</button>
+                         </div>
+                    </div>
+                    <div id="zkm-vis" class="w-full h-64 bg-slate-800/50 rounded-lg border border-slate-700 p-4 relative overflow-hidden">
+                        <!-- Zensus State -->
+                        <div id="zensus-state" class="zkm-state active w-full h-full" role="tabpanel" aria-labelledby="zensus-tab">
+                             <svg width="100%" height="100%" viewBox="0 0 200 100"></svg>
+                        </div>
+                        <!-- Karte State -->
+                        <div id="karte-state" class="zkm-state w-full h-full" role="tabpanel" aria-labelledby="karte-tab">
+                           <svg width="100%" height="100%" viewBox="0 0 200 100">
+                               <path class="zkm-border" stroke="var(--accent-light)" stroke-width="2" fill="var(--accent-color)" fill-opacity="0.1" d="M10,10 L190,10 L190,90 L10,90 Z" style="stroke-dasharray: 800; stroke-dashoffset: 800;"></path>
+                               <text x="100" y="55" fill="var(--heading-color)" font-size="12" text-anchor="middle" style="opacity:0;">Unser Territorium</text>
+                           </svg>
+                        </div>
+                        <!-- Museum State -->
+                        <div id="museum-state" class="zkm-state w-full h-full" role="tabpanel" aria-labelledby="museum-tab">
+                             <svg width="100%" height="100%" viewBox="0 0 200 100"></svg>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- 4. Theoretische Einordnung -->
+        <section id="einordnung" class="scroll-mt-20">
+            <div class="text-center max-w-3xl mx-auto fade-in-up">
+                <h2 class="text-4xl md:text-5xl mb-4">Im Dialog mit Anderen</h2>
+                <p class="text-lg text-slate-400">
+                    Andersons Ansatz ist Teil einer breiteren konstruktivistischen Schule, unterscheidet sich aber in seinen Schwerpunkten.
+                </p>
+            </div>
+            
+            <div id="theorists-vis" class="mt-16 grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 fade-in-up">
+                <div class="theorist-card bg-slate-800/50 p-4 rounded-lg border border-slate-700 hover:border-accent-color hover:bg-slate-800">
+                    <h4 class="text-xl font-bold text-accent-light">Ernest Gellner</h4>
+                    <p class="text-sm mt-2 text-slate-400">Fokus auf Industriegesellschaft und die Notwendigkeit einer standardisierten Hochkultur für mobile Arbeitskräfte.</p>
+                </div>
+                <div class="theorist-card bg-slate-800/50 p-4 rounded-lg border border-slate-700 hover:border-accent-color hover:bg-slate-800">
+                    <h4 class="text-xl font-bold text-accent-light">Eric Hobsbawm</h4>
+                    <p class="text-sm mt-2 text-slate-400">Betont "erfundene Traditionen", die gezielt geschaffen werden, um neue politische Ordnungen zu stabilisieren.</p>
+                </div>
+                <div class="theorist-card bg-slate-800/50 p-4 rounded-lg border border-slate-700 hover:border-accent-color hover:bg-slate-800">
+                    <h4 class="text-xl font-bold text-accent-light">Michael Billig</h4>
+                    <p class="text-sm mt-2 text-slate-400">Fokussiert auf den "banalen Nationalismus" – die alltägliche, unbemerkte Reproduktion der Nation (z.B. Flaggen, Wetterkarten).</p>
+                </div>
+                <div class="theorist-card bg-slate-800/50 p-4 rounded-lg border border-slate-700 hover:border-accent-color hover:bg-slate-800">
+                    <h4 class="text-xl font-bold text-accent-light">Anthony D. Smith</h4>
+                    <p class="text-sm mt-2 text-slate-400">Argumentiert, dass moderne Nationen auf vor-moderne Mythen und Symbole (Ethnosymbolismus) zurückgreifen.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 5. Kritische Auseinandersetzung -->
+        <section id="kritik" class="scroll-mt-20">
+            <div class="text-center max-w-3xl mx-auto fade-in-up">
+                <h2 class="text-4xl md:text-5xl mb-4">Grenzen der Theorie</h2>
+                <p class="text-lg text-slate-400">
+                    Obwohl wegweisend, ist Andersons Theorie auch Gegenstand von Kritik. Die "vorgestellte Gemeinschaft" ist nicht für alle gleich.
+                </p>
+            </div>
+            
+            <div id="critique-vis" class="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                <div class="bg-slate-800/50 p-6 rounded-lg border border-slate-700 fade-in-up">
+                    <h3 class="text-2xl mb-4 text-accent-light">Eine kritische Perspektive</h3>
+                    <div class="prose-custom">
+                        <p>Kritiker wenden ein, dass die Frage, wer für "die Nation" spricht, von Machtasymmetrien geprägt ist. Andersons Theorie kann durch folgende Linsen erweitert werden:</p>
+                        <div class="mt-4 space-y-2">
+                            <button class="critique-point w-full text-left p-3 rounded-lg transition-colors duration-200 hover:bg-slate-700/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-accent-color" data-critique="gender">
+                                <strong>Gender & Klasse:</strong> Die nationale Erzählung blendet oft die Perspektiven von Frauen, Arbeiterklassen oder marginalisierten Gruppen aus.
+                            </button>
+                            <button class="critique-point w-full text-left p-3 rounded-lg transition-colors duration-200 hover:bg-slate-700/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-accent-color" data-critique="gewalt">
+                                <strong>Staatsgewalt & Zwang:</strong> Die Nation wird auch durch Zwang durchgesetzt: Grenzregime und ungleicher Zugang zu Bürgerrechten sind materielle Realitäten.
+                            </button>
+                            <button class="critique-point w-full text-left p-3 rounded-lg transition-colors duration-200 hover:bg-slate-700/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-accent-color" data-critique="eurozentrismus">
+                                <strong>Eurozentrismus:</strong> Das Modell ist primär an westlichen Entwicklungen konzipiert und nicht immer auf andere Weltregionen übertragbar.
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="relative w-full h-96 bg-slate-900 rounded-md p-4 border border-slate-700 fade-in-up" style="transition-delay: 200ms;">
+                    <!-- Base visualization (re-used from Kernidee) -->
+                    <div id="critique-base-vis">
+                        <svg width="100%" height="100%" viewBox="0 0 200 100">
+                           <path fill="var(--accent-color)" fill-opacity="0.3" d="M 10 50 C 10 20, 40 10, 50 10 S 90 20, 90 50 S 70 90, 50 90 S 10 80, 10 50 Z" transform="translate(50, 0)"></path>
+                           <path stroke="var(--accent-light)" stroke-width="2" fill="none" d="M 10 50 C 10 20, 40 10, 50 10 S 90 20, 90 50 S 70 90, 50 90 S 10 80, 10 50 Z" transform="translate(50, 0)"></path>
+                        </svg>
+                    </div>
+                    <!-- Critique Layers -->
+                    <div id="gender-layer" class="critique-layer absolute inset-0 p-4">
+                        <svg width="100%" height="100%" viewBox="0 0 200 100">
+                            <title>Ungleiche Repräsentation innerhalb der Nation</title>
+                            <text x="100" y="50" fill="var(--heading-color)" font-size="10" text-anchor="middle">Wer wird repräsentiert?</text>
+                            <circle cx="80" cy="40" r="3" fill="white"/>
+                            <circle cx="120" cy="60" r="3" fill="white"/>
+                            <circle cx="100" cy="20" r="3" fill="white"/>
+                            <circle cx="90" cy="80" r="3" fill="grey"/>
+                            <circle cx="110" cy="85" r="3" fill="grey"/>
+                        </svg>
+                        <p class="text-xs text-center text-slate-500 mt-2 absolute bottom-4 w-full left-0">Manche Stimmen sind lauter als andere.</p>
+                    </div>
+                    <div id="gewalt-layer" class="critique-layer absolute inset-0 p-4">
+                        <svg width="100%" height="100%" viewBox="0 0 200 100">
+                            <title>Harte, exkludierende Grenzen</title>
+                             <path stroke="#ef4444" stroke-width="2.5" fill="none" d="M 10 50 C 10 20, 40 10, 50 10 S 90 20, 90 50 S 70 90, 50 90 S 10 80, 10 50 Z" transform="translate(50, 0)" stroke-dasharray="5 5"></path>
+                             <path d="M150 10 L 150 90" stroke="#ef4444" stroke-width="2" />
+                             <text x="170" y="55" fill="#ef4444" font-size="10">Exklusion</text>
+                        </svg>
+                        <p class="text-xs text-center text-red-400 mt-2 absolute bottom-4 w-full left-0">Grenzen sind nicht nur Linien, sondern auch Barrieren.</p>
+                    </div>
+                    <div id="eurozentrismus-layer" class="critique-layer absolute inset-0 p-4">
+                        <svg width="100%" height="100%" viewBox="0 0 200 100">
+                            <title>Alternative Formen der Nationenbildung</title>
+                             <path fill-opacity="0.3" fill="#f59e0b" d="M 30 20 C 60 10, 80 40, 70 60 S 10 70, 30 20" transform="translate(10, 10)"></path>
+                             <path fill-opacity="0.3" fill="#10b981" d="M 120 70 C 110 90, 150 90, 160 70 S 150 40, 120 70" transform="translate(10, 0)"></path>
+                        </svg>
+                         <p class="text-xs text-center text-slate-500 mt-2 absolute bottom-4 w-full left-0">Andere Regionen, andere Geschichten der Nationenbildung.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. Zusammenfassender Merksatz -->
+        <section id="fazit" class="scroll-mt-20">
+            <div class="text-center max-w-4xl mx-auto p-8 bg-slate-800/50 rounded-lg border border-slate-700 fade-in-up">
+                 <h4 class="text-sm uppercase tracking-widest text-accent-color mb-4">Zusammenfassender Merksatz</h4>
+                 <blockquote class="text-2xl md:text-3xl font-bold italic text-white leading-relaxed">
+                     "Nation entsteht durch eine <span class="text-accent-light">medial hergestellte Gleichzeitigkeit</span> sowie durch <span class="text-accent-light">administrativ und kuratorisch geordnete</span> Vergangenheiten und Räume – aus diesem Zusammenspiel erwächst ein gefühltes <span class="text-accent-light">Wir</span>."
+                 </blockquote>
+            </div>
+        </section>
+        
+        <!-- Timeline -->
+        <section id="timeline" class="scroll-mt-20">
+             <div class="text-center max-w-3xl mx-auto fade-in-up">
+                <h2 class="text-4xl md:text-5xl mb-4">Werkentwicklung</h2>
+                <p class="text-lg text-slate-400">
+                    Die Entwicklung von Andersons Thesen über die Zeit.
+                </p>
+            </div>
+            <div class="mt-12 max-w-md mx-auto fade-in-up">
+                <div class="relative border-l-2 border-slate-700 pl-8 space-y-8">
+                    <div class="timeline-item">
+                        <h4 class="text-xl font-bold text-white">1983</h4>
+                        <p class="text-slate-400">Erstveröffentlichung von <em>Imagined Communities</em>.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4 class="text-xl font-bold text-white">1991</h4>
+                        <p class="text-slate-400">Erweiterte Auflage mit neuen Kapiteln zu Zensus, Karte, Museum und Erinnern/Vergessen.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4 class="text-xl font-bold text-white">2006</h4>
+                        <p class="text-slate-400">Revidierte und bis heute maßgebliche Ausgabe im Verlag Verso.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-12 border-t border-slate-800">
+        <p class="text-slate-500">
+            Eine interaktive Aufbereitung basierend auf Benedict Anderson, <em>Imagined Communities</em>. <br class="hidden sm:block">
+            Konzept & Umsetzung mit HTML, TailwindCSS und Vanilla JS.
+        </p>
+        <p class="text-slate-400 mt-6 px-4"><strong>„Hinweis: Dieser HTML-Inhalt wurde automatisiert durch KI erstellt. Inhalte können fehlerhaft sein und müssen je nach Kontext validiert werden.“</strong></p>
+    </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    // --- Observer for fade-in animations ---
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
+    
+    // --- 1. Kernidee Visualizations ---
+
+    // a) Imagined Community
+    const communityVis = document.getElementById('imagined-community-vis');
+    if (communityVis) {
+        const svg = communityVis.querySelector('svg');
+        const width = 200;
+        const height = 100;
+        const numNodes = 50;
+        const nodes = [];
+
+        for (let i = 0; i < numNodes; i++) {
+            const node = {
+                x: Math.random() * width,
+                y: Math.random() * height,
+                r: Math.random() * 2 + 1.5,
+            };
+            nodes.push(node);
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', node.x);
+            circle.setAttribute('cy', node.y);
+            circle.setAttribute('r', node.r);
+            circle.setAttribute('fill', 'var(--text-color)');
+            circle.setAttribute('opacity', '0.6');
+            circle.classList.add('node');
+            svg.appendChild(circle);
+        }
+
+        for (let i = 0; i < numNodes / 2; i++) {
+            const source = nodes[Math.floor(Math.random() * numNodes)];
+            const target = nodes[Math.floor(Math.random() * numNodes)];
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', source.x);
+            line.setAttribute('y1', source.y);
+            line.setAttribute('x2', target.x);
+            line.setAttribute('y2', target.y);
+            line.classList.add('link');
+            svg.insertBefore(line, svg.firstChild);
+        }
+    }
+
+    // b) Limited Community - observer on vis element
+    const limitedCommunityVis = document.getElementById('limited-community-vis');
+    if (limitedCommunityVis) observer.observe(limitedCommunityVis);
+
+    // c) Sovereign Community
+    const sovereignVis = document.getElementById('sovereign-community-vis');
+    if (sovereignVis) {
+        const crown = document.getElementById('crown');
+        const flag = document.getElementById('flag');
+        let toggled = false;
+        
+        const toggleSovereign = () => {
+            toggled = !toggled;
+            if (toggled) {
+                crown.style.opacity = '0';
+                crown.style.transform = 'scale(0.5)';
+                flag.style.opacity = '1';
+                flag.style.transform = 'scale(1)';
+            } else {
+                crown.style.opacity = '1';
+                crown.style.transform = 'scale(1)';
+                flag.style.opacity = '0';
+                flag.style.transform = 'scale(0.5)';
+            }
+        };
+
+        sovereignVis.addEventListener('click', toggleSovereign);
+        setInterval(toggleSovereign, 4000);
+    }
+
+    // --- 2. Mechanismen Visualizations ---
+
+    // a) Print Capitalism
+    const printVis = document.getElementById('print-capitalism-vis');
+    const printBtn = document.getElementById('print-capitalism-btn');
+    if (printVis && printBtn) {
+        const colors = ['#f87171', '#fb923c', '#a3e635', '#22d3ee', '#a78bfa'];
+        let dialects = [];
+
+        const initPrintVis = () => {
+            printVis.innerHTML = '<div id="print-press" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-slate-600 opacity-0 transition-opacity duration-1000" style="font-size: 8rem;" role="img" aria-label="Zeitungsstapel">&#x1F4F0;</div>';
+            dialects = [];
+            for (let i = 0; i < 100; i++) {
+                const dialect = document.createElement('div');
+                dialect.classList.add('dialect', 'absolute', 'rounded-full');
+                const size = Math.random() * 8 + 4;
+                dialect.style.width = `${size}px`;
+                dialect.style.height = `${size}px`;
+                dialect.style.backgroundColor = colors[i % colors.length];
+                dialect.style.left = `${Math.random() * 95}%`;
+                dialect.style.top = `${Math.random() * 95}%`;
+                printVis.appendChild(dialect);
+                dialects.push(dialect);
+            }
+        };
+        
+        printBtn.addEventListener('click', () => {
+            initPrintVis();
+            const press = document.getElementById('print-press');
+            
+            setTimeout(() => { if (press) press.style.opacity = '1'; }, 500);
+
+            setTimeout(() => {
+                dialects.forEach(d => {
+                    d.style.backgroundColor = 'var(--accent-color)';
+                    d.style.transform = `translate(${(printVis.clientWidth / 2) - d.offsetLeft - (d.clientWidth/2)}px, ${(printVis.clientHeight / 2) - d.offsetTop - (d.clientHeight/2)}px) scale(1.5)`;
+                });
+            }, 1500);
+            
+            setTimeout(() => {
+                dialects.forEach(d => { d.style.opacity = '0'; });
+                const press = document.getElementById('print-press');
+                if (press) press.style.opacity = '0';
+            }, 3000);
+
+            setTimeout(initPrintVis, 4000);
+        });
+        
+        initPrintVis();
+    }
+    
+    // b) Homogene, leere Zeit
+    const timeVis = document.getElementById('homo-time-vis');
+    if (timeVis) {
+        const container = timeVis.querySelector('.relative');
+        const events = [
+            { time: 'Morgens', text: 'Zeitung lesen', y: 15 },
+            { time: 'Mittags', text: 'Nachrichten hören', y: 45 },
+            { time: 'Abends', text: 'Politsendung sehen', y: 75 }
+        ];
+
+        let eventTimeout;
+        const createEvents = () => {
+            if (!container) return;
+            container.innerHTML = '';
+            let delay = 0;
+            events.forEach(event => {
+                const eventEl = document.createElement('div');
+                eventEl.className = 'absolute w-full text-center text-sm text-accent-light opacity-0 transition-opacity duration-1000';
+                eventEl.style.top = `${event.y}%`;
+                eventEl.textContent = `— ${event.text} —`;
+                container.appendChild(eventEl);
+                setTimeout(() => { eventEl.style.opacity = '1'; }, delay);
+                delay += 1500;
+            });
+        };
+        
+        const timeObserver = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                createEvents();
+                eventTimeout = setInterval(createEvents, 6000);
+            } else {
+                clearInterval(eventTimeout);
+            }
+        }, { threshold: 0.5 });
+        
+        timeObserver.observe(timeVis);
+    }
+    
+    // c) Zensus, Karte, Museum
+    const zkmVis = document.getElementById('zkm-vis');
+    if (zkmVis) {
+        const controls = document.getElementById('zkm-controls');
+        const buttons = controls.querySelectorAll('.zkm-btn');
+        const states = zkmVis.querySelectorAll('.zkm-state');
+
+        // Zensus setup
+        const zensusSVG = document.getElementById('zensus-state').querySelector('svg');
+        let zensusPeople = [];
+        for (let i = 0; i < 30; i++) {
+            const person = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            const x = Math.random() * 180 + 10;
+            const y = Math.random() * 80 + 10;
+            person.setAttribute('cx', x);
+            person.setAttribute('cy', y);
+            person.setAttribute('r', 4);
+            person.setAttribute('fill', i < 15 ? 'var(--accent-light)' : '#a78bfa');
+            person.classList.add('zkm-person');
+            zensusSVG.appendChild(person);
+            zensusPeople.push({ el: person, x, y, type: i < 15 ? 'A' : 'B' });
+        }
+        
+        // Museum setup
+        const museumSVG = document.getElementById('museum-state').querySelector('svg');
+        let museumArtifacts = [];
+        for (let i = 0; i < 20; i++) {
+            const artifact = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            const x = Math.random() * 180 + 10;
+            const y = Math.random() * 80 + 10;
+            const isChosen = i % 4 === 0;
+            artifact.setAttribute('x', x);
+            artifact.setAttribute('y', y);
+            artifact.setAttribute('width', 10);
+            artifact.setAttribute('height', 10);
+            artifact.setAttribute('fill', isChosen ? 'var(--accent-color)' : '#64748b');
+            artifact.classList.add('zkm-artifact');
+            museumSVG.appendChild(artifact);
+            museumArtifacts.push({el: artifact, x, y, chosen: isChosen});
+        }
+
+        const runZensus = () => {
+            zensusPeople.forEach((p, i) => {
+                let targetX, targetY;
+                if (p.type === 'A') {
+                    targetX = 50 + (i % 5) * 10;
+                    targetY = 20 + Math.floor(i / 5) * 10;
+                } else {
+                    targetX = 150 - ((i-15) % 5) * 10;
+                    targetY = 20 + Math.floor((i-15) / 5) * 10;
+                }
+                p.el.style.transform = `translate(${targetX - p.x}px, ${targetY - p.y}px)`;
+            });
+        };
+        
+        const runKarte = () => {
+            const border = zkmVis.querySelector('#karte-state .zkm-border');
+            const text = zkmVis.querySelector('#karte-state text');
+            if (border) border.style.strokeDashoffset = '0';
+            setTimeout(() => { if(text) text.style.opacity = '1'; }, 1000);
+        };
+
+        const runMuseum = () => {
+            museumArtifacts.forEach((a, i) => {
+                if (a.chosen) {
+                    const pedestalIndex = museumArtifacts.filter((art, idx) => art.chosen && idx <= i).length - 1;
+                    const targetX = 30 + pedestalIndex * 40;
+                    const targetY = 70;
+                    a.el.style.transform = `translate(${targetX - a.x}px, ${targetY - a.y}px)`;
+                } else {
+                    a.el.style.opacity = '0';
+                    a.el.style.transform = 'scale(0)';
+                }
+            });
+        };
+
+        const resetZKM = () => {
+            zensusPeople.forEach(p => p.el.style.transform = 'translate(0, 0)');
+            const border = zkmVis.querySelector('#karte-state .zkm-border');
+            const text = zkmVis.querySelector('#karte-state text');
+            if (border) border.style.strokeDashoffset = '800';
+            if (text) text.style.opacity = '0';
+            museumArtifacts.forEach(a => {
+                a.el.style.transform = 'translate(0,0) scale(1)';
+                a.el.style.opacity = '1';
+            });
+        };
+        
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const target = button.dataset.target;
+                
+                buttons.forEach(b => {
+                    b.classList.remove('bg-accent-color/20');
+                    b.classList.add('border-slate-600', 'text-slate-400');
+                    b.classList.remove('border-accent-color', 'text-accent-color');
+                    b.setAttribute('aria-selected', 'false');
+                });
+                button.classList.add('bg-accent-color/20');
+                button.classList.remove('border-slate-600', 'text-slate-400');
+                button.classList.add('border-accent-color', 'text-accent-color');
+                button.setAttribute('aria-selected', 'true');
+                
+                states.forEach(s => s.classList.remove('active'));
+                const targetState = document.getElementById(`${target}-state`);
+                if (targetState) targetState.classList.add('active');
+
+                resetZKM();
+                setTimeout(() => {
+                    if (target === 'zensus') runZensus();
+                    if (target === 'karte') runKarte();
+                    if (target === 'museum') runMuseum();
+                }, 100);
+            });
+        });
+        
+        // Run first animation on load
+        runZensus();
+    }
+    
+    // --- 5. Kritik Visualization ---
+    const critiqueVis = document.getElementById('critique-vis');
+    if (critiqueVis) {
+        const points = critiqueVis.querySelectorAll('.critique-point');
+        const layers = critiqueVis.querySelectorAll('.critique-layer');
+
+        const hideAllLayers = () => layers.forEach(l => l.style.opacity = '0');
+
+        points.forEach(point => {
+            const critiqueType = point.dataset.critique;
+            const targetLayer = document.getElementById(`${critiqueType}-layer`);
+
+            if (targetLayer) {
+                const show = () => {
+                    hideAllLayers();
+                    targetLayer.style.opacity = '1';
+                };
+                const hide = () => {
+                    targetLayer.style.opacity = '0';
+                };
+                point.addEventListener('mouseenter', show);
+                point.addEventListener('focus', show);
+                point.addEventListener('mouseleave', hide);
+                point.addEventListener('blur', hide);
+            }
+        });
+    }
+
+});
+</script>
+
+</body>
+</html>
