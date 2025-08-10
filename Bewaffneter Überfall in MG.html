@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="de" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fallstudie: Bewaffneter Raubüberfall in Mönchengladbach</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Teko:wght@400;600&display=swap');
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #0a0a0a;
+            color: #e5e7eb;
+        }
+        .font-header {
+            font-family: 'Teko', sans-serif;
+        }
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: -31px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #3b82f6;
+            border: 4px solid #1f2937;
+            transition: all 0.3s ease;
+        }
+        .timeline-item:hover:before, .timeline-item[aria-selected="true"]:before {
+            background-color: #ffffff;
+            transform: translateY(-50%) scale(1.2);
+        }
+        .timeline-line {
+            position: absolute;
+            left: -22px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: #1f2937;
+            z-index: -1;
+        }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .counter-value {
+            transition: all 1.5s ease-out;
+        }
+        .crime-map-dot {
+            transition: all 0.3s ease;
+        }
+        .crime-map-dot:hover, .crime-map-dot:focus {
+            transform: scale(1.5);
+            filter: drop-shadow(0 0 8px #f59e0b);
+        }
+        .evidence-item {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .evidence-item:hover, .evidence-item:focus {
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.4);
+        }
+        /* Custom scrollbar for a better look in the social media feed */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1f2937;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #4b5563;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200 overflow-x-hidden">
+
+    <!-- Hero Section -->
+    <header class="h-screen w-screen flex flex-col items-center justify-center relative text-center text-white p-4 bg-black">
+        <div class="absolute inset-0 bg-cover bg-center z-0 opacity-20" style="background-image: url('https://images.unsplash.com/photo-1590393450992-a42d2a45a2c2?q=80&w=2070&auto=format&fit=crop'); filter: blur(4px) grayscale(80%);"></div>
+        <div class="relative z-10">
+            <h2 class="font-header text-2xl md:text-4xl text-blue-400 tracking-widest">FALLSTUDIE</h2>
+            <h1 class="font-header text-6xl md:text-9xl my-2 md:my-4 font-bold tracking-tighter">BEWAFFNETER RAUBÜBERFALL</h1>
+            <p class="text-xl md:text-3xl font-light text-gray-300">Mönchengladbach, 9. August 2025</p>
+        </div>
+        <div class="absolute bottom-10 z-10 flex flex-col items-center text-gray-400 animate-bounce">
+            <span class="text-sm">Nach unten scrollen</span>
+            <svg class="w-6 h-6 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </div>
+    </header>
+
+    <main class="w-full">
+        <!-- Section 1: Kerndaten -->
+        <section id="kerndaten" class="py-20 md:py-32 px-4 md:px-8 bg-gray-900">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16 fade-in">
+                    <h2 class="font-header text-5xl md:text-7xl text-blue-400">01</h2>
+                    <h3 class="font-header text-4xl md:text-6xl mt-[-1rem] font-bold">Kerndaten des Vorfalls</h3>
+                    <p class="mt-4 max-w-2xl mx-auto text-gray-400">Ein Überblick über die wesentlichen Fakten des Geschehens.</p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Card: Tatbestand -->
+                    <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 fade-in" style="transition-delay: 100ms;">
+                        <div class="flex items-center mb-4">
+                            <svg class="w-8 h-8 text-blue-400 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.286Z" /></svg>
+                            <h4 class="text-xl font-bold">Tatbestand</h4>
+                        </div>
+                        <p class="text-gray-300">Schwerer bewaffneter Raubüberfall auf ein Juwelier- und Leihhausgeschäft.</p>
+                    </div>
+                    <!-- Card: Datum & Uhrzeit -->
+                    <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 fade-in" style="transition-delay: 200ms;">
+                        <div class="flex items-center mb-4">
+                             <svg class="w-8 h-8 text-blue-400 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                            <h4 class="text-xl font-bold">Datum & Uhrzeit</h4>
+                        </div>
+                        <p class="text-gray-300">Samstag, 9. August 2025, ca. 12:15 Uhr.</p>
+                    </div>
+                     <!-- Card: Besonderheit -->
+                    <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 fade-in md:col-span-2 lg:col-span-1" style="transition-delay: 300ms;">
+                        <div class="flex items-center mb-4">
+                            <svg class="w-8 h-8 text-blue-400 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" /></svg>
+                            <h4 class="text-xl font-bold">Besonderheit</h4>
+                        </div>
+                        <p class="text-gray-300">Hochfrequentierte Geschäftsstraße zur Hauptgeschäftszeit am Wochenende.</p>
+                    </div>
+                </div>
+
+                <!-- Interactive Map -->
+                <div class="mt-16 bg-gray-800 rounded-xl border border-gray-700 p-4 md:p-8 fade-in" style="transition-delay: 400ms;">
+                    <h4 class="text-2xl font-bold mb-4 text-center">Interaktive Tatortkarte</h4>
+                    <div class="relative w-full max-w-4xl mx-auto aspect-video bg-gray-700 rounded-lg overflow-hidden">
+                        <!-- Simplified map background -->
+                        <svg width="100%" height="100%" viewBox="0 0 800 450" class="absolute inset-0">
+                            <path d="M0,250 C100,200 200,300 300,250 S500,150 600,200 S800,150 800,150 L800,450 L0,450 Z" fill="#374151"/>
+                            <path d="M0,150 C50,180 150,120 250,150 S400,220 500,180 S700,250 800,220" stroke="#4b5563" stroke-width="15" fill="none"/>
+                            <path d="M350,0 C360,100 320,200 350,300 S400,400 380,450" stroke="#4b5563" stroke-width="15" fill="none"/>
+                            <rect x="250" y="180" width="300" height="90" fill="#4b5563" rx="5"/>
+                            <text x="400" y="230" font-family="Roboto, sans-serif" font-size="20" fill="#9ca3af" text-anchor="middle">Innenstadt</text>
+                        </svg>
+                        
+                        <!-- Location Marker -->
+                        <div id="map-marker-container" class="absolute" style="left: 55%; top: 40%;">
+                            <div id="map-marker" class="relative cursor-pointer" role="button" tabindex="0" aria-label="Details zum Tatort anzeigen">
+                                <svg class="w-12 h-12 text-red-500 drop-shadow-lg animate-pulse" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-4.418 0-8 3.582-8 8 0 6 8 14 8 14s8-8 8-14c0-4.418-3.582-8-8-8zm0 11.5c-1.933 0-3.5-1.567-3.5-3.5s1.567-3.5 3.5-3.5 3.5 1.567 3.5 3.5-1.567 3.5-3.5 3.5z"/></svg>
+                            </div>
+                            <div id="map-tooltip" class="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-64 bg-gray-900 text-white text-sm rounded-lg p-4 opacity-0 scale-95 transition-all duration-300 pointer-events-none shadow-2xl border border-gray-700">
+                                <h5 class="font-bold text-base text-blue-400">Tatort: Bismarckstraße</h5>
+                                <p class="text-gray-300 mt-1">Zentral in der Mönchengladbacher Innenstadt, bekannt für hohe Passantenfrequenz, besonders an Wochenenden.</p>
+                                <div class="absolute w-3 h-3 bg-gray-900 rotate-45 -bottom-1.5 left-1/2 -translate-x-1/2 border-r border-b border-gray-700"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- Section 2: Tathergang -->
+        <section id="tathergang" class="py-20 md:py-32 px-4 md:px-8 bg-gray-950">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16 fade-in">
+                    <h2 class="font-header text-5xl md:text-7xl text-amber-400">02</h2>
+                    <h3 class="font-header text-4xl md:text-6xl mt-[-1rem] font-bold">Detaillierter Tathergang</h3>
+                    <p class="mt-4 max-w-2xl mx-auto text-gray-400">Eine chronologische Rekonstruktion der Ereignisse vom Betreten des Geschäfts bis zur Flucht.</p>
+                </div>
+                
+                <div class="flex flex-col md:flex-row gap-8 lg:gap-16">
+                    <!-- Interactive Timeline -->
+                    <div class="w-full md:w-1/3 fade-in">
+                        <div id="timeline" role="tablist" aria-label="Tathergang Zeitleiste" class="relative pl-8">
+                            <div class="timeline-line"></div>
+                            <div id="tab-1" class="timeline-item mb-12 cursor-pointer" role="tab" data-target="event-1" aria-controls="event-1" aria-selected="true" tabindex="0">
+                                <h4 class="font-bold text-xl text-white">12:15 Uhr - Betreten des Geschäfts</h4>
+                                <p class="text-gray-400">Täter geben sich als Polizisten aus.</p>
+                            </div>
+                            <div id="tab-2" class="timeline-item mb-12 cursor-pointer" role="tab" data-target="event-2" aria-controls="event-2" aria-selected="false" tabindex="-1">
+                                <h4 class="font-bold text-xl text-white">Bedrohung & Schussabgabe</h4>
+                                <p class="text-gray-400">Einschüchterung mit Schusswaffe.</p>
+                            </div>
+                            <div id="tab-3" class="timeline-item mb-12 cursor-pointer" role="tab" data-target="event-3" aria-controls="event-3" aria-selected="false" tabindex="-1">
+                                <h4 class="font-bold text-xl text-white">Widerstand & Eskalation</h4>
+                                <p class="text-gray-400">Opfer wehren sich, Kampf verlagert sich.</p>
+                            </div>
+                            <div id="tab-4" class="timeline-item cursor-pointer" role="tab" data-target="event-4" aria-controls="event-4" aria-selected="false" tabindex="-1">
+                                <h4 class="font-bold text-xl text-white">Beute & Fluchtversuch</h4>
+                                <p class="text-gray-400">Täter erbeuten Schmuck und fliehen.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Timeline Content Display -->
+                    <div class="w-full md:w-2/3 fade-in" style="transition-delay: 200ms;">
+                        <div id="timeline-content" class="bg-gray-800 rounded-xl p-8 border border-gray-700 min-h-[300px] transition-all duration-500">
+                            <!-- Event 1 -->
+                            <div id="event-1" class="timeline-content-item" role="tabpanel" aria-labelledby="tab-1">
+                                <div class="flex items-start gap-4">
+                                    <div class="bg-amber-400/10 p-3 rounded-lg"><svg class="w-8 h-8 text-amber-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" /></svg></div>
+                                    <div>
+                                        <h3 class="text-2xl font-bold text-amber-400 mb-2">Die Täuschung</h3>
+                                        <p class="text-gray-300">Drei maskierte Täter betreten das Geschäft und geben sich fälschlicherweise als Polizeibeamte aus, um den Inhaber und die anwesenden Personen zu täuschen und den Überfall einzuleiten.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Event 2 -->
+                            <div id="event-2" class="timeline-content-item hidden" role="tabpanel" aria-labelledby="tab-2">
+                               <div class="flex items-start gap-4">
+                                   <div class="bg-amber-400/10 p-3 rounded-lg"><svg class="w-8 h-8 text-amber-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.045A19.5 19.5 0 0 1 7.5 15a19.5 19.5 0 0 1-1.288-.045M12 18.75A19.5 19.5 0 0 1 7.5 15a19.5 19.5 0 0 1 4.5-3.75M15.712 15.045A19.5 19.5 0 0 0 16.5 15a19.5 19.5 0 0 0 1.288-.045M12 18.75A19.5 19.5 0 0 0 16.5 15a19.5 19.5 0 0 0-4.5-3.75M12 3.75a16.5 16.5 0 0 1 8.25 2.293V6A19.5 19.5 0 0 1 12 15a19.5 19.5 0 0 1-8.25-6.707V6A16.5 16.5 0 0 1 12 3.75Z" /></svg></div>
+                                    <div>
+                                        <h3 class="text-2xl font-bold text-amber-400 mb-2">Die Bedrohung</h3>
+                                        <p class="text-gray-300 mb-4">Der 46-jährige Inhaber und vier weitere Personen werden mit einer Schusswaffe bedroht, die als Kalaschnikow-ähnliche Langwaffe (möglicherweise Draco AK-Variante) beschrieben wird. Zur Unterstreichung der Drohung wird ein Schuss in den Boden abgegeben.</p>
+                                        <p class="text-sm text-gray-500 italic">Die genaue Identität der Waffe (echt oder Imitat) ist Teil der laufenden Ermittlungen.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Event 3 -->
+                            <div id="event-3" class="timeline-content-item hidden" role="tabpanel" aria-labelledby="tab-3">
+                                <div class="flex items-start gap-4">
+                                    <div class="bg-amber-400/10 p-3 rounded-lg"><svg class="w-8 h-8 text-amber-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12.75 19.5v-.75a7.5 7.5 0 0 0-7.5-7.5H4.5m0-6.75h.75c7.5 0 13.5 6 13.5 13.5v.75M6 18.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" /></svg></div>
+                                    <div>
+                                        <h3 class="text-2xl font-bold text-amber-400 mb-2">Der Widerstand</h3>
+                                        <p class="text-gray-300">Der Inhaber und die anderen Anwesenden leisten mutig Widerstand. Die Auseinandersetzung verlagert sich auf den Bürgersteig. Ein bemerkenswertes Detail: Eine Toilettenschüssel aus einem Baucontainer wird als Wurfgeschoss gegen die Täter eingesetzt.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Event 4 -->
+                            <div id="event-4" class="timeline-content-item hidden" role="tabpanel" aria-labelledby="tab-4">
+                                <div class="flex items-start gap-4">
+                                    <div class="bg-amber-400/10 p-3 rounded-lg"><svg class="w-8 h-8 text-amber-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 7.5-2.25-1.48-2.25 1.48-2.25-1.48-2.25 1.48L9.75 6l-2.25 1.5L5.25 6l-2.25 1.5L3 7.5m18 0-2.25-1.48-2.25 1.48-2.25-1.48-2.25 1.48L9.75 6l-2.25 1.5L5.25 6l-2.25 1.5L3 7.5m18 0v9.75a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 17.25V7.5m18 0h-2.25m-13.5 0H3M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg></div>
+                                    <div>
+                                        <h3 class="text-2xl font-bold text-amber-400 mb-2">Die Beute</h3>
+                                        <p class="text-gray-300">Trotz des Widerstands gelingt es den Tätern, Schmuck und andere Wertgegenstände zu erbeuten. Ein als Fluchtfahrzeug bereitgestelltes Motorrad wird später von der Polizei sichergestellt, was auf eine gestörte Flucht hindeutet.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Section 3: Polizeiliche Maßnahmen -->
+        <section id="polizei" class="py-20 md:py-32 px-4 md:px-8 bg-gray-900">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16 fade-in">
+                    <h2 class="font-header text-5xl md:text-7xl text-blue-400">03</h2>
+                    <h3 class="font-header text-4xl md:text-6xl mt-[-1rem] font-bold">Polizeiliche Maßnahmen</h3>
+                    <p class="mt-4 max-w-2xl mx-auto text-gray-400">Die schnelle Reaktion der Polizei führte zu Festnahmen und zur Sicherung wichtiger Beweismittel.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8 mb-12">
+                    <div class="bg-gray-800 p-8 rounded-xl border border-gray-700 fade-in" style="transition-delay: 100ms;">
+                        <h4 class="text-2xl font-bold mb-4 text-blue-300">Schnelle Festnahmen</h4>
+                        <ul class="space-y-3 list-disc list-inside text-gray-300">
+                            <li>Alle <strong>drei Täter</strong> wurden kurz nach der Tat in Tatortnähe gestellt.</li>
+                            <li>Ein Verdächtiger leistete erheblichen Widerstand, wobei <strong>drei Polizeibeamte</strong> leicht verletzt wurden.</li>
+                            <li>Ein Beamter gab zur Eigensicherung einen <strong>Warnschuss</strong> in die Luft ab.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-800 p-8 rounded-xl border border-gray-700 fade-in" style="transition-delay: 200ms;">
+                        <h4 class="text-2xl font-bold mb-4 text-blue-300">Tatortsicherung</h4>
+                        <ul class="space-y-3 list-disc list-inside text-gray-300">
+                           <li>Die Bismarckstraße wurde für mehrere Stunden <strong>vollständig gesperrt</strong>.</li>
+                           <li>Die Kriminalpolizei führte eine umfassende <strong>Spurensicherung</strong> durch.</li>
+                           <li>Die Ermittlungen zur Identität der Täter und zu Hintergründen dauern an.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-16 fade-in" style="transition-delay: 300ms;">
+                    <h4 class="text-3xl font-bold text-center mb-8">Interaktive Beweismittel-Tafel</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 text-center">
+                        <div class="evidence-item bg-gray-800 p-6 rounded-xl border border-gray-700 cursor-pointer" role="button" tabindex="0" data-info="Teile der Beute konnten bei den Tätern sichergestellt werden. Der Gesamtwert ist noch unklar.">
+                            <svg class="w-16 h-16 mx-auto text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 7.5-2.25-1.48-2.25 1.48-2.25-1.48-2.25 1.48L9.75 6l-2.25 1.5L5.25 6l-2.25 1.5L3 7.5m18 0v9.75a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 17.25V7.5m18 0h-2.25m-13.5 0H3M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
+                            <p class="mt-4 font-bold">Beute</p>
+                        </div>
+                        <div class="evidence-item bg-gray-800 p-6 rounded-xl border border-gray-700 cursor-pointer" role="button" tabindex="0" data-info="Die Tatwaffen, einschließlich der beschriebenen Langwaffe, wurden von der Polizei sichergestellt und werden nun kriminaltechnisch untersucht.">
+                            <svg class="w-16 h-16 mx-auto text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.045A19.5 19.5 0 0 1 7.5 15a19.5 19.5 0 0 1-1.288-.045M12 18.75A19.5 19.5 0 0 1 7.5 15a19.5 19.5 0 0 1 4.5-3.75M15.712 15.045A19.5 19.5 0 0 0 16.5 15a19.5 19.5 0 0 0 1.288-.045M12 18.75A19.5 19.5 0 0 0 16.5 15a19.5 19.5 0 0 0-4.5-3.75M12 3.75a16.5 16.5 0 0 1 8.25 2.293V6A19.5 19.5 0 0 1 12 15a19.5 19.5 0 0 1-8.25-6.707V6A16.5 16.5 0 0 1 12 3.75Z" /></svg>
+                            <p class="mt-4 font-bold">Waffen</p>
+                        </div>
+                        <div class="evidence-item bg-gray-800 p-6 rounded-xl border border-gray-700 cursor-pointer" role="button" tabindex="0" data-info="Bekleidungsstücke wie Masken und Jacken wurden als Beweismittel gesichert, um sie auf DNA-Spuren zu untersuchen.">
+                            <svg class="w-16 h-16 mx-auto text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z" /></svg>
+                            <p class="mt-4 font-bold">Bekleidung</p>
+                        </div>
+                        <div class="evidence-item bg-gray-800 p-6 rounded-xl border border-gray-700 cursor-pointer" role="button" tabindex="0" data-info="Das als Fluchtfahrzeug geplante Motorrad wurde sichergestellt und abtransportiert. Es ist ein zentrales Beweisstück für die Planung der Tat.">
+                            <svg class="w-16 h-16 mx-auto text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" /></svg>
+                            <p class="mt-4 font-bold">Fluchtfahrzeug</p>
+                        </div>
+                    </div>
+                    <div id="evidence-info" aria-live="polite" class="mt-6 min-h-[60px] text-center bg-gray-800/50 p-4 rounded-lg border border-gray-700/50 transition-all duration-300 flex items-center justify-center">
+                        <p class="text-gray-400">Klicken Sie auf ein Beweismittel für weitere Details.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4 & 5: Opfer & Medien -->
+        <section class="py-20 md:py-32 px-4 md:px-8 bg-gray-950">
+            <div class="max-w-6xl mx-auto grid md:grid-cols-5 gap-12">
+                
+                <!-- Opferversorgung -->
+                <div id="opfer" class="md:col-span-2 space-y-8">
+                    <div class="fade-in">
+                        <h2 class="font-header text-5xl md:text-7xl text-green-400">04</h2>
+                        <h3 class="font-header text-4xl md:text-6xl mt-[-1rem] font-bold">Versorgung der Opfer</h3>
+                    </div>
+                    <div class="bg-gray-800 p-8 rounded-xl border border-gray-700 fade-in" style="transition-delay: 100ms;">
+                        <div class="flex items-center gap-6">
+                            <div class="text-6xl font-bold text-green-400"><span id="victim-counter" class="counter-value" data-target-value="5">0</span></div>
+                            <div>
+                                <p class="text-xl font-semibold">Personen wurden vorsorglich zur Untersuchung ins Krankenhaus gebracht.</p>
+                            </div>
+                        </div>
+                        <ul class="mt-6 space-y-2 list-disc list-inside text-gray-300">
+                            <li>Darunter der Geschäftsinhaber.</li>
+                            <li>Mehrere erlitten leichte Verletzungen.</li>
+                            <li>Es bestand bei keiner Person Lebensgefahr.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Mediale Aufarbeitung -->
+                <div id="medien" class="md:col-span-3">
+                    <div class="fade-in">
+                        <h2 class="font-header text-5xl md:text-7xl text-purple-400">05</h2>
+                        <h3 class="font-header text-4xl md:text-6xl mt-[-1rem] font-bold">Mediale Aufarbeitung</h3>
+                    </div>
+                    <div class="mt-8 bg-gray-800 p-6 rounded-xl border border-gray-700 fade-in" style="transition-delay: 100ms;">
+                        <h4 class="font-bold text-xl mb-4 text-purple-300">Reaktionen auf Plattform X</h4>
+                        <div class="h-80 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
+                            <!-- Simulated Tweet 1 -->
+                            <div class="bg-gray-900/50 p-3 rounded-lg">
+                                <p class="text-sm text-gray-300">Krasses Video aus #Mönchengladbach. Die werfen mit Kloschüsseln auf die Räuber! Zivilcourage 2.0. #Raubüberfall</p>
+                                <span class="text-xs text-gray-500">vor 2 Stunden</span>
+                            </div>
+                            <!-- Simulated Tweet 2 -->
+                            <div class="bg-gray-900/50 p-3 rounded-lg">
+                                <p class="text-sm text-gray-300">Erst die Messerattacke gestern, jetzt das. Was ist nur los in #MG? Fühle mich nicht mehr sicher. Brauchen mehr #Polizei auf der Straße!</p>
+                                <span class="text-xs text-gray-500">vor 1 Stunde</span>
+                            </div>
+                            <!-- Simulated Tweet 3 -->
+                            <div class="bg-gray-900/50 p-3 rounded-lg">
+                                <p class="text-sm text-gray-300">Die Polizistin im Video... klar ist das eine Ausnahmesituation, aber das wirft Fragen zur Ausbildung auf. #PolizeiNRW</p>
+                                <span class="text-xs text-gray-500">vor 45 Minuten</span>
+                            </div>
+                             <!-- Simulated Tweet 4 -->
+                            <div class="bg-gray-900/50 p-3 rounded-lg">
+                                <p class="text-sm text-gray-300">Hoffentlich bekommen die Täter ihre gerechte Strafe. Oft sind das Wiederholungstäter, die lachen doch über unsere Justiz. #strafen</p>
+                                <span class="text-xs text-gray-500">vor 30 Minuten</span>
+                            </div>
+                             <!-- Simulated Tweet 5 -->
+                            <div class="bg-gray-900/50 p-3 rounded-lg">
+                                <p class="text-sm text-gray-300">Gut, dass die Cops die Täter so schnell hatten. Respekt an die Beamten für den Einsatz unter Lebensgefahr. #DankePolizei</p>
+                                <span class="text-xs text-gray-500">vor 15 Minuten</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- Section 6: Kontext -->
+        <section id="kontext" class="py-20 md:py-32 px-4 md:px-8 bg-gray-900">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16 fade-in">
+                    <h2 class="font-header text-5xl md:text-7xl text-orange-400">06</h2>
+                    <h3 class="font-header text-4xl md:text-6xl mt-[-1rem] font-bold">Einordnung & Kontext</h3>
+                    <p class="mt-4 max-w-2xl mx-auto text-gray-400">Der Vorfall steht nicht isoliert da, sondern reiht sich in eine Serie von Delikten in der Region ein.</p>
+                </div>
+
+                <div class="relative w-full p-8 bg-gray-800 rounded-xl border border-gray-700 fade-in">
+                    <h4 class="text-2xl font-bold text-center mb-8 text-orange-300">Interaktive Kriminalitäts-Zeitleiste (Region MG)</h4>
+                    <div class="relative w-full h-1 bg-gray-600 my-16">
+                        <!-- Crime Events -->
+                        <div class="absolute -top-3.5" style="left: 10%;">
+                           <div class="crime-map-dot w-8 h-8 bg-orange-500 rounded-full border-4 border-gray-800 cursor-pointer" role="button" tabindex="0" data-info="<strong>Tankstelle Liedberger Straße (Ende 2021)</strong><br>Bewaffneter Raubüberfall auf eine Tankstelle."></div>
+                        </div>
+                        <div class="absolute -top-3.5" style="left: 25%;">
+                           <div class="crime-map-dot w-8 h-8 bg-orange-500 rounded-full border-4 border-gray-800 cursor-pointer" role="button" tabindex="0" data-info="<strong>Sparkasse Westend (2022)</strong><br>Überfall auf eine Bankfiliale."></div>
+                        </div>
+                         <div class="absolute -top-3.5" style="left: 50%;">
+                           <div class="crime-map-dot w-8 h-8 bg-orange-500 rounded-full border-4 border-gray-800 cursor-pointer" role="button" tabindex="0" data-info="<strong>Supermärkte Viktoriastraße (Frühjahr 2025)</strong><br>Zwei Überfälle innerhalb kurzer Zeit auf Supermärkte."></div>
+                        </div>
+                         <div class="absolute -top-3.5" style="left: 70%;">
+                           <div class="crime-map-dot w-8 h-8 bg-orange-500 rounded-full border-4 border-gray-800 cursor-pointer" role="button" tabindex="0" data-info="<strong>Messerattacke (8. Aug. 2025)</strong><br>Zwei Schwerverletzte am Vortag des Juwelier-Überfalls."></div>
+                        </div>
+                         <div class="absolute -top-3.5" style="left: 90%;">
+                           <div class="crime-map-dot w-8 h-8 bg-red-600 ring-2 ring-white animate-pulse rounded-full border-4 border-gray-800 cursor-pointer" role="button" tabindex="0" data-info="<strong>Juwelier Bismarckstraße (9. Aug. 2025)</strong><br>Der aktuelle Fall, der eine hohe Gewaltbereitschaft zeigt."></div>
+                        </div>
+                    </div>
+                    <div id="crime-info" class="mt-12 min-h-[80px] text-center bg-gray-900/50 p-4 rounded-lg border border-gray-700/50 transition-all duration-300 flex items-center justify-center">
+                         <p class="text-gray-400">Bewegen Sie den Mauszeiger über einen Punkt für Details zu früheren Taten.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+    
+    <!-- Footer / Zeugenaufruf -->
+    <footer class="bg-gray-950 py-16 px-4">
+        <div class="max-w-3xl mx-auto text-center border-t border-blue-500/30 pt-12">
+            <h3 class="text-2xl font-bold text-blue-300">Zeugenaufruf der Polizei Mönchengladbach</h3>
+            <p class="mt-4 text-gray-400">Die Ermittlungen dauern an. Die Polizei bittet Zeugen, die sachdienliche Hinweise, Fotos oder Videos zum Tatgeschehen haben, sich unter der folgenden Telefonnummer zu melden:</p>
+            <p class="font-header text-5xl text-white tracking-wider my-6">02161 - 290</p>
+            <p class="text-sm text-gray-500 mt-8">Diese Seite ist eine interaktive Fallstudie zu Bildungszwecken. Alle Daten basieren auf der bereitgestellten Textgrundlage.</p>
+            <p class="mt-8 text-sm text-gray-500">„Hinweis: Dieser HTML-Inhalt wurde automatisiert durch KI erstellt. Inhalte können fehlerhaft sein und müssen je nach Kontext validiert werden.“</p>
+        </div>
+    </footer>
+
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // --- Intersection Observer for fade-in animations ---
+        const faders = document.querySelectorAll('.fade-in');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        faders.forEach(fader => {
+            observer.observe(fader);
+        });
+
+        // --- Map Interaction ---
+        const mapMarker = document.getElementById('map-marker');
+        const mapTooltip = document.getElementById('map-tooltip');
+        if (mapMarker && mapTooltip) {
+            const showTooltip = () => {
+                mapTooltip.classList.remove('opacity-0', 'scale-95');
+                mapTooltip.classList.add('opacity-100', 'scale-100');
+            };
+            const hideTooltip = () => {
+                mapTooltip.classList.remove('opacity-100', 'scale-100');
+                mapTooltip.classList.add('opacity-0', 'scale-95');
+            };
+            mapMarker.addEventListener('mouseenter', showTooltip);
+            mapMarker.addEventListener('focus', showTooltip);
+            mapMarker.addEventListener('mouseleave', hideTooltip);
+            mapMarker.addEventListener('blur', hideTooltip);
+        }
+        
+        // --- Timeline Interaction ---
+        const timelineItems = document.querySelectorAll('.timeline-item[role="tab"]');
+        const timelineContents = document.querySelectorAll('.timeline-content-item[role="tabpanel"]');
+        const timelineContainer = document.getElementById('timeline-content');
+        
+        if(timelineItems.length > 0) {
+            timelineItems.forEach((tab, index) => {
+                tab.addEventListener('click', () => {
+                    // Deactivate all tabs and panels
+                    timelineItems.forEach(item => {
+                        item.setAttribute('aria-selected', 'false');
+                        item.setAttribute('tabindex', '-1');
+                    });
+                    timelineContents.forEach(content => {
+                        content.classList.add('hidden');
+                    });
+
+                    // Activate the clicked tab and its panel
+                    tab.setAttribute('aria-selected', 'true');
+                    tab.setAttribute('tabindex', '0');
+                    
+                    const targetPanel = document.getElementById(tab.getAttribute('aria-controls'));
+                    if (targetPanel) {
+                        targetPanel.classList.remove('hidden');
+                    }
+                    
+                    // Visual feedback
+                    if (timelineContainer) {
+                        timelineContainer.style.boxShadow = '0 0 25px rgba(251, 191, 36, 0.3)';
+                        setTimeout(() => {
+                            timelineContainer.style.boxShadow = 'none';
+                        }, 500);
+                    }
+                });
+
+                tab.addEventListener('keydown', (e) => {
+                    let newIndex;
+                    const isArrowRight = e.key === 'ArrowRight' || e.key === 'ArrowDown';
+                    const isArrowLeft = e.key === 'ArrowLeft' || e.key === 'ArrowUp';
+
+                    if (isArrowRight || isArrowLeft) {
+                        e.preventDefault();
+                        if (isArrowRight) {
+                            newIndex = (index + 1) % timelineItems.length;
+                        } else {
+                            newIndex = (index - 1 + timelineItems.length) % timelineItems.length;
+                        }
+                        timelineItems[newIndex].focus();
+                        timelineItems[newIndex].click();
+                    }
+                });
+            });
+        }
+
+        // --- Evidence Board Interaction ---
+        const evidenceItems = document.querySelectorAll('.evidence-item[role="button"]');
+        const evidenceInfoBox = document.getElementById('evidence-info');
+        if (evidenceItems.length > 0 && evidenceInfoBox) {
+            evidenceItems.forEach(item => {
+                const showInfo = () => {
+                    const infoText = item.getAttribute('data-info');
+                    evidenceInfoBox.innerHTML = `<p class="text-gray-300">${infoText}</p>`;
+                };
+                item.addEventListener('click', showInfo);
+                item.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        showInfo();
+                    }
+                });
+            });
+        }
+
+        // --- Victim Counter Animation ---
+        const victimCounter = document.getElementById('victim-counter');
+        if (victimCounter) {
+            const counterObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        let start = 0;
+                        const end = parseInt(victimCounter.dataset.targetValue, 10) || 0;
+                        if (end === 0) return;
+                        const duration = 1500;
+                        const startTime = performance.now();
+
+                        const animate = (currentTime) => {
+                            const elapsedTime = currentTime - startTime;
+                            const progress = Math.min(elapsedTime / duration, 1);
+                            victimCounter.innerText = Math.floor(progress * end);
+
+                            if (progress < 1) {
+                                requestAnimationFrame(animate);
+                            } else {
+                                victimCounter.innerText = end;
+                            }
+                        }
+                        requestAnimationFrame(animate);
+                        counterObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.8 });
+            counterObserver.observe(victimCounter);
+        }
+        
+        // --- Crime Context Timeline Interaction ---
+        const crimeDots = document.querySelectorAll('.crime-map-dot[role="button"]');
+        const crimeInfoBox = document.getElementById('crime-info');
+        if(crimeDots.length > 0 && crimeInfoBox) {
+            const defaultCrimeInfo = crimeInfoBox.innerHTML;
+            crimeDots.forEach(dot => {
+                const showInfo = () => {
+                    const infoHTML = dot.getAttribute('data-info');
+                    crimeInfoBox.innerHTML = `<p class="text-gray-300">${infoHTML}</p>`;
+                };
+                const hideInfo = () => {
+                    crimeInfoBox.innerHTML = defaultCrimeInfo;
+                };
+                dot.addEventListener('mouseenter', showInfo);
+                dot.addEventListener('focus', showInfo);
+                dot.addEventListener('mouseleave', hideInfo);
+                dot.addEventListener('blur', hideInfo);
+            });
+        }
+
+    });
+    </script>
+
+</body>
+</html>
