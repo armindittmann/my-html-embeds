@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="de" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktiver Überblick: Bindungsstörungen</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+            color: #334155; /* slate-700 */
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+        }
+        .card {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease-in-out;
+        }
+        .card-title {
+            color: #1e3a8a; /* blue-900 */
+            font-weight: 700;
+            font-size: 1.5rem;
+            line-height: 2rem;
+            border-bottom: 2px solid #e0f2fe; /* sky-100 */
+            padding-bottom: 0.75rem;
+        }
+        h3 {
+            font-size: 1.25rem;
+            line-height: 1.75rem;
+            font-weight: 600;
+            color: #1e293b; /* slate-800 */
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+        .tag-rad { background-color: #fef3c7; color: #b45309; } /* amber */
+        .tag-dsed { background-color: #dbeafe; color: #1e40af; } /* blue */
+        .tag-info { background-color: #e0e7ff; color: #3730a3; } /* indigo */
+
+        /* Interactive Element Styles */
+        .interactive-container {
+            border: 2px solid #e2e8f0; /* slate-200 */
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            background: linear-gradient(145deg, #ffffff, #f7faff);
+        }
+        .tab-button {
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        .tab-button.active {
+            color: #2563eb; /* blue-600 */
+            border-bottom-color: #2563eb;
+        }
+
+        /* Spectrum Visualization */
+        .spectrum-container {
+            position: relative;
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg, #4ade80, #facc15, #f87171); /* green -> yellow -> red */
+            border-radius: 4px;
+            margin: 3rem 0;
+        }
+        .spectrum-marker {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border: 3px solid;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .spectrum-marker:hover {
+            transform: translate(-50%, -50%) scale(1.3);
+        }
+        .spectrum-label {
+            position: absolute;
+            top: 25px;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-align: center;
+            width: 100px;
+        }
+        .spectrum-tooltip {
+            position: absolute;
+            bottom: 35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #1e293b;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            width: 220px;
+            text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .spectrum-marker:hover .spectrum-tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .divider {
+            position: absolute;
+            left: 80%;
+            top: -20px;
+            bottom: -20px;
+            width: 2px;
+            background-color: #94a3b8;
+        }
+        .divider-label {
+             position: absolute;
+             left: 80%;
+             top: -50px;
+             transform: translateX(-50%);
+             background-color: #f8fafc;
+             padding: 0 0.5rem;
+             font-weight: 600;
+             color: #64748b;
+        }
+        
+        /* BEIP Study Visualization */
+        .beip-bar {
+            transition: width 1.5s ease-in-out;
+        }
+
+        /* Scroll-based animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header -->
+    <header class="hero-gradient text-white shadow-lg">
+        <div class="container mx-auto px-6 py-20 text-center">
+            <h1 class="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight mb-4">Ein umfassender Überblick über Bindungsstörungen</h1>
+            <p class="text-xl md:text-2xl font-light max-w-4xl mx-auto opacity-90">Eine interaktive Lernerfahrung zu Definition, Diagnostik, Ursachen und Behandlung.</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12 md:py-16">
+        
+        <!-- Section 1: Grundlagen und Definition -->
+        <section id="grundlagen" class="mb-16 reveal">
+            <div class="card p-6 md:p-8">
+                <h2 class="card-title">1. Grundlagen und Definition</h2>
+                <p class="mt-4 text-lg text-slate-600">Bindungsstörungen sind seltene, aber klinisch bedeutsame psychische Störungen, die ausschließlich als Folge von schwerwiegender sozialer Deprivation, emotionaler oder physischer Vernachlässigung oder wiederholten Wechseln der primären Bezugspersonen in der frühen Kindheit entstehen. International werden zwei distinkte Störungsbilder unterschieden.</p>
+
+                <div class="interactive-container">
+                    <h3 class="!mt-0 text-center text-xl font-semibold text-slate-700 mb-6">Interaktive Darstellung: RBS vs. BSE</h3>
+                    <div id="rad-dsed-tabs" role="tablist" aria-label="Bindungsstörungs-Typen" class="flex justify-center border-b border-slate-200 mb-6">
+                        <button id="tab-rad" role="tab" aria-controls="rad-dsed-panel" aria-selected="true" data-tab="rad" class="tab-button active py-3 px-6 text-lg font-semibold text-slate-500">Reaktive Bindungsstörung (RBS)</button>
+                        <button id="tab-dsed" role="tab" aria-controls="rad-dsed-panel" aria-selected="false" data-tab="dsed" class="tab-button py-3 px-6 text-lg font-semibold text-slate-500">Soziale Enthemmung (BSE)</button>
+                    </div>
+                    <div id="rad-dsed-panel" role="tabpanel" aria-labelledby="tab-rad" class="flex flex-col md:flex-row items-center gap-8 min-h-[250px]">
+                        <!-- Content will be injected by JS -->
+                    </div>
+                </div>
+
+                <h3 class="mt-12">Wichtige Abgrenzung: Bindungsstile vs. Bindungsstörungen</h3>
+                <p class="mt-4 text-slate-600">Es ist fundamental, zwischen normativen Bindungsstilen (Variationen im normalen Verhalten) und pathologischen Bindungsstörungen (qualitativ abnorme Beziehungsmuster) zu unterscheiden. Ein unsicherer oder desorganisierter Bindungsstil ist keine psychische Störung.</p>
+
+                <div class="interactive-container">
+                    <h3 class="!mt-0 text-center text-xl font-semibold text-slate-700 mb-4">Interaktives Spektrum: Bindungsstile vs. Störungen</h3>
+                    <p class="text-center text-slate-500 mb-8">Bewegen Sie den Mauszeiger über die Punkte, um mehr zu erfahren.</p>
+                    <div class="relative w-full">
+                        <div class="flex justify-between text-sm font-bold text-slate-500 mb-2">
+                            <span>NORMALES SPEKTRUM</span>
+                            <span class="pr-4">PATHOLOGISCHE STÖRUNG</span>
+                        </div>
+                        <div class="spectrum-container">
+                            <!-- Markers -->
+                            <div class="spectrum-marker" style="left: 10%; border-color: #4ade80;">
+                                <div class="spectrum-label">Sicher</div>
+                                <div class="spectrum-tooltip">Kind nutzt Bezugsperson als sichere Basis, sucht Trost bei Belastung.</div>
+                            </div>
+                            <div class="spectrum-marker" style="left: 35%; border-color: #facc15;">
+                                <div class="spectrum-label">Unsicher-Vermeidend</div>
+                                <div class="spectrum-tooltip">Kind zeigt wenig Kummer bei Trennung und ignoriert Bezugsperson bei Wiederkehr.</div>
+                            </div>
+                            <div class="spectrum-marker" style="left: 55%; border-color: #fb923c;">
+                                <div class="spectrum-label">Unsicher-Ambivalent</div>
+                                <div class="spectrum-tooltip">Kind ist wütend und passiv, schwer zu beruhigen.</div>
+                            </div>
+                             <div class="spectrum-marker" style="left: 70%; border-color: #f87171;">
+                                <div class="spectrum-label">Desorganisiert</div>
+                                <div class="spectrum-tooltip">Widersprüchliches, bizarres Verhalten (z.B. Erstarren). Kein kohärentes Muster.</div>
+                            </div>
+                            <div class="spectrum-marker" style="left: 90%; border-color: #ef4444;">
+                                <div class="spectrum-label">RBS / BSE</div>
+                                <div class="spectrum-tooltip">Qualitativ abnorm, Folge von schwerer Vernachlässigung. Keine Variation der Norm.</div>
+                            </div>
+                            
+                            <!-- Divider -->
+                            <div class="divider"></div>
+                            <div class="divider-label">Kategoriale Grenze</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Section 2: Diagnostische Kriterien -->
+        <section id="diagnostik" class="mb-16 reveal">
+            <div class="card p-6 md:p-8">
+                <h2 class="card-title">2. Diagnostische Kriterien und Klassifikation</h2>
+                 <p class="mt-4 text-slate-600">Die Diagnose erfordert eine sorgfältige klinische Bewertung und eine dokumentierte Vorgeschichte von extremer unzureichender Fürsorge (z.B. soziale Vernachlässigung). Beide Störungen sind sowohl im DSM-5-TR als auch im ICD-11 klar definiert.</p>
+                
+                <h3 class="mt-8">Phänotypische Erscheinungsbilder</h3>
+                <div class="grid md:grid-cols-2 gap-6 mt-4">
+                    <!-- RAD Card -->
+                    <div class="p-6 border-l-4 border-amber-400 bg-amber-50 rounded-lg">
+                        <h4 class="font-bold text-lg text-amber-800 flex items-center">
+                            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" /></svg>
+                            Reaktive Bindungsstörung (RBS/RAD)
+                        </h4>
+                        <ul class="mt-3 list-disc list-inside text-slate-700 space-y-2">
+                            <li>Sucht bei Belastung selten oder nur minimal Trost.</li>
+                            <li>Reagiert selten oder nur minimal auf Trostangebote.</li>
+                            <li>Anhaltender sozialer und emotionaler Rückzug.</li>
+                            <li>Reduzierte positive Affekte, unerklärliche Reizbarkeit.</li>
+                        </ul>
+                    </div>
+                    <!-- DSED Card -->
+                     <div class="p-6 border-l-4 border-blue-400 bg-blue-50 rounded-lg">
+                        <h4 class="font-bold text-lg text-blue-800 flex items-center">
+                             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7" /></svg>
+                            Soziale Enthemmung (BSE/DSED)
+                        </h4>
+                        <ul class="mt-3 list-disc list-inside text-slate-700 space-y-2">
+                            <li>Nähert sich aktiv und distanzlos fremden Erwachsenen.</li>
+                            <li>Kein "Check-Back" zur Bezugsperson in unvertrauten Situationen.</li>
+                            <li>Bereitschaft, mit einer unbekannten Person mitzugehen.</li>
+                            <li>Undifferenziert freundliches Verhalten.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Differenzialdiagnose -->
+        <section id="differenzialdiagnose" class="mb-16 reveal">
+            <div class="card p-6 md:p-8">
+                <h2 class="card-title">3. Differenzialdiagnose</h2>
+                <p class="mt-4 text-slate-600">Die Abgrenzung von Bindungsstörungen zu anderen Entwicklungsstörungen ist eine der größten klinischen Herausforderungen. Eine fehlerhafte Diagnose kann zu ungeeigneten Interventionen führen.</p>
+
+                <div class="interactive-container">
+                    <h3 class="!mt-0 text-center text-xl font-semibold text-slate-700 mb-6">Interaktive Abgrenzung</h3>
+                    <div id="diff-container" role="tablist" aria-label="Differenzialdiagnosen" class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                        <button id="diff-tab-ass" role="tab" aria-controls="diff-panel" aria-selected="true" data-diff="ass" class="diff-btn p-3 bg-cyan-500 text-white rounded-lg shadow-sm border-2 border-transparent hover:border-cyan-500 hover:text-cyan-600 font-semibold transition">ASS</button>
+                        <button id="diff-tab-adhs" role="tab" aria-controls="diff-panel" aria-selected="false" data-diff="adhs" class="diff-btn p-3 bg-white rounded-lg shadow-sm border-2 border-transparent hover:border-cyan-500 hover:text-cyan-600 font-semibold transition">ADHS / ODD</button>
+                        <button id="diff-tab-ptbs" role="tab" aria-controls="diff-panel" aria-selected="false" data-diff="ptbs" class="diff-btn p-3 bg-white rounded-lg shadow-sm border-2 border-transparent hover:border-cyan-500 hover:text-cyan-600 font-semibold transition">PTBS</button>
+                        <button id="diff-tab-intel" role="tab" aria-controls="diff-panel" aria-selected="false" data-diff="intel" class="diff-btn p-3 bg-white rounded-lg shadow-sm border-2 border-transparent hover:border-cyan-500 hover:text-cyan-600 font-semibold transition">Intelligenzminderung</button>
+                    </div>
+                    <div id="diff-panel" role="tabpanel" aria-labelledby="diff-tab-ass" class="mt-6 p-6 bg-cyan-50/50 rounded-lg min-h-[150px] flex items-center justify-center">
+                        <p class="text-slate-500 text-center">Wählen Sie eine Störung aus, um die Abgrenzungskriterien zu sehen.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Ursachen und Risikofaktoren -->
+        <section id="ursachen" class="mb-16 reveal">
+            <div class="card p-6 md:p-8">
+                <h2 class="card-title">4. Ursachen und Risikofaktoren</h2>
+                <p class="mt-4 text-slate-600">Der einzige nachgewiesene kausale Faktor für die Entstehung von Bindungsstörungen ist eine <strong class="text-rose-600">schwere frühe soziale Vernachlässigung</strong>.</p>
+                
+                <div class="mt-6 grid md:grid-cols-3 gap-6">
+                    <div class="bg-slate-100 p-4 rounded-lg">
+                        <h4 class="font-semibold text-slate-800">Institutionelle Betreuung</h4>
+                        <p class="text-sm text-slate-600 mt-1">Hoher Betreuer-Kind-Schlüssel, häufiger Personalwechsel.</p>
+                    </div>
+                     <div class="bg-slate-100 p-4 rounded-lg">
+                        <h4 class="font-semibold text-slate-800">Mehrfache Pflegeplatzwechsel</h4>
+                        <p class="text-sm text-slate-600 mt-1">Verhindert den Aufbau einer stabilen Bindung.</p>
+                    </div>
+                     <div class="bg-slate-100 p-4 rounded-lg">
+                        <h4 class="font-semibold text-slate-800">Grobe Vernachlässigung</h4>
+                        <p class="text-sm text-slate-600 mt-1">Andauernde unzureichende Fürsorge im familiären Umfeld.</p>
+                    </div>
+                </div>
+
+                <div class="interactive-container">
+                     <h3 class="!mt-0 text-center text-xl font-semibold text-slate-700 mb-4">Dosis-Wirkungs-Beziehung</h3>
+                     <p class="text-center text-slate-500 mb-6">Bewegen Sie den Schieberegler, um den Effekt zu visualisieren.</p>
+                    <div class="flex items-center gap-4">
+                        <span class="text-sm font-medium">Gering</span>
+                        <input id="deprivation-slider" type="range" min="0" max="100" value="20" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer" aria-label="Schieberegler für Schwere der Deprivation">
+                        <span class="text-sm font-medium">Schwer</span>
+                    </div>
+                    <div class="mt-6 flex justify-around text-center">
+                        <div>
+                            <p class="font-semibold text-slate-700">Risiko für BSE</p>
+                            <div class="w-24 h-48 bg-slate-200 rounded-md mt-2 mx-auto relative overflow-hidden">
+                                <div id="dsed-risk-bar" class="absolute bottom-0 left-0 w-full bg-blue-500 transition-all duration-300"></div>
+                            </div>
+                            <p id="dsed-risk-value" class="mt-2 font-bold text-blue-600"></p>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-slate-700">Neurobiol. Veränderungen</p>
+                            <div class="w-24 h-48 bg-slate-200 rounded-md mt-2 mx-auto relative overflow-hidden">
+                                <div id="neuro-risk-bar" class="absolute bottom-0 left-0 w-full bg-teal-500 transition-all duration-300"></div>
+                            </div>
+                            <p id="neuro-risk-value" class="mt-2 font-bold text-teal-600"></p>
+                        </div>
+                    </div>
+                    <p class="mt-6 text-xs text-slate-500 text-center">Dies ist eine vereinfachte Visualisierung. Das Risiko steigt mit Dauer und Schwere der Deprivation.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Lebensverlauf -->
+        <section id="lebensverlauf" class="mb-16 reveal">
+            <div class="card p-6 md:p-8">
+                <h2 class="card-title">5. Symptomatik im Lebensverlauf</h2>
+                <p class="mt-4 text-slate-600">Die Symptomatik und Prognose von RBS und BSE unterscheiden sich im weiteren Entwicklungsverlauf erheblich, insbesondere nach Platzierung in einer stabilen, fürsorglichen Umgebung.</p>
+                <div class="interactive-container">
+                    <h3 class="!mt-0 text-center text-xl font-semibold text-slate-700 mb-6">Interaktive Zeitachse</h3>
+                    <div id="timeline-controls" role="tablist" aria-label="Symptomatik im Lebensverlauf" class="flex justify-center gap-2 md:gap-4 mb-8">
+                        <button id="timeline-tab-saeugling" role="tab" aria-controls="timeline-display-panel" aria-selected="false" data-stage="saeugling" class="timeline-btn p-2 px-4 rounded-full bg-white shadow-sm font-semibold border-2 border-transparent transition">Säugling</button>
+                        <button id="timeline-tab-schule" role="tab" aria-controls="timeline-display-panel" aria-selected="false" data-stage="schule" class="timeline-btn p-2 px-4 rounded-full bg-white shadow-sm font-semibold border-2 border-transparent transition">Schulalter</button>
+                        <button id="timeline-tab-adoleszenz" role="tab" aria-controls="timeline-display-panel" aria-selected="false" data-stage="adoleszenz" class="timeline-btn p-2 px-4 rounded-full bg-white shadow-sm font-semibold border-2 border-transparent transition">Adoleszenz</button>
+                    </div>
+                    <div id="timeline-display-panel" role="tabpanel" class="grid md:grid-cols-2 gap-6">
+                        <!-- Content injected by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: Behandlung -->
+        <section id="behandlung" class="mb-16 reveal">
+            <div class="card p-6 md:p-8">
+                <h2 class="card-title">6. Behandlung und Interventionen</h2>
+                <p class="mt-4 text-slate-600">Die Behandlung zielt nicht auf die "Reparatur der Bindung", sondern auf die Schaffung von Bedingungen für eine gesunde Entwicklung. Absolute Priorität hat die Gewährleistung einer <strong class="text-green-600">sicheren, stabilen und feinfühligen Betreuungsumgebung</strong>.</p>
+                
+                <div class="mt-8 grid md:grid-cols-2 gap-8">
+                    <!-- Empfohlen -->
+                    <div>
+                        <h3 class="flex items-center text-green-700">
+                            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                            Evidenzbasierte Interventionen
+                        </h3>
+                        <div class="mt-4 space-y-3">
+                            <div class="p-4 bg-green-50 border-l-4 border-green-500 rounded-r-lg">
+                                <h4 class="font-bold text-green-800">VIPP-SD</h4>
+                                <p class="text-sm text-green-900">Videofeedback zur Stärkung elterlicher Feinfühligkeit.</p>
+                            </div>
+                            <div class="p-4 bg-green-50 border-l-4 border-green-500 rounded-r-lg">
+                                <h4 class="font-bold text-green-800">ABC (Attachment and Biobehavioral Catch-Up)</h4>
+                                <p class="text-sm text-green-900">Speziell für Kleinkinder nach Vernachlässigung; verbessert elterliches Verhalten und kindliche Stressregulation.</p>
+                            </div>
+                              <div class="p-4 bg-green-50 border-l-4 border-green-500 rounded-r-lg">
+                                <h4 class="font-bold text-green-800">PCIT / CPP</h4>
+                                <p class="text-sm text-green-900">Sinnvolle Ergänzung bei komorbiden Traumafolgestörungen.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Abgelehnt -->
+                    <div>
+                        <h3 class="flex items-center text-red-700">
+                             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>
+                            Abgelehnte und schädliche Methoden
+                        </h3>
+                         <div class="mt-4 space-y-3">
+                            <div class="p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg">
+                                <h4 class="font-bold text-red-800">"Festhalte-Therapien"</h4>
+                                <p class="text-sm text-red-900">Wissenschaftlich nicht fundiert, potenziell schädlich und von Fachgesellschaften strikt abgelehnt.</p>
+                            </div>
+                            <div class="p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg">
+                                <h4 class="font-bold text-red-800">Pharmakotherapie für "Bindung"</h4>
+                                <p class="text-sm text-red-900">Keine Medikation für die Bindungsstörung selbst. Einsatz nur bei komorbiden Störungen (z.B. ADHS).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 7-10: Weitere Infos -->
+        <section id="weitere_infos" class="mb-16 reveal">
+            <div class="card p-6 md:p-8">
+                <div class="grid md:grid-cols-2 gap-x-12 gap-y-8">
+                    <div>
+                        <h2 class="card-title !border-0 !p-0 !text-2xl">7. Kulturelle Aspekte</h2>
+                        <p class="mt-3 text-slate-600">Das Bindungssystem ist universell, die Ausdrucksformen können jedoch kulturell variieren. Diagnostik muss kultursensibel erfolgen, um normales Verhalten nicht fälschlicherweise zu pathologisieren, insbesondere bei Adoptionen oder Fluchthintergrund.</p>
+                    </div>
+                     <div>
+                        <h2 class="card-title !border-0 !p-0 !text-2xl">8. Zentrale Studienergebnisse</h2>
+                        <h3 class="!mt-2">Bucharest Early Intervention Project (BEIP)</h3>
+                        <p class="mt-2 text-slate-600">Diese wegweisende RCT zeigte, dass Symptome der <span class="tag tag-rad">RBS</span> nach Platzierung in einer Pflegefamilie rasch zurückgingen. Symptome der <span class="tag tag-dsed">BSE</span> waren hartnäckiger.</p>
+                        <div class="interactive-container mt-4">
+                            <h4 class="text-center font-semibold text-slate-700 mb-4">Animierte Visualisierung der BEIP-Ergebnisse</h4>
+                            <button id="beip-play-btn" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition">Animation starten</button>
+                            <div class="mt-4 space-y-3 text-sm">
+                                <div>
+                                    <p class="font-medium">RBS-Symptome (Pflegefamilie)</p>
+                                    <div class="w-full bg-slate-200 rounded-full h-4 mt-1">
+                                        <div id="beip-rad-bar" class="beip-bar bg-amber-400 h-4 rounded-full" style="width: 80%;"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="font-medium">BSE-Symptome (Pflegefamilie)</p>
+                                    <div class="w-full bg-slate-200 rounded-full h-4 mt-1">
+                                        <div id="beip-dsed-bar" class="beip-bar bg-blue-400 h-4 rounded-full" style="width: 75%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h2 class="card-title !border-0 !p-0 !text-2xl">9. Aktuelle Debatten</h2>
+                        <p class="mt-3 text-slate-600">Die Forschung unterstützt die Trennung von RBS und BSE. Eine wachsende Besorgnis gilt der inflationären Fehletikettierung von Verhaltensproblemen als "Bindungsstörung", was zu nicht-evidenzbasierten Behandlungen führt.</p>
+                    </div>
+                    <div>
+                         <h2 class="card-title !border-0 !p-0 !text-2xl">10. Praxisnahe Empfehlungen</h2>
+                         <ul class="mt-3 list-disc list-inside text-slate-600 space-y-2">
+                            <li><strong>Sorgfältige Diagnostik:</strong> Nur bei erfüllten Kriterien und Anamnese von Vernachlässigung.</li>
+                            <li><strong>Systemische Intervention:</strong> Sicherheit und Stabilität haben Vorrang.</li>
+                            <li><strong>Realistische Prognose:</strong> RBS remittiert oft gut, BSE erfordert längerfristige Begleitung.</li>
+                            <li><strong>Prävention:</strong> Frühe Platzierung in Familien statt Institutionen ist wirksamste Maßnahme.</li>
+                         </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="bg-slate-800 text-slate-400">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p>&copy; 2024 Interaktive Lernseite. Alle Inhalte dienen ausschließlich zu Bildungszwecken.</p>
+            <p class="text-sm mt-2">Erstellt mit HTML, Tailwind CSS und JavaScript.</p>
+            <p class="text-xs mt-4 p-2 bg-slate-700/50 rounded-md max-w-2xl mx-auto">„Hinweis: Dieser HTML-Inhalt wurde automatisiert durch KI erstellt. Inhalte können fehlerhaft sein und müssen je nach Kontext validiert werden.“</p>
+        </div>
+    </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    // -----------------------------------------------------------------
+    // INTERACTIVITY FOR SECTION 1: RAD vs DSED
+    // -----------------------------------------------------------------
+    const radDsedTabs = document.getElementById('rad-dsed-tabs');
+    const radDsedPanel = document.getElementById('rad-dsed-panel');
+    const tabData = {
+        rad: {
+            title: 'Reaktive Bindungsstörung (RBS)',
+            description: 'Gekennzeichnet durch ein gehemmtes, emotional zurückgezogenes Verhalten gegenüber Bezugspersonen. Das Kind sucht und akzeptiert Trost nur minimal.',
+            icon: `<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" class="w-24 h-24 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5-2 4-2 4 2 4 2"/><path d="M9 9h.01"/><path d="M15 9h.01"/></svg>`,
+            tag: 'Gehemmt & Zurückgezogen'
+        },
+        dsed: {
+            title: 'Soziale Enthemmung (BSE)',
+            description: 'Gekennzeichnet durch ein undifferenziert distanzloses und übermäßig freundliches Verhalten auch gegenüber fremden Personen.',
+            icon: `<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" class="w-24 h-24 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 12h8"/><path d="M12 16c-2.5 0-4-1-4-2.5"/><path d="M12 16c2.5 0 4-1 4-2.5"/><path d="M9 9h.01"/><path d="M15 9h.01"/></svg>`,
+            tag: 'Distanzlos & Freundlich'
+        }
+    };
+
+    function updateRadDsedContent(tabName) {
+        const data = tabData[tabName];
+        radDsedPanel.innerHTML = `
+            <div class="flex-shrink-0">${data.icon}</div>
+            <div class="text-center md:text-left">
+                <span class="tag ${tabName === 'rad' ? 'tag-rad' : 'tag-dsed'}">${data.tag}</span>
+                <h4 class="text-xl font-bold mt-3 mb-2 text-slate-800">${data.title}</h4>
+                <p class="text-slate-600">${data.description}</p>
+            </div>
+        `;
+    }
+
+    radDsedTabs.addEventListener('click', (e) => {
+        const clickedTab = e.target.closest('button[role="tab"]');
+        if (clickedTab) {
+            radDsedTabs.querySelectorAll('[role="tab"]').forEach(tab => {
+                tab.classList.remove('active');
+                tab.setAttribute('aria-selected', 'false');
+            });
+            clickedTab.classList.add('active');
+            clickedTab.setAttribute('aria-selected', 'true');
+            radDsedPanel.setAttribute('aria-labelledby', clickedTab.id);
+            updateRadDsedContent(clickedTab.dataset.tab);
+        }
+    });
+    
+    updateRadDsedContent('rad'); // Initial content
+
+    // -----------------------------------------------------------------
+    // INTERACTIVITY FOR SECTION 3: Differential Diagnosis
+    // -----------------------------------------------------------------
+    const diffContainer = document.getElementById('diff-container');
+    const diffPanel = document.getElementById('diff-panel');
+    const diffData = {
+        ass: {
+            title: "Abgrenzung zu Autismus-Spektrum-Störung (ASS)",
+            text: "Bei ASS zeigen sich zusätzlich eingeschränkte, repetitive Verhaltensweisen und stereotype Interessen, die bei Bindungsstörungen fehlen. Die sozialen Schwierigkeiten bei ASS sind nicht auf die Bindungsbeziehung beschränkt und bestehen unabhängig von der Betreuungsvorgeschichte."
+        },
+        adhs: {
+            title: "Abgrenzung zu ADHS / Störung des Sozialverhaltens",
+            text: "Die Impulsivität und Distanzlosigkeit der BSE kann mit ADHS verwechselt werden. Bei ADHS ist das Verhalten jedoch nicht auf soziale Interaktionen beschränkt, besteht unabhängig von der Vertrautheit der Person und hat keine kausale Verbindung zu früher Vernachlässigung."
+        },
+        ptbs: {
+            title: "Abgrenzung zu Posttraumatischer Belastungsstörung (PTBS)",
+            text: "Kinder mit PTBS können emotionalen Rückzug zeigen, die Symptome sind aber direkt an ein spezifisches Traumaereignis geknüpft (z.B. Wiedererleben, Vermeidung von Triggern), was bei Bindungsstörungen nicht das Kernmerkmal ist."
+        },
+        intel: {
+            title: "Abgrenzung zu Intelligenzminderung / Sprachstörungen",
+            text: "Diese können die soziale Interaktion beeinträchtigen, erklären aber nicht die spezifischen, qualitativ abnormen Muster von gehemmtem (RBS) oder enthemmtem (BSE) Bindungsverhalten. Die Diagnose einer Bindungsstörung erfordert, dass die Symptome nicht besser durch eine Entwicklungsverzögerung erklärt werden können."
+        }
+    };
+    
+    function updateDiffContent(diffKey) {
+        const data = diffData[diffKey];
+        diffPanel.innerHTML = `
+            <div class="text-left">
+                <h4 class="font-bold text-lg text-cyan-800 mb-2">${data.title}</h4>
+                <p class="text-slate-700">${data.text}</p>
+            </div>
+        `;
+    }
+
+    diffContainer.addEventListener('click', e => {
+        const clickedTab = e.target.closest('button[role="tab"]');
+        if (clickedTab) {
+            const diffKey = clickedTab.dataset.diff;
+            
+            diffContainer.querySelectorAll('[role="tab"]').forEach(tab => {
+                tab.classList.remove('bg-cyan-500', 'text-white');
+                tab.setAttribute('aria-selected', 'false');
+            });
+            clickedTab.classList.add('bg-cyan-500', 'text-white');
+            clickedTab.setAttribute('aria-selected', 'true');
+            diffPanel.setAttribute('aria-labelledby', clickedTab.id);
+
+            updateDiffContent(diffKey);
+        }
+    });
+
+    updateDiffContent('ass'); // Initial content load
+
+    // -----------------------------------------------------------------
+    // INTERACTIVITY FOR SECTION 4: Deprivation Slider
+    // -----------------------------------------------------------------
+    const slider = document.getElementById('deprivation-slider');
+    const dsedBar = document.getElementById('dsed-risk-bar');
+    const neuroBar = document.getElementById('neuro-risk-bar');
+    const dsedValue = document.getElementById('dsed-risk-value');
+    const neuroValue = document.getElementById('neuro-risk-value');
+
+    const updateRiskBars = () => {
+        const value = slider.value;
+        const dsedHeight = Math.min(100, 20 + value * 0.8);
+        const neuroHeight = Math.min(100, 10 + value * 0.9);
+        dsedBar.style.height = `${dsedHeight}%`;
+        neuroBar.style.height = `${neuroHeight}%`;
+
+        dsedValue.textContent = `${Math.round(dsedHeight)}%`;
+        neuroValue.textContent = `${Math.round(neuroHeight)}%`;
+    };
+
+    slider.addEventListener('input', updateRiskBars);
+    updateRiskBars(); // Initial call
+    
+    // -----------------------------------------------------------------
+    // INTERACTIVITY FOR SECTION 5: Timeline
+    // -----------------------------------------------------------------
+    const timelineControls = document.getElementById('timeline-controls');
+    const timelineDisplay = document.getElementById('timeline-display-panel');
+    const timelineData = {
+        saeugling: {
+            rad: { title: "RBS im Säuglingsalter", text: "Kernmerkmale am deutlichsten: Kind sucht kaum Trost, zeigt wenig positive Affekte und reagiert nicht auf Fürsorgeangebote.", containerClasses: "bg-amber-50 border-amber-400", titleClasses: "text-amber-800" },
+            dsed: { title: "BSE im Säuglingsalter", text: "Auffällig geringe Fremdenscheu, distanzloses Verhalten und Überschreiten sozialer Grenzen auch bei völlig fremden Personen.", containerClasses: "bg-blue-50 border-blue-400", titleClasses: "text-blue-800" }
+        },
+        schule: {
+            rad: { title: "RBS im Schulalter", text: "Nach Platzierung in guter Betreuung nehmen Symptome oft deutlich ab oder verschwinden vollständig (Remission). Die Prognose ist meist gut.", containerClasses: "bg-green-50 border-green-400", titleClasses: "text-green-800" },
+            dsed: { title: "BSE im Schulalter", text: "Symptome persistieren häufiger. Oft begleitende Aufmerksamkeitsprobleme, Impulsivität und Schwierigkeiten in Freundschaften.", containerClasses: "bg-blue-50 border-blue-400", titleClasses: "text-blue-800" }
+        },
+        adoleszenz: {
+            rad: { title: "RBS in der Adoleszenz", text: "Wissen über den Langzeitverlauf ist begrenzt. Bei erfolgreicher früher Intervention wird eine weitgehend unauffällige Entwicklung erwartet.", containerClasses: "bg-green-50 border-green-400", titleClasses: "text-green-800" },
+            dsed: { title: "BSE in der Adoleszenz", text: "Längsschnittstudien zeigen, dass enthemmte Verhaltensmuster oft fortbestehen. Es können sich oberflächliche Beziehungen und Risikoverhalten zeigen.", containerClasses: "bg-blue-50 border-blue-400", titleClasses: "text-blue-800" }
+        }
+    };
+    
+    function updateTimeline(stage) {
+        const data = timelineData[stage];
+        const activeTab = timelineControls.querySelector(`[data-stage="${stage}"]`);
+        timelineDisplay.setAttribute('aria-labelledby', activeTab.id);
+        timelineDisplay.innerHTML = `
+            <div class="p-4 border-l-4 rounded-r-lg ${data.rad.containerClasses}">
+                <h4 class="font-bold text-lg ${data.rad.titleClasses}">${data.rad.title}</h4>
+                <p class="mt-2 text-slate-700">${data.rad.text}</p>
+            </div>
+            <div class="p-4 border-l-4 rounded-r-lg ${data.dsed.containerClasses}">
+                <h4 class="font-bold text-lg ${data.dsed.titleClasses}">${data.dsed.title}</h4>
+                <p class="mt-2 text-slate-700">${data.dsed.text}</p>
+            </div>
+        `;
+    }
+
+    timelineControls.addEventListener('click', e => {
+        const clickedTab = e.target.closest('button[role="tab"]');
+        if (clickedTab) {
+            const stage = clickedTab.dataset.stage;
+            timelineControls.querySelectorAll('[role="tab"]').forEach(btn => {
+                btn.classList.remove('bg-blue-500', 'text-white', 'border-blue-500');
+                btn.setAttribute('aria-selected', 'false');
+            });
+            clickedTab.classList.add('bg-blue-500', 'text-white', 'border-blue-500');
+            clickedTab.setAttribute('aria-selected', 'true');
+            updateTimeline(stage);
+        }
+    });
+
+    // Initial call
+    const initialTimelineTab = timelineControls.querySelector('[data-stage="saeugling"]');
+    initialTimelineTab.setAttribute('aria-selected', 'true');
+    initialTimelineTab.classList.add('bg-blue-500', 'text-white', 'border-blue-500');
+    updateTimeline('saeugling');
+    
+    // -----------------------------------------------------------------
+    // INTERACTIVITY FOR SECTION 8: BEIP Study Animation
+    // -----------------------------------------------------------------
+    const beipBtn = document.getElementById('beip-play-btn');
+    const beipRadBar = document.getElementById('beip-rad-bar');
+    const beipDsedBar = document.getElementById('beip-dsed-bar');
+
+    beipBtn.addEventListener('click', () => {
+        // Reset bars
+        beipRadBar.style.width = '80%';
+        beipDsedBar.style.width = '75%';
+        beipBtn.disabled = true;
+        beipBtn.textContent = "Animation läuft...";
+
+        setTimeout(() => {
+            // Animate to final state
+            beipRadBar.style.width = '15%'; // Significant reduction
+            beipDsedBar.style.width = '55%'; // Less reduction
+        }, 100);
+        
+        setTimeout(() => {
+            beipBtn.disabled = false;
+            beipBtn.textContent = "Animation erneut starten";
+        }, 1600);
+    });
+
+    // -----------------------------------------------------------------
+    // SCROLL-BASED FADE-IN ANIMATION
+    // -----------------------------------------------------------------
+    const revealElements = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.1
+    });
+
+    revealElements.forEach(el => {
+        observer.observe(el);
+    });
+});
+</script>
+
+</body>
+</html>
