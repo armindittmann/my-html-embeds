@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="de" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kim Dotcom - Der Digitale Aufstieg und Fall</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            color: #e5e5e5;
+        }
+        .font-mono {
+            font-family: 'Roboto Mono', monospace;
+        }
+        .font-display {
+            font-family: 'Inter', sans-serif;
+            font-weight: 900;
+        }
+        .text-glow {
+            text-shadow: 0 0 5px rgba(0, 255, 255, 0.7), 0 0 10px rgba(0, 255, 255, 0.5), 0 0 20px rgba(0, 255, 255, 0.3);
+        }
+        .card-flip-container {
+            perspective: 1000px;
+        }
+        .card-flipper {
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+        .card-flip-container:hover .card-flipper, .card-flip-container:focus-within .card-flipper {
+            transform: rotateY(180deg);
+        }
+        .card-front, .card-back {
+            backface-visibility: hidden;
+        }
+        .card-back {
+            transform: rotateY(180deg);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in-section {
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+            animation-delay: 0.2s;
+        }
+        @keyframes terminal-cursor {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .terminal-cursor {
+            animation: terminal-cursor 1s step-end infinite;
+            background-color: #34d399; /* emerald-400 */
+        }
+        .light-beam {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 150%;
+            height: 100%;
+            background: radial-gradient(circle at var(--x) var(--y), transparent 10%, rgba(255, 255, 255, 0.02) 20%, rgba(255, 255, 255, 0) 40%);
+            transform: translateX(-50%);
+            pointer-events: none;
+            transition: all 0.2s ease-out;
+        }
+        @keyframes police-flash-red {
+            0%, 100% { box-shadow: inset 0 0 10vw 2vw rgba(255, 0, 0, 0.5); }
+            50% { box-shadow: inset 0 0 10vw 2vw rgba(255, 0, 0, 0); }
+        }
+        @keyframes police-flash-blue {
+            0%, 100% { box-shadow: inset 0 0 10vw 2vw rgba(0, 0, 255, 0); }
+            50% { box-shadow: inset 0 0 10vw 2vw rgba(0, 0, 255, 0.5); }
+        }
+        .police-flash-red { animation: police-flash-red 0.5s infinite; }
+        .police-flash-blue { animation: police-flash-blue 0.5s infinite alternate; animation-delay: 0.25s; }
+    </style>
+</head>
+<body class="relative">
+
+    <div id="light-beam" class="light-beam z-50"></div>
+    <div id="scroll-progress" class="fixed top-0 left-0 h-1 bg-cyan-400 z-60" style="width: 0%;"></div>
+    
+    <main class="container mx-auto px-4 md:px-8 py-12 md:py-24 space-y-24 md:space-y-32">
+
+        <!-- EINLEITUNG -->
+        <section id="intro" class="min-h-screen flex flex-col items-center justify-center text-center">
+            <h1 class="font-display text-5xl md:text-8xl lg:text-9xl uppercase tracking-tighter mb-8">Kim <span class="text-red-500">Dot</span>com</h1>
+			<h1 class="font-display text-5xl md:text-8xl lg:text-9xl uppercase tracking-tighter mb-4 text-glow">Der digitale</h1>
+            <h1 class="font-display text-5xl md:text-8xl lg:text-9xl uppercase tracking-tighter mb-8">Aufstieg <span class="text-red-500">&</span> Fall</h1>
+            
+            <div id="intro-content" class="max-w-3xl mx-auto text-lg text-gray-300 space-y-6">
+                <p>Die Szene spielt an einem Abend im Januar 2012. Während im Radio Lana Del Rey läuft, bereitet sich ein junger Mensch darauf vor, den neusten Twilight-Film zu streamen. Das Aufrufen der bekannten Seite wird jedoch jäh unterbrochen.</p>
+                
+                <div id="fbi-interactive" class="my-10 p-6 bg-gray-900 border border-gray-700 rounded-lg transition-all duration-500">
+                    <button id="load-site-btn" class="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-bold py-3 px-6 rounded-lg text-lg transition-transform hover:scale-105">
+                        Versuche, die Download-Seite zu laden...
+                    </button>
+                    <div id="fbi-warning" class="hidden items-center justify-center flex-col text-center">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Seal_of_the_Federal_Bureau_of_Investigation.svg/1024px-Seal_of_the_Federal_Bureau_of_Investigation.svg.png" alt="FBI Logo" class="w-32 h-32 mb-4">
+                        <h3 class="text-2xl font-bold text-red-500">Diese Domain wurde beschlagnahmt</h3>
+                        <p class="mt-2 text-gray-400">durch das Federal Bureau of Investigation gemäß einer richterlichen Anordnung.</p>
+                    </div>
+                </div>
+
+                <p>Zeitgleich, auf der anderen Seite der Welt, wird Kim Dotcom, der Betreiber dieser Seite, in Neuseeland festgenommen. Dies markiert einen Wendepunkt. Die Ära des „wilden“ Internets geht zu Ende. Dies ist die Geschichte des vielleicht größten Copyright-Prozesses aller Zeiten.</p>
+            </div>
+             <a href="#kapitel1" class="mt-16 animate-bounce" aria-label="Zum nächsten Kapitel scrollen">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+            </a>
+        </section>
+
+        <!-- KAPITEL 1 -->
+        <section id="kapitel1" class="space-y-12">
+            <header class="text-center">
+                <h2 class="font-display text-4xl md:text-6xl text-cyan-400 mb-2">Kapitel 1: Wer ist Kimble?</h2>
+                <p class="text-xl md:text-2xl text-gray-400">Der Aufstieg im Münchner Nachtleben</p>
+            </header>
+            
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <article class="max-w-none text-gray-300 lg:text-lg space-y-4">
+                    <h3 class="text-2xl font-bold text-gray-100">Die Tür zum P1: Eintritt in die Welt der Prominenz</h3>
+                    <p>In den 90ern war das P1 in München der Club der Reichen und Berühmten. Ein besonders auffälliger junger Mann, zwei Meter groß, 130 Kilo schwer, im schwarzen Anzug, versuchte Abend für Abend hineinzukommen. Seine Hartnäckigkeit überzeugte den Türsteher. Der Mann, der sich Kimble nannte, war drin.</p>
+                </article>
+                <div id="p1-door" class="w-full h-80 bg-black border-4 border-gray-600 rounded-lg flex items-center justify-center relative overflow-hidden group" role="img" aria-label="Eingangstür des Nachtclubs P1">
+                    <div class="absolute inset-0 bg-gray-800 opacity-20 group-hover:opacity-0 transition-opacity"></div>
+                    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style="background-image: url('https://placehold.co/800x600/1a202c/2d3748?text=Nachtclub');"></div>
+                    <div class="absolute inset-0 bg-black bg-opacity-70 group-hover:bg-opacity-40 transition-opacity"></div>
+                    <span class="text-5xl font-bold text-white z-10">P1</span>
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-yellow-400 rounded-full z-10"></div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                 <div class="card-flip-container w-full h-96" tabindex="0">
+                    <div class="card-flipper w-full h-full relative">
+                        <div class="card-front absolute w-full h-full bg-gray-900 border border-gray-700 rounded-lg p-6 flex flex-col justify-center items-center">
+                            <h4 class="text-2xl font-bold text-cyan-400">Das Image des Hackers</h4>
+                            <p class="mt-4 text-center text-gray-300">Im Club verbreiteten sich Gerüchte: Er sei ein Internet-Milliardär, habe das Pentagon gehackt, das Telefonnetz der Telekom manipuliert. Kimble selbst befeuerte diese Geschichten und wurde zum Star der neuen, unverstandenen Welt des Internets.</p>
+                            <p class="mt-8 font-mono text-xs text-gray-500 animate-pulse">Zum Umdrehen über die Karte fahren oder antippen</p>
+                        </div>
+                        <div class="card-back absolute w-full h-full bg-red-900/50 border border-red-700 rounded-lg p-6 flex flex-col justify-center items-center">
+                            <h4 class="text-2xl font-bold text-red-400">Die Gegenstimme</h4>
+                            <p class="mt-4 text-center text-gray-300">Doch die echte Hackerszene sah das anders. Jürgen „Weasel“, ein Mitglied der Szene, sagt klar: „Kimble? Nein, er ist ein Hochstapler. Er ist kein Hacker. War er noch nie.“ Ihm fehlten die tiefgreifenden technischen Fähigkeiten.</p>
+                        </div>
+                    </div>
+                </div>
+                <article class="max-w-none text-gray-300 lg:text-lg space-y-4">
+                    <h3 class="text-2xl font-bold text-gray-100">Ein Hacker oder ein Hochstapler?</h3>
+                    <p>Kimble inszenierte sich meisterhaft. Er gab Interviews, trat im Fernsehen auf und wurde zu Deutschlands berühmtestem Hacker. Sein Ziel war nicht nur, ein Hacker zu sein, sondern ein Promi. Doch für die Insider war klar: Seine Geschichten waren übertrieben, seine angeblichen Hacks nicht nachweisbar. Er hatte entdeckt, dass man im aufkommenden digitalen Zeitalter alles behaupten konnte, solange niemand das Gegenteil beweisen konnte.</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- KAPITEL 2 -->
+        <section id="kapitel2" class="space-y-12">
+            <header class="text-center">
+                <h2 class="font-display text-4xl md:text-6xl text-cyan-400 mb-2">Kapitel 2: Die Anfänge</h2>
+                <p class="text-xl md:text-2xl text-gray-400">Ein Leben vor dem Ruhm in Kiel</p>
+            </header>
+
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <article class="max-w-none text-gray-300 lg:text-lg space-y-4">
+                    <h3 class="text-2xl font-bold text-gray-100">Kindheit und der erste Computer</h3>
+                    <p>Vor seiner Zeit als Kimble war Kim Schmitz ein 14-jähriger Außenseiter in Kiel mit schwierigen Familienverhältnissen. Ein Geschenk seiner Mutter veränderte alles: ein Computer, erst ein Commodore C16, dann der legendäre Amiga 500. Dieses Gerät wurde sein Tor in eine andere Welt, eine Flucht aus der Realität.</p>
+                </article>
+                <div class="bg-black border-2 border-green-400 rounded-lg p-6 font-mono text-green-400 h-80 overflow-y-auto">
+                    <p>&gt; BOOTING AMIGA_OS_1.3...</p>
+                    <p>&gt; MEMORY CHECK: 512 KB OK</p>
+                    <p>&gt; LOADING WORKBENCH...</p>
+                    <p class="mt-4">&gt; <span id="terminal-text"></span><span class="inline-block w-2 h-5 ml-1 terminal-cursor" aria-hidden="true"></span></p>
+                </div>
+            </div>
+             <article class="max-w-prose mx-auto text-center text-gray-300 lg:text-lg space-y-4">
+                <h3 class="text-2xl font-bold text-gray-100">Eintauchen in die digitale Subkultur</h3>
+                <p>In den späten 80ern und frühen 90ern existierte eine lebendige Subkultur, lange vor dem Internet für alle. Auf „Szene-Partys“ trafen sich Hunderte von Computer-Enthusiasten. Es waren physische Treffpunkte der digitalen Elite: Hacker, Programmierer und Cracker tauschten Wissen, Code und Disketten. Für den jungen Kim Schmitz war dies der Ort, an dem er dazugehören wollte.</p>
+            </article>
+        </section>
+        
+        <!-- KAPITEL 3 -->
+        <section id="kapitel3" class="space-y-12">
+            <header class="text-center">
+                <h2 class="font-display text-4xl md:text-6xl text-cyan-400 mb-2">Kapitel 3: Die Szene</h2>
+                <p class="text-xl md:text-2xl text-gray-400">Hacker, Cracker und der Kampf um Respekt</p>
+            </header>
+            
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <article class="max-w-none text-gray-300 lg:text-lg space-y-4">
+                    <h3 class="text-2xl font-bold text-gray-100">Cracken, Kopieren und der Kodex</h3>
+                    <p>Die Währung der Szene war Respekt. Diesen verdiente man sich durch Können. Eine zentrale Disziplin war das „Cracken“ – das Entfernen des Kopierschutzes von Computerspielen. Wer ein Spiel als Erster knackte und verbreitete, war ein Held. Kim wollte diesen Ruhm, fand aber einen anderen Weg. Ein ungeschriebenes Gesetz der Szene war es, im Verborgenen zu bleiben. Öffentliche Aufmerksamkeit bedeutete Ärger.</p>
+                </article>
+                
+                <div id="copy-container" class="space-y-6">
+                    <div>
+                        <h4 class="text-lg font-bold mb-2">Analoge Kopie (z.B. Kassette)</h4>
+                        <div class="flex items-center space-x-4">
+                            <span>Original</span>
+                            <div class="w-full h-2 bg-gradient-to-r from-emerald-400 to-red-500 rounded-full"></div>
+                            <span>Kopie der Kopie (Qualitätsverlust)</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-bold mb-2">Digitale Kopie</h4>
+                        <div class="flex items-center space-x-4">
+                            <span>Original</span>
+                            <div class="w-full h-2 bg-cyan-400 rounded-full"></div>
+                            <span>Perfekte Kopie (kein Verlust)</span>
+                        </div>
+                        <p class="text-sm text-gray-400 mt-2">Einmal geknackt, konnte ein Spiel unendlich oft in perfekter Qualität vervielfältigt werden. Das war die Revolution – und die Grundlage für spätere Konflikte.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- KAPITEL 4 -->
+        <section id="kapitel4" class="space-y-12">
+            <header class="text-center">
+                <h2 class="font-display text-4xl md:text-6xl text-cyan-400 mb-2">Kapitel 4: Der Fernsehauftritt</h2>
+                <p class="text-xl md:text-2xl text-gray-400">Ein Bruch mit der Szene</p>
+            </header>
+
+            <div class="grid md:grid-cols-5 gap-8 items-center">
+                <article class="max-w-none md:col-span-2 text-gray-300 lg:text-lg space-y-4">
+                    <h3 class="text-2xl font-bold text-gray-100">„Plus Minus“ und der Blue-Boxing-Trick</h3>
+                    <p>1992 trat ein vermummter Kimble im ARD-Magazin „Plus Minus“ auf. Er demonstrierte live, wie man angeblich mit seinem Programm kostenlos telefonieren konnte. Der Trick, „Blue Boxing“, war in der Szene altbekannt und überlebenswichtig. Kimble präsentierte ihn als seine Erfindung.</p>
+                </article>
+                <div class="md:col-span-3 bg-gray-800 rounded-lg p-4 border border-gray-600">
+                    <div class="aspect-w-16 aspect-h-9 bg-black rounded flex flex-col items-center justify-center p-4">
+                        <div id="tv-screen" class="w-full h-full border-2 border-gray-700 p-4 text-center">
+                            <p class="text-red-600 font-bold">● LIVE</p>
+                            <h4 class="text-xl font-bold">ARD Plus Minus</h4>
+                            <div id="bluebox-demo" class="mt-4">
+                                <p>Gebührenzähler: <span id="call-cost" class="font-mono text-yellow-300">0.00 DM</span></p>
+                                <button id="bluebox-btn" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition">
+                                    Blue-Box-Anruf starten
+                                </button>
+                                <div id="call-status" class="mt-2 h-6 text-green-400" aria-live="polite"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                 <div class="bg-black border border-gray-700 rounded-lg h-96 p-4 flex flex-col">
+                    <div class="text-xs text-center font-mono text-red-500 p-2 bg-gray-900 rounded-t-lg">#szene-chat (1992)</div>
+                    <div id="chat-window" class="flex-grow overflow-y-auto bg-gray-900/50 p-2 space-y-1" aria-live="polite">
+                        <!-- Messages will be injected by JS -->
+                    </div>
+                </div>
+                <article class="max-w-none text-gray-300 lg:text-lg space-y-4">
+                    <h3 class="text-2xl font-bold text-gray-100">Die Reaktion der Szene: Wut und Verrat</h3>
+                    <p>Die Szene war entsetzt. Kimble hatte ihr wichtigstes Geheimnis im Fernsehen verraten. Die Telekom schloss die Sicherheitslücke, die Kommunikationsader der Szene war gekappt. In den internen Chats brach ein Sturm der Entrüstung los. Sein echter Name, Kim Schmitz, und seine Adresse wurden veröffentlicht – der ultimative Verrat am Kodex der Anonymität.</p>
+                     <p>Kim schien das nicht zu kümmern. Er nutzte die Aufmerksamkeit und setzte seine Medientour fort, während sich die Szene von ihm abwandte.</p>
+                </article>
+            </div>
+        </section>
+        
+        <!-- KAPITEL 5 -->
+        <section id="kapitel5" class="space-y-12">
+            <header class="text-center">
+                <h2 class="font-display text-4xl md:text-6xl text-cyan-400 mb-2">Kapitel 5: Kommerzialisierung</h2>
+                <p class="text-xl md:text-2xl text-gray-400">Konfrontation und Geschäftsmodelle</p>
+            </header>
+
+            <article class="max-w-prose mx-auto text-center text-gray-300 lg:text-lg space-y-4">
+                <h3 class="text-2xl font-bold text-gray-100">Der Jäger und die Erfindung der Abmahnung</h3>
+                <p>Zur gleichen Zeit betrat Günther von Gravenreuth die Bühne, der erste Anwalt, der sich auf die Jagd nach „Schwarzkopierern“ spezialisierte. Er erkannte die Goldgrube in der perfekten digitalen Kopie und entwickelte das Geschäftsmodell der Abmahnung, das bis heute existiert: Eine außergerichtliche Einigung gegen Geldzahlung, unter Androhung einer Anzeige.</p>
+            </article>
+
+            <div class="bg-gray-900 border border-gray-700 rounded-lg p-8">
+                <h3 class="text-2xl font-bold text-center mb-6">Die Kommerzialisierung des Teilens</h3>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="border border-dashed border-gray-600 p-6 rounded-lg text-center">
+                        <h4 class="text-xl font-semibold text-gray-400 mb-4">Das Prinzip der Szene (Tauschbörse)</h4>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
+                        <p>Wissen und Daten wurden geteilt. Upload war die Bedingung für den Download. Es ging um Respekt, nicht um Geld.</p>
+                    </div>
+                    <div class="border-2 border-yellow-400 p-6 rounded-lg text-center bg-yellow-900/20">
+                        <h4 class="text-xl font-semibold text-yellow-300 mb-4">Kims "House of Coolness" (Kommerziell)</h4>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-yellow-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v.01" /></svg>
+                        <p>Kim betrieb ein Bulletin Board System (BBS), auf dem er laut Zeitzeugen für Downloads Geld verlangte. Er bediente damit „Lamer“ – Nutzer ohne eigenes Material. Ein Vorläufer des kommerziellen File-Sharings und ein Ausverkauf der Szene-Ideale.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- KAPITEL 6 -->
+        <section id="kapitel6" class="min-h-[80vh] flex flex-col justify-center items-center text-center space-y-12">
+            <header>
+                <h2 class="font-display text-4xl md:text-6xl text-cyan-400 mb-2">Kapitel 6: Die Verhaftung</h2>
+                <p class="text-xl md:text-2xl text-gray-400">Das vorläufige Ende der ersten Karriere</p>
+            </header>
+            
+            <div id="raid-interactive" class="w-full max-w-2xl">
+                 <article class="max-w-prose mx-auto mb-10 text-gray-300 lg:text-lg">
+                    <p>Während andere aus Angst aufhörten, machte Kim weiter. Doch die Behörden waren ihm auf der Spur. Am Morgen des 1. März 1994 fand seine Karriere ein jähes Ende.</p>
+                </article>
+                <button id="trigger-raid-btn" class="bg-red-600 hover:bg-red-700 text-white font-black py-4 px-8 rounded-lg text-2xl uppercase tracking-widest transition-transform hover:scale-105">
+                    1. März 1994
+                </button>
+            </div>
+
+            <div id="prison-scene" class="hidden w-full max-w-4xl mx-auto p-8 bg-gray-900/50 border border-gray-700 rounded-lg relative">
+                 <div class="absolute inset-0 bg-repeat bg-center opacity-10" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIxMDAiPgo8cmVjdCB3aWR0aD0iNSIgaGVpZ2h0PSIxMDAiIGZpbGw9IiNlNWU1ZTUiLz4KPC9zdmc+');"></div>
+                 <div class="relative z-10">
+                    <h3 class="text-3xl font-bold mb-4">Untersuchungshaft in Stadelheim</h3>
+                    <p class="text-xl text-gray-300">Mit 20 Jahren landete Kim Schmitz im Gefängnis. Ihm drohte eine mehrjährige Haftstrafe. Später beschrieb er diese Erfahrung als Albtraum.</p>
+                    <blockquote class="mt-6 border-l-4 border-cyan-400 pl-4 italic text-gray-400">
+                        „Ein großes Computerspiel war zur bitteren, kriminellen Realität geworden.“
+                    </blockquote>
+                    <p class="mt-8 text-2xl font-display">Seine erste Karriere als Deutschlands berühmtester Hacker fand hinter Gittern ein Ende. Aber seine Geschichte war noch lange nicht vorbei...</p>
+                 </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="raid-overlay" class="hidden fixed inset-0 z-100">
+        <div class="absolute inset-0 police-flash-red"></div>
+        <div class="absolute inset-0 police-flash-blue"></div>
+        <div class="flex items-center justify-center h-full">
+            <h1 class="text-white text-7xl md:text-9xl font-black tracking-widest animate-pulse">RAZZIA</h1>
+        </div>
+    </div>
+    
+    <footer class="text-center py-8 px-4">
+        <p class="text-xs text-gray-500">Hinweis: Dieser HTML-Inhalt wurde automatisiert durch KI erstellt. Inhalte können fehlerhaft sein und müssen je nach Kontext validiert werden.</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- Scroll Progress Bar ---
+            const scrollProgress = document.getElementById('scroll-progress');
+            const body = document.body;
+            const html = document.documentElement;
+
+            const updateScrollProgress = () => {
+                const totalHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight) - window.innerHeight;
+                const scrollPercentage = (window.pageYOffset / totalHeight) * 100;
+                scrollProgress.style.width = `${scrollPercentage}%`;
+            };
+            window.addEventListener('scroll', updateScrollProgress);
+
+            // --- Light Beam Effect ---
+            const lightBeam = document.getElementById('light-beam');
+            document.addEventListener('mousemove', (e) => {
+                requestAnimationFrame(() => {
+                    lightBeam.style.setProperty('--x', e.clientX + 'px');
+                    lightBeam.style.setProperty('--y', e.clientY + 'px');
+                });
+            });
+
+            // --- Intro FBI Interactive ---
+            const loadSiteBtn = document.getElementById('load-site-btn');
+            const fbiWarning = document.getElementById('fbi-warning');
+            loadSiteBtn.addEventListener('click', () => {
+                loadSiteBtn.classList.add('hidden');
+                fbiWarning.classList.remove('hidden');
+                fbiWarning.classList.add('flex');
+            });
+
+            // --- Kapitel 2: Terminal Typing Effect ---
+            const terminalTextEl = document.getElementById('terminal-text');
+            const textToType = 'Mein Name ist Kim Schmitz. Als Kind war ich ein Außenseiter. Der Amiga 500 war meine Flucht. Er war mein Tor in eine Welt, in der ich jemand sein konnte...';
+            let charIndex = 0;
+            
+            function type() {
+                if (charIndex < textToType.length) {
+                    terminalTextEl.textContent += textToType.charAt(charIndex);
+                    charIndex++;
+                    setTimeout(type, 50);
+                }
+            }
+
+            // --- Kapitel 4: Bluebox Demo ---
+            const blueboxBtn = document.getElementById('bluebox-btn');
+            const callCostEl = document.getElementById('call-cost');
+            const callStatusEl = document.getElementById('call-status');
+
+            blueboxBtn.addEventListener('click', () => {
+                blueboxBtn.disabled = true;
+                blueboxBtn.textContent = 'Verbinde...';
+                callStatusEl.textContent = 'Sende 2600Hz Ton...';
+                callStatusEl.className = 'mt-2 h-6 text-yellow-400';
+
+                setTimeout(() => {
+                    callStatusEl.textContent = 'Verbindung zu ARD New York hergestellt. Gebührenzähler gestoppt.';
+                    callStatusEl.className = 'mt-2 h-6 text-green-400';
+                    blueboxBtn.textContent = 'Anruf aktiv';
+                }, 2000);
+            });
+            
+            // --- Kapitel 4: Chat Window ---
+            const chatWindow = document.getElementById('chat-window');
+            const messages = [
+                "<span class='text-cyan-400'>&lt;Weasel&gt;</span> Seht ihr das auf ARD??",
+                "<span class='text-green-400'>&lt;Cygnus&gt;</span> Das ist doch Kimble!",
+                "<span class='text-red-500'>&lt;AcidBurn&gt;</span> Der verrät Blue-Boxing! Im Fernsehen!!",
+                "<span class='text-yellow-400'>&lt;ZeroCool&gt;</span> Das kann nicht sein Ernst sein. Damit ist die Lücke tot.",
+                "<span class='text-cyan-400'>&lt;Weasel&gt;</span> Dieser Hochstapler... er ruiniert alles.",
+                "<span class='text-red-500'>&lt;AcidBurn&gt;</span> Wer ist das wirklich? Den müssen wir finden.",
+                "<span class='text-yellow-400'>&lt;ZeroCool&gt;</span> Moment, ich hab was... Der heißt Kim Schmitz. Wohnt in Kiel.",
+                "<span class='text-red-500'>&lt;AcidBurn&gt;</span> 24118 Kiel, [zensiert]straße 12. Hier ist die Adresse. Verräter.",
+            ];
+            let msgIndex = 0;
+            
+            function addChatMessage() {
+                if (msgIndex < messages.length) {
+                    const p = document.createElement('p');
+                    p.innerHTML = messages[msgIndex];
+                    p.className = "opacity-0 animate-pulse";
+                    chatWindow.appendChild(p);
+                    // Force reflow to trigger animation
+                    void p.offsetWidth;
+                    p.classList.remove("opacity-0", "animate-pulse");
+                    p.classList.add("transition-opacity", "duration-500", "opacity-100");
+
+                    chatWindow.scrollTop = chatWindow.scrollHeight;
+                    msgIndex++;
+                    setTimeout(addChatMessage, Math.random() * 1500 + 500);
+                }
+            }
+            
+            // --- Kapitel 6: Raid ---
+            const triggerRaidBtn = document.getElementById('trigger-raid-btn');
+            const raidOverlay = document.getElementById('raid-overlay');
+            const raidInteractive = document.getElementById('raid-interactive');
+            const prisonScene = document.getElementById('prison-scene');
+
+            triggerRaidBtn.addEventListener('click', () => {
+                raidOverlay.classList.remove('hidden');
+                setTimeout(() => {
+                    raidOverlay.classList.add('hidden');
+                    raidInteractive.classList.add('hidden');
+                    prisonScene.classList.remove('hidden');
+                    prisonScene.classList.add('fade-in-section');
+                }, 2000);
+            });
+
+
+            // --- Intersection Observer for animations ---
+            const sections = document.querySelectorAll('section, header, article, div[id]');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in-section');
+                        
+                        // Trigger specific animations only once
+                        if (entry.target.id === 'kapitel2' && charIndex === 0) {
+                            setTimeout(type, 1000);
+                        }
+                        if (entry.target.id === 'kapitel4' && msgIndex === 0) {
+                            setTimeout(addChatMessage, 1000);
+                        }
+                        
+                        // We can unobserve after animation to save resources
+                        // observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+        });
+    </script>
+</body>
+</html>
