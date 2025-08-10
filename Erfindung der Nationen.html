@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="de" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Die Erfindung der Nation – Eine interaktive Reise</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a; /* slate-900 */
+            --bg-light: #1e293b; /* slate-800 */
+            --text-main: #e2e8f0; /* slate-200 */
+            --text-muted: #94a3b8; /* slate-400 */
+            --accent-primary: #22d3ee; /* cyan-400 */
+            --accent-secondary: #f472b6; /* pink-400 */
+            --accent-tertiary: #facc15; /* yellow-400 */
+        }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        h1, h2, h3 {
+            font-family: 'Lora', serif;
+            letter-spacing: -0.02em;
+        }
+        .text-gradient {
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 3px;
+            background: var(--accent-primary);
+            margin-top: 1rem;
+        }
+        .card {
+            background-color: var(--bg-light);
+            border: 1px solid #334155; /* slate-700 */
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2), 0 0 15px var(--accent-primary);
+            border-color: var(--accent-primary);
+        }
+        .interactive-visualization {
+            border: 1px dashed #475569; /* slate-600 */
+            background: rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        /* Scroll-triggered animations */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Specific Visualizations */
+        #imagined-community-canvas {
+            cursor: crosshair;
+        }
+
+        #zeit-vis .zeit-button {
+            transition: all 0.3s ease;
+        }
+        #zeit-vis .zeit-button.active {
+            background-color: var(--accent-primary);
+            color: var(--bg-dark);
+            font-weight: bold;
+        }
+        #zeit-vis .zeit-punkt {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--accent-secondary);
+            opacity: 0;
+            transform: scale(0);
+            box-shadow: 0 0 10px var(--accent-secondary);
+        }
+
+        #zeitung-vis {
+            font-family: 'Lora', serif;
+        }
+        #zeitung-vis .zeitung-item {
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            transition-delay: var(--delay);
+        }
+
+        #map-vis svg .country {
+            fill: #475569; /* slate-600 */
+            stroke: var(--bg-light);
+            stroke-width: 1px;
+            transition: fill 0.5s ease;
+        }
+        #map-vis svg .country.active {
+            fill: var(--accent-tertiary);
+        }
+        #map-vis svg .country.wave-1.active { fill: var(--accent-primary); }
+        #map-vis svg .country.wave-2.active { fill: var(--accent-secondary); }
+        #map-vis svg .country.wave-3.active { fill: var(--accent-tertiary); }
+
+        /* Removed scroll container styles */
+        .staat-dot {
+            transition: all 1s ease-in-out;
+        }
+
+        #debatten-container .debatte-card {
+            perspective: 1000px;
+        }
+        #debatten-container .debatte-card .flipper {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            position: relative;
+        }
+        #debatten-container .debatte-card:hover .flipper, #debatten-container .debatte-card:focus-within .flipper {
+            transform: rotateY(180deg);
+        }
+        .front, .back {
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+        .back {
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="h-screen w-full flex flex-col items-center justify-center text-center relative p-4">
+        <div id="hero-bg" class="absolute inset-0 z-0"></div>
+        <div class="z-10">
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter mb-4">
+                <span class="text-gradient">Die Erfindung</span> der Nation
+            </h1>
+            <p class="text-lg md:text-xl text-slate-300 max-w-3xl mx-auto">
+                Eine interaktive Reise durch Benedict Andersons Theorie der "vorgestellten Gemeinschaften"
+            </p>
+        </div>
+        <div class="absolute bottom-10 animate-bounce">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto p-4 md:p-8 space-y-24">
+
+        <!-- 1. Einleitung -->
+        <section class="fade-in-section" aria-labelledby="section-title-1">
+            <h2 id="section-title-1" class="text-4xl font-bold mb-6 section-title">1. Die Nation als vorgestellte Gemeinschaft</h2>
+            <p class="text-lg text-slate-300 mb-6">
+                Benedict Andersons Theorie definiert Nationen als „<strong class="text-cyan-300">vorgestellte politische Gemeinschaften</strong>“, die zugleich als <strong class="text-cyan-300">inhärent begrenzt</strong> und <strong class="text-cyan-300">souverän</strong> konzipiert werden. Diese Vorstellung ist kein reiner Akt der Fantasie, sondern wird durch spezifische historische und mediale Bedingungen ermöglicht. Sie erlaubt es Millionen von Menschen, sich als Teil einer simultan handelnden Gemeinschaft zu fühlen, ohne sich jemals persönlich zu begegnen.
+            </p>
+            <div class="interactive-visualization rounded-lg p-4 h-96 flex flex-col items-center">
+                <h3 class="text-xl font-bold mb-2">Visualisierung: Eine Gemeinschaft vorstellen</h3>
+                <p class="text-slate-400 mb-4 text-center text-sm">Bewegen Sie die Maus, um Verbindungen in einer Gemeinschaft von 100 (von Millionen) zu sehen.</p>
+                <canvas id="imagined-community-canvas" class="w-full flex-1 rounded-md" role="img" aria-label="Visualisierung von 100 Punkten, die eine Gemeinschaft darstellen. Beim Überfahren mit der Maus werden Linien zwischen nahen Punkten gezeichnet, um Verbindungen zu symbolisieren."></canvas>
+            </div>
+        </section>
+
+        <!-- 2. Zentrale Thesen -->
+        <section class="fade-in-section" aria-labelledby="section-title-2">
+            <h2 id="section-title-2" class="text-4xl font-bold mb-6 section-title">2. Zentrale Thesen und Schlüsselkonzepte</h2>
+            <div class="space-y-12">
+
+                <!-- 2.2 Zeit, Roman, Zeitung -->
+                <div class="card p-6 rounded-lg">
+                    <h3 class="text-2xl font-bold text-gradient mb-3">Homogene, leere Zeit</h3>
+                    <p class="text-slate-300 mb-4">
+                        Moderne Zeit wird als linearer, messbarer Fluss wahrgenommen, in dem unverbundene Ereignisse <strong class="text-pink-400">simultan</strong> stattfinden können. Dies ist die Grundlage, um sich Millionen von Mitbürgern vorzustellen, die "gleichzeitig" leben und handeln. Roman und Zeitung sind die Medien, die diese Wahrnehmung strukturieren.
+                    </p>
+                    <div id="zeit-vis" class="interactive-visualization rounded-lg p-4 h-80 flex flex-col">
+                        <div class="flex justify-center space-x-2 mb-4" role="group" aria-label="Zeitempfinden umschalten">
+                            <button id="zeit-mittelalter" class="zeit-button px-4 py-2 rounded-md border border-slate-600 bg-slate-700" aria-pressed="false">Mittelalterliche Zeit</button>
+                            <button id="zeit-modern" class="zeit-button px-4 py-2 rounded-md border border-slate-600 bg-slate-700 active" aria-pressed="true">Moderne Zeit</button>
+                        </div>
+                        <div id="zeit-container" class="relative flex-grow w-full">
+                            <!-- Vis wird per JS generiert -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2.3 Druck-Kapitalismus -->
+                <div class="card p-6 rounded-lg">
+                    <h3 class="text-2xl font-bold text-gradient mb-3">Druck-Kapitalismus und Sprache</h3>
+                    <p class="text-slate-300 mb-4">
+                        Die Konvergenz von Kapitalismus und Drucktechnologie war entscheidend. Der Druck schuf stabile, standardisierte „<strong class="text-cyan-400">Print-Sprachen</strong>“, die die sprachliche Vielfalt reduzierten und große, einheitliche Lesepublika ermöglichten. Diese neuen, durch Sprache definierten Märkte bildeten den <strong class="text-cyan-400">Imaginationsraum für Nationen</strong>.
+                    </p>
+                    <div class="interactive-visualization rounded-lg p-4 h-72 flex items-center justify-center">
+                        <div id="druck-vis" class="w-full h-full flex items-center justify-around text-center">
+                            <div class="fade-in-section flex flex-col items-center">
+                                <span class="text-5xl mb-2" role="img" aria-label="Sprechblasen">🗣️</span>
+                                <p>Diverse Dialekte</p>
+                            </div>
+                            <div class="text-3xl text-slate-500 fade-in-section" style="transition-delay: 0.5s;" aria-hidden="true">→</div>
+                            <div class="fade-in-section flex flex-col items-center" style="transition-delay: 1s;">
+                                <span class="text-5xl mb-2" role="img" aria-label="Zeitung">📰</span>
+                                <p>Druck-Kapitalismus</p>
+                            </div>
+                            <div class="text-3xl text-slate-500 fade-in-section" style="transition-delay: 1.5s;" aria-hidden="true">→</div>
+                             <div class="fade-in-section flex flex-col items-center" style="transition-delay: 2s;">
+                                <span class="text-5xl mb-2" role="img" aria-label="Buch">📖</span>
+                                <p>Einheitliche Drucksprache</p>
+                            </div>
+                            <div class="text-3xl text-slate-500 fade-in-section" style="transition-delay: 2.5s;" aria-hidden="true">→</div>
+                            <div class="fade-in-section flex flex-col items-center" style="transition-delay: 3s;">
+                                <span class="text-5xl mb-2" role="img" aria-label="Globus">🌍</span>
+                                <p>Vorgestellte Nation</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2.4 Wellen der Ausbreitung -->
+                <div class="card p-6 rounded-lg">
+                    <h3 class="text-2xl font-bold text-gradient mb-3">Die Wellen der Ausbreitung</h3>
+                    <p class="text-slate-300 mb-4">
+                        Der Nationalismus verbreitete sich laut Anderson in modularen Wellen: Er entstand zuerst in den <strong class="text-cyan-400">kreolischen Republiken Amerikas</strong>, wurde von Imperien als <strong class="text-pink-400">offizieller Nationalismus</strong> adaptiert und diente schließlich als Vorlage für <strong class="text-yellow-400">antikoloniale Bewegungen</strong>.
+                    </p>
+                    <div id="map-vis" class="interactive-visualization rounded-lg p-4 flex flex-col lg:flex-row items-center">
+                        <div class="w-full lg:w-2/3 h-96">
+                             <svg id="world-map" viewBox="0 0 1000 500" class="w-full h-full" role="img" aria-label="Weltkarte, die die Ausbreitung des Nationalismus in drei Wellen visualisiert. Die Regionen leuchten auf, wenn die entsprechende Beschreibung im Sichtfeld ist.">
+                                <g id="map-paths">
+                                    <path class="country wave-1" data-wave="1" d="M236 216l-14 26-12 3-11 22-12 11-30-3-12-16-16 11-12 25-11 2h-17l-15 13-13-13-16-4-15 11h-11l-9 12-15-2-12 16-14-16-11 5-21-36-3-20 2-25 11-13 14-3 15-11 15-20 25-10 20-22 35 3 26 12 12-3z"/>
+                                    <path class="country wave-1" data-wave="1" d="M226 251l-4 35-13 32-13 25-12 16-16-5-14 8-15-12-8 15v10l-12-2-11-20-10 24h12l16 11h16l11-11 11-20 9-11 11-22 9-22 2-10-12-11z"/>
+                                    <path class="country wave-2" data-wave="2" d="M503 141l-11 29-12 21h-9l-11-10-11 20-10-10-10 20-11-2-11 20h-16l-12 11h-2l-12-11-11-20-10 11h-17l-12-11h-16l-14 11-12-11-14 20-12-11-2-12 10-10 11-17 12-3h11l12-11 14 2 11-12 12-3 11 12h17l12-12h15l16-12h17l12 12h16l14-12h17l11 12h16l10 11h-9z"/>
+                                    <path class="country wave-3" data-wave="3" d="M512 201l-2 15-12 22-11 20-12 26-11 20-14 25-12 20-15 25-12 18-10 22-10 18-11 22-15 20-10 22-10 18h25l12-11 14 2 15-12 16 11h12l15-12 14 11h14l12-11h14l12 11h15l14-12 12 11h14l12-11h16v-25l-12-11-10-20-11-18-12-20-11-22-10-18-12-22-11-18-12-20-11-22-12-18-10-22-11-18-12-22-11-18-11-20-12-22-11-18z"/>
+                                    <path class="country wave-3" data-wave="3" d="M582 81l10 11 12 3 14-2 15 11h16l12-11 14 2h15l12-11h16l14 11h17l12-11h16l14 11h15l12-11h16l14 11h17l12-11h16l14 11h17l12-11 10 22 11 18 12 20 11 22 10 18 12 22 11 18 12 20 11 22v15l-12 11h-15l-14-11h-16l-12 11h-15l-14-11h-16l-12 11h-15l-14-11h-16l-12 11h-15l-14-11-12-20-11-22-10-18-12-22-11-18-12-20-11-22-10-18z"/>
+                                </g>
+                            </svg>
+                        </div>
+                        <div id="map-legend" class="w-full lg:w-1/3 mt-4 lg:mt-0 lg:ml-6 space-y-3">
+                            <div id="wave-1-desc" class="p-3 rounded-md border border-transparent transition-all duration-300">
+                                <h4 class="font-bold flex items-center"><span class="w-4 h-4 rounded-full bg-cyan-400 mr-2" aria-hidden="true"></span>Welle 1: Kreolische Pioniere (1776–1838)</h4>
+                                <p class="text-sm text-slate-400 ml-6">Die Republiken in Amerika als erste Modelle für Nationalstaaten.</p>
+                            </div>
+                            <div id="wave-2-desc" class="p-3 rounded-md border border-transparent transition-all duration-300">
+                                <h4 class="font-bold flex items-center"><span class="w-4 h-4 rounded-full bg-pink-400 mr-2" aria-hidden="true"></span>Welle 2: Offizieller Nationalismus (19. Jh.)</h4>
+                                <p class="text-sm text-slate-400 ml-6">Dynastische Reiche übernehmen nationale Formen "von oben".</p>
+                            </div>
+                            <div id="wave-3-desc" class="p-3 rounded-md border border-transparent transition-all duration-300">
+                                <h4 class="font-bold flex items-center"><span class="w-4 h-4 rounded-full bg-yellow-400 mr-2" aria-hidden="true"></span>Welle 3: Antikolonialismus (20. Jh.)</h4>
+                                <p class="text-sm text-slate-400 ml-6">Befreiungsbewegungen nutzen das "Modul" Nation zur Unabhängigkeit.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- 2.5 Grammatik des Staates -->
+                <div class="card p-6 rounded-lg">
+                    <h3 class="text-2xl font-bold text-gradient mb-3">Die Grammatik des Staates</h3>
+                    <p class="text-slate-300 mb-4">
+                       Staatliche Instrumente wie Zensus, Karte und Museum prägen und verfestigen die Grammatik und Genealogie des Nationalen. Sie formen, wie die Nation gedacht und verwaltet wird.
+                    </p>
+                    <div class="interactive-visualization rounded-lg relative p-4">
+                         <div id="staat-vis-container" class="w-full flex flex-col gap-y-8" aria-label="Vertikale Liste mit Visualisierungen zu Zensus, Karte und Museum.">
+                            <!-- Zensus -->
+                            <div class="w-full p-6 flex flex-col items-center justify-center text-center">
+                                <h4 class="text-xl font-bold mb-2">Zensus: Quantifizieren & Klassifizieren</h4>
+                                <p class="text-slate-400 mb-4">Die Volkszählung schafft starre soziale Kategorien.</p>
+                                <div id="zensus-vis" class="w-64 h-64 relative">
+                                    <!-- Dots werden per JS generiert -->
+                                </div>
+                                <button id="zensus-button" class="mt-4 px-4 py-2 rounded-md border border-slate-600 bg-slate-700 hover:bg-cyan-400 hover:text-slate-900 transition-colors">Sortieren</button>
+                            </div>
+                             <!-- Karte -->
+                            <div class="w-full p-6 flex flex-col items-center justify-center text-center border-t border-slate-700 pt-8 mt-8">
+                                <h4 class="text-xl font-bold mb-2">Karte: Territorium als Logo</h4>
+                                <p class="text-slate-400 mb-4">Die Karte definiert klare Grenzen und macht die Nation sichtbar.</p>
+                                <svg id="karte-vis" class="w-64 h-64 cursor-pointer" viewBox="0 0 100 100" role="button" tabindex="0" aria-label="Karte mit gestrichelter Grenze. Klicken, um die Grenze zu einer durchgehenden Linie zu machen und das Gebiet zu füllen.">
+                                    <path id="karte-path" d="M20,80 C40,20 60,120 80,80" stroke="var(--accent-secondary)" stroke-width="2" fill="none" stroke-dasharray="5 5" style="transition: all 1s ease;"/>
+                                </svg>
+                                <p class="mt-4 text-sm text-slate-500">Klicken, um die Grenze zu ziehen.</p>
+                            </div>
+                             <!-- Museum -->
+                            <div class="w-full p-6 flex flex-col items-center justify-center text-center border-t border-slate-700 pt-8 mt-8">
+                                <h4 class="text-xl font-bold mb-2">Museum: Genealogie & Erzählung</h4>
+                                <p class="text-slate-400 mb-4">Das Museum ordnet Artefakte in eine staatliche Erzählung ein.</p>
+                                <div id="museum-vis" class="w-full h-48 border-t-2 border-slate-600 relative mt-8">
+                                    <div class="absolute -top-3 text-xs text-slate-400">Vergangenheit</div>
+                                    <div class="absolute -top-3 right-0 text-xs text-slate-400">Gegenwart</div>
+                                    <div id="museum-artefakt1" class="absolute text-3xl cursor-grab" style="top: -60px; left: 20%;" tabindex="0" aria-label="Antike Vase. Dieses Artefakt kann auf die Zeitlinie gezogen werden."><span role="img" aria-label="Antike Vase">🏺</span></div>
+                                    <div id="museum-artefakt2" class="absolute text-3xl cursor-grab" style="top: -80px; left: 60%;" tabindex="0" aria-label="Schriftrolle. Dieses Artefakt kann auf die Zeitlinie gezogen werden."><span role="img" aria-label="Schriftrolle">📜</span></div>
+                                    <div id="museum-artefakt3" class="absolute text-3xl cursor-grab" style="top: -50px; left: 80%;" tabindex="0" aria-label="Krone. Dieses Artefakt kann auf die Zeitlinie gezogen werden."><span role="img" aria-label="Krone">👑</span></div>
+                                </div>
+                                <p class="mt-4 text-sm text-slate-500">Ziehen Sie die Artefakte auf die Zeitlinie.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 3. Kritische Debatten -->
+        <section class="fade-in-section" aria-labelledby="section-title-3">
+            <h2 id="section-title-3" class="text-4xl font-bold mb-6 section-title">3. Einordnung und kritische Debatten</h2>
+            <p class="text-lg text-slate-300 mb-8">
+                Andersons Theorie steht nicht im luftleeren Raum. Sie wird durch andere Denker ergänzt, kritisiert und weiterentwickelt. Bewegen Sie die Maus über die Karten oder fokussieren Sie sie, um die Perspektiven zu entdecken.
+            </p>
+            <div id="debatten-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Card Template -->
+                <div class="debatte-card h-64" tabindex="0">
+                    <div class="flipper w-full h-full">
+                        <div class="front absolute w-full h-full card flex flex-col justify-center items-center p-4 text-center rounded-lg">
+                            <h3 class="text-xl font-bold text-cyan-400">Ernest Gellner</h3>
+                            <p class="text-slate-400 mt-2">Modernisierungstheorie</p>
+                        </div>
+                        <div class="back absolute w-full h-full card flex flex-col justify-center p-6 text-sm rounded-lg">
+                             <p>Fokus auf sozio-ökonomische Notwendigkeiten der Industrialisierung. Nationalismus <strong class="text-pink-400">erfindet</strong> Nationen, um eine mobile Arbeitskraft zu schaffen, nicht nur <strong class="text-pink-400">stellt sie vor</strong>.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="debatte-card h-64" tabindex="0">
+                     <div class="flipper w-full h-full">
+                        <div class="front absolute w-full h-full card flex flex-col justify-center items-center p-4 text-center rounded-lg">
+                            <h3 class="text-xl font-bold text-cyan-400">Eric Hobsbawm</h3>
+                            <p class="text-slate-400 mt-2">Erfundene Traditionen</p>
+                        </div>
+                        <div class="back absolute w-full h-full card flex flex-col justify-center p-6 text-sm rounded-lg">
+                             <p>Betont die bewusste, oft schnelle <strong class="text-pink-400">Konstruktion</strong> nationaler Rituale und Symbole zur Schaffung von Kohäsion, was Andersons "Vergessen" um eine aktive "Erfindung" ergänzt.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="debatte-card h-64" tabindex="0">
+                    <div class="flipper w-full h-full">
+                        <div class="front absolute w-full h-full card flex flex-col justify-center items-center p-4 text-center rounded-lg">
+                            <h3 class="text-xl font-bold text-cyan-400">Anthony D. Smith</h3>
+                            <p class="text-slate-400 mt-2">Ethnosymbolismus</p>
+                        </div>
+                        <div class="back absolute w-full h-full card flex flex-col justify-center p-6 text-sm rounded-lg">
+                             <p>Kritisiert den starken Fokus auf die Moderne. Nationen bauen oft auf <strong class="text-pink-400">vormodernen Ethnien, Mythen und Symbolen</strong> auf und erfinden diese nicht aus dem Nichts.</p>
+                        </div>
+                    </div>
+                </div>
+                 <div class="debatte-card h-64" tabindex="0">
+                    <div class="flipper w-full h-full">
+                        <div class="front absolute w-full h-full card flex flex-col justify-center items-center p-4 text-center rounded-lg">
+                            <h3 class="text-xl font-bold text-cyan-400">Partha Chatterjee</h3>
+                            <p class="text-slate-400 mt-2">Postkoloniale Kritik</p>
+                        </div>
+                        <div class="back absolute w-full h-full card flex flex-col justify-center p-6 text-sm rounded-lg">
+                             <p>Antikoloniale Nationalismen sind <strong class="text-pink-400">keine bloßen Kopien</strong>. Sie entwickeln in einer "inneren, spirituellen Domäne" eigene kulturelle Autonomie gegen westliche Dominanz.</p>
+                        </div>
+                    </div>
+                </div>
+                 <div class="debatte-card h-64" tabindex="0">
+                    <div class="flipper w-full h-full">
+                        <div class="front absolute w-full h-full card flex flex-col justify-center items-center p-4 text-center rounded-lg">
+                            <h3 class="text-xl font-bold text-cyan-400">Nira Yuval-Davis</h3>
+                            <p class="text-slate-400 mt-2">Gender-Perspektiven</p>
+                        </div>
+                        <div class="back absolute w-full h-full card flex flex-col justify-center p-6 text-sm rounded-lg">
+                             <p>Nationalismen sind tiefgreifend <strong class="text-pink-400">geschlechtlich codiert</strong>. Die Nation als "Mutterland" (weiblich), der Bürger als "Held" (männlich) – Aspekte, die Anderson vernachlässigt.</p>
+                        </div>
+                    </div>
+                </div>
+                 <div class="debatte-card h-64" tabindex="0">
+                    <div class="flipper w-full h-full">
+                        <div class="front absolute w-full h-full card flex flex-col justify-center items-center p-4 text-center rounded-lg">
+                            <h3 class="text-xl font-bold text-cyan-400">Michael Billig</h3>
+                            <p class="text-slate-400 mt-2">Banaler Nationalismus</p>
+                        </div>
+                        <div class="back absolute w-full h-full card flex flex-col justify-center p-6 text-sm rounded-lg">
+                             <p>Ergänzt Anderson, indem er die <strong class="text-pink-400">alltägliche, unauffällige Reproduktion</strong> nationaler Identität analysiert (Flaggen, Phrasen, Wetterkarten), nicht nur die großen Rituale.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Anwendung -->
+        <section class="fade-in-section" aria-labelledby="section-title-4">
+            <h2 id="section-title-4" class="text-4xl font-bold mb-6 section-title">4. Transfer für die Kulturarbeit</h2>
+            <p class="text-lg text-slate-300 mb-8">
+                Andersons Werkzeugkasten kann helfen, kulturelle Angebote (Ausstellungen, Festivals, etc.) reflexiv zu gestalten. Hier sind einige Leitlinien und Warnungen für die Praxis.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-2xl font-bold text-green-400 mb-4">Empfehlungen (Do's)</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-3 mt-1" aria-hidden="true">✔</span>
+                            <span>Räume für <strong class="text-green-300">gemeinsame Erzählungen</strong> (Co-Narration) öffnen.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-3 mt-1" aria-hidden="true">✔</span>
+                            <span><strong class="text-green-300">Mehrsprachige Medienangebote</strong> etablieren, um plurale Imaginationsräume zu schaffen.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-3 mt-1" aria-hidden="true">✔</span>
+                            <span><strong class="text-green-300">Karten und Museen</strong> als diskursive Arenen nutzen und ihre Konstruiertheit sichtbar machen.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-400 mr-3 mt-1" aria-hidden="true">✔</span>
+                            <span><strong class="text-green-300">Alltagsrituale</strong> der Gemeinschaftsbildung (z.B. digitale Watch-Partys) bewusst gestalten.</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold text-red-400 mb-4">Warnungen (Don'ts)</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="text-red-400 mr-3 mt-1" aria-hidden="true">✖</span>
+                            <span>Eine Gemeinschaft (z.B. "die Nation", "die Stadtgesellschaft") <strong class="text-red-300">essentialisieren</strong> oder als homogen darstellen.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-red-400 mr-3 mt-1" aria-hidden="true">✖</span>
+                            <span><strong class="text-red-300">Banalen Nationalismus</strong> unreflektiert reproduzieren (z.B. in Bildsprache, Design).</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-red-400 mr-3 mt-1" aria-hidden="true">✖</span>
+                            <span><strong class="text-red-300">Zensus-Kategorien</strong> unkritisch übernehmen und damit soziale Vorurteile verfestigen.</span>
+                        </li>
+                         <li class="flex items-start">
+                            <span class="text-red-400 mr-3 mt-1" aria-hidden="true">✖</span>
+                            <span>Selektives <strong class="text-red-300">Vergessen</strong> in der Geschichtserzählung produzieren, ohne es zu thematisieren.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Schlussfolgerung -->
+        <section class="fade-in-section text-center" aria-labelledby="section-title-5">
+            <h2 id="section-title-5" class="text-4xl font-bold mb-6 section-title mx-auto">5. Schlussfolgerung</h2>
+            <p class="text-lg text-slate-300 max-w-3xl mx-auto mb-6">
+                Benedict Anderson liefert präzise Analyseinstrumente. Sein Werk lehrt uns, stets die <strong class="text-cyan-400">mediale Form</strong>, die <strong class="text-pink-400">Zeitlogik</strong>, die <strong class="text-yellow-400">Sprachökonomie</strong> und die institutionellen Rahmungen hinter kulturellen Projekten zu hinterfragen.
+            </p>
+             <p class="text-lg text-slate-300 max-w-3xl mx-auto">
+                Seine Theorie ist kein fertiges Modell, sondern ein <strong class="text-gradient">analytischer Werkzeugkasten</strong>, der kritisch und zielgerichtet für die Gestaltung von Öffentlichkeit und Teilhabe eingesetzt werden kann.
+            </p>
+        </section>
+    </main>
+
+    <footer class="text-center p-8 mt-24 border-t border-slate-800">
+        <p class="text-slate-400">Primärquelle: Anderson, B. (2006). *Imagined Communities*. Verso.</p>
+        <p class="text-slate-500 text-sm mt-2">Interaktive Seite erstellt mit HTML, TailwindCSS und Vanilla JS.</p>
+        <p class="text-slate-400 font-bold mt-4">Hinweis: Dieser HTML-Inhalt wurde automatisiert durch KI erstellt. Inhalte können fehlerhaft sein und müssen je nach Kontext validiert werden.</p>
+    </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // --- Intersection Observer for fade-in animations ---
+        const sections = document.querySelectorAll('.fade-in-section');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, { threshold: 0.1 });
+        sections.forEach(section => observer.observe(section));
+
+        // --- 1. Hero Background Animation ---
+        const heroBg = document.getElementById('hero-bg');
+        if (heroBg) {
+            const canvas = document.createElement('canvas');
+            canvas.setAttribute('aria-hidden', 'true');
+            heroBg.appendChild(canvas);
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            const numParticles = 100;
+
+            function resizeCanvas() {
+                canvas.width = heroBg.offsetWidth;
+                canvas.height = heroBg.offsetHeight;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            class Particle {
+                constructor(x, y) {
+                    this.x = x || Math.random() * canvas.width;
+                    this.y = y || Math.random() * canvas.height;
+                    this.vx = Math.random() * 0.5 - 0.25;
+                    this.vy = Math.random() * 0.5 - 0.25;
+                    this.radius = Math.random() * 1.5 + 0.5;
+                }
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                    if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(34, 211, 238, 0.5)';
+                    ctx.fill();
+                }
+            }
+            
+            for(let i = 0; i < numParticles; i++) {
+                particles.push(new Particle());
+            }
+
+            function connectParticles() {
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        if (distance < 150) {
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.strokeStyle = `rgba(34, 211, 238, ${1 - distance / 150})`;
+                            ctx.lineWidth = 0.5;
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+                connectParticles();
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // --- 2. Imagined Community Canvas ---
+        const communityCanvas = document.getElementById('imagined-community-canvas');
+        if (communityCanvas) {
+            const ctx = communityCanvas.getContext('2d');
+            const particles = [];
+            const numParticles = 100;
+            let mouse = { x: null, y: null };
+
+            function resizeCommunityCanvas() {
+                communityCanvas.width = communityCanvas.offsetWidth;
+                communityCanvas.height = communityCanvas.offsetHeight;
+                initParticles();
+            }
+
+            function initParticles() {
+                particles.length = 0;
+                 for(let i=0; i<numParticles; i++) {
+                    particles.push({
+                        x: Math.random() * communityCanvas.width,
+                        y: Math.random() * communityCanvas.height,
+                        radius: 3
+                    });
+                }
+            }
+
+            communityCanvas.addEventListener('mousemove', (event) => {
+                const rect = communityCanvas.getBoundingClientRect();
+                mouse.x = event.clientX - rect.left;
+                mouse.y = event.clientY - rect.top;
+            });
+            communityCanvas.addEventListener('mouseout', () => {
+                mouse.x = null;
+                mouse.y = null;
+            });
+
+            function drawCommunity() {
+                ctx.clearRect(0, 0, communityCanvas.width, communityCanvas.height);
+                let hoveredParticle = null;
+
+                particles.forEach(p => {
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    const dist = mouse.x ? Math.sqrt((p.x - mouse.x)**2 + (p.y - mouse.y)**2) : Infinity;
+                    if(dist < p.radius + 5) {
+                        hoveredParticle = p;
+                        ctx.fillStyle = 'var(--accent-secondary)';
+                    } else {
+                        ctx.fillStyle = 'var(--accent-primary)';
+                    }
+                    ctx.fill();
+                });
+
+                if(hoveredParticle) {
+                    particles.forEach(p => {
+                        if (p !== hoveredParticle) {
+                            const dist = Math.sqrt((p.x - hoveredParticle.x)**2 + (p.y - hoveredParticle.y)**2);
+                            if (dist < communityCanvas.width / 3) {
+                                ctx.beginPath();
+                                ctx.moveTo(hoveredParticle.x, hoveredParticle.y);
+                                ctx.lineTo(p.x, p.y);
+                                ctx.strokeStyle = `rgba(244, 114, 182, ${0.5 - dist / (communityCanvas.width / 2.5)})`;
+                                ctx.stroke();
+                            }
+                        }
+                    });
+                }
+                requestAnimationFrame(drawCommunity);
+            }
+            window.addEventListener('resize', resizeCommunityCanvas);
+            resizeCommunityCanvas();
+            drawCommunity();
+        }
+
+        // --- 3. Homogene, leere Zeit ---
+        const zeitVis = document.getElementById('zeit-vis');
+        if(zeitVis) {
+            const container = document.getElementById('zeit-container');
+            const btnMittelalter = document.getElementById('zeit-mittelalter');
+            const btnModern = document.getElementById('zeit-modern');
+            let mode = 'modern';
+
+            function renderZeitVis() {
+                container.innerHTML = '';
+                if(mode === 'modern') {
+                    // Linear timeline
+                    const timeline = document.createElement('div');
+                    timeline.className = 'w-full h-1 bg-slate-600 absolute top-1/2 -translate-y-1/2';
+                    container.appendChild(timeline);
+                    // Simultaneous events
+                    for(let i=0; i < 5; i++){
+                        const punkt = document.createElement('div');
+                        punkt.className = 'zeit-punkt';
+                        punkt.style.left = `${15 + i * 18}%`;
+                        punkt.style.top = `${Math.random() * 80 + 10}%`;
+                        container.appendChild(punkt);
+                        setTimeout(() => {
+                           punkt.style.opacity = '1';
+                           punkt.style.transform = 'scale(1)';
+                           punkt.style.transition = 'all 0.5s ease ' + (i*0.1) + 's';
+                        }, 500);
+                    }
+                } else {
+                    // Circular timeline
+                    const circle = document.createElement('div');
+                    circle.className = 'w-48 h-48 border-2 border-dashed border-slate-500 rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2';
+                    container.appendChild(circle);
+                    for(let i=0; i<8; i++) {
+                        const punkt = document.createElement('div');
+                        punkt.className = 'zeit-punkt';
+                        const angle = (i/8) * 2 * Math.PI;
+                        punkt.style.left = `calc(50% + ${Math.cos(angle) * 96}px - 6px)`;
+                        punkt.style.top = `calc(50% + ${Math.sin(angle) * 96}px - 6px)`;
+                        container.appendChild(punkt);
+                        setTimeout(() => {
+                            punkt.style.opacity = '1';
+                            punkt.style.transform = 'scale(1)';
+                            punkt.style.transition = 'all 0.5s ease ' + (i*0.2) + 's';
+                        }, 200);
+                    }
+                }
+            }
+
+            btnModern.addEventListener('click', () => {
+                mode = 'modern';
+                btnModern.classList.add('active');
+                btnModern.setAttribute('aria-pressed', 'true');
+                btnMittelalter.classList.remove('active');
+                btnMittelalter.setAttribute('aria-pressed', 'false');
+                renderZeitVis();
+            });
+            btnMittelalter.addEventListener('click', () => {
+                mode = 'mittelalter';
+                btnMittelalter.classList.add('active');
+                btnMittelalter.setAttribute('aria-pressed', 'true');
+                btnModern.classList.remove('active');
+                btnModern.setAttribute('aria-pressed', 'false');
+                renderZeitVis();
+            });
+            renderZeitVis();
+        }
+
+        // --- 4. Wellen der Ausbreitung Map ---
+        const mapVis = document.getElementById('map-vis');
+        if (mapVis) {
+            const waveDescs = [
+                document.getElementById('wave-1-desc'),
+                document.getElementById('wave-2-desc'),
+                document.getElementById('wave-3-desc')
+            ];
+            const countries = document.querySelectorAll('#map-paths .country');
+            
+            const mapObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const wave = entry.target.id.split('-')[1];
+                        countries.forEach(c => {
+                            if (c.dataset.wave === wave) {
+                                c.classList.add('active');
+                            }
+                        });
+                        entry.target.classList.add('bg-slate-700', 'border-slate-500');
+                    } else {
+                        const wave = entry.target.id.split('-')[1];
+                        countries.forEach(c => {
+                            if (c.dataset.wave === wave) {
+                                c.classList.remove('active');
+                            }
+                        });
+                        entry.target.classList.remove('bg-slate-700', 'border-slate-500');
+                    }
+                });
+            }, { root: document.querySelector('main'), threshold: 0.8 });
+
+            waveDescs.forEach(desc => {
+                if(desc) mapObserver.observe(desc);
+            });
+        }
+
+        // --- 5. Grammatik des Staates Visualizations ---
+        // Zensus
+        const zensusVis = document.getElementById('zensus-vis');
+        const zensusButton = document.getElementById('zensus-button');
+        if(zensusVis && zensusButton) {
+            const colors = ['var(--accent-primary)', 'var(--accent-secondary)', 'var(--accent-tertiary)'];
+            let dots = [];
+            
+            function initZensus() {
+                zensusVis.innerHTML = '';
+                dots = [];
+                for(let i=0; i<50; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'staat-dot absolute w-3 h-3 rounded-full';
+                    dot.style.background = colors[i % 3];
+                    dot.style.left = `${Math.random() * 95}%`;
+                    dot.style.top = `${Math.random() * 95}%`;
+                    zensusVis.appendChild(dot);
+                    dots.push(dot);
+                }
+            }
+
+            zensusButton.addEventListener('click', () => {
+                if(zensusButton.textContent === 'Zurücksetzen') {
+                    initZensus();
+                    zensusButton.textContent = 'Sortieren';
+                    return;
+                }
+                
+                const boxWidth = zensusVis.offsetWidth / 3;
+                dots.forEach((dot, i) => {
+                    const colorIndex = i % 3;
+                    dot.style.left = `${colorIndex * boxWidth + Math.random() * (boxWidth - 12)}px`;
+                    dot.style.top = `${Math.random() * (zensusVis.offsetHeight - 12)}px`;
+                });
+                zensusButton.textContent = 'Zurücksetzen';
+            });
+            initZensus();
+        }
+        
+        // Karte
+        const karteVis = document.getElementById('karte-vis');
+        if (karteVis) {
+            const path = document.getElementById('karte-path');
+            const originalPath = "M20,80 C40,20 60,120 80,80";
+            const finalPath = "M20,80 C40,20 60,120 80,80 S70,20 50,50 S30,100 20,80 Z";
+
+            const toggleMapState = () => {
+                const currentD = path.getAttribute('d');
+                path.setAttribute('d', currentD === finalPath ? originalPath : finalPath);
+                path.style.fill = currentD === finalPath ? 'none' : 'rgba(244, 114, 182, 0.2)';
+                path.style.strokeDasharray = currentD === finalPath ? '5 5' : 'none';
+            };
+
+            karteVis.addEventListener('click', toggleMapState);
+            karteVis.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleMapState();
+                }
+            });
+        }
+        
+        // Museum
+        const museumVis = document.getElementById('museum-vis');
+        if(museumVis){
+            const artefakte = museumVis.querySelectorAll('.cursor-grab');
+            artefakte.forEach(artefakt => {
+                artefakt.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                    artefakt.style.cursor = 'grabbing';
+                    artefakt.style.zIndex = '10';
+                    let offsetX = e.clientX - artefakt.getBoundingClientRect().left;
+                    let offsetY = e.clientY - artefakt.getBoundingClientRect().top;
+                    
+                    function onMouseMove(e) {
+                       artefakt.style.left = e.clientX - museumVis.getBoundingClientRect().left - offsetX + 'px';
+                       artefakt.style.top = e.clientY - museumVis.getBoundingClientRect().top - offsetY + 'px';
+                       
+                       // Snap to timeline
+                       const timelineY = museumVis.clientHeight;
+                       const artefaktY = artefakt.offsetTop + artefakt.offsetHeight;
+                       if (Math.abs(artefaktY - timelineY) < 30) {
+                           artefakt.style.top = (timelineY - artefakt.offsetHeight + 5) + 'px';
+                       }
+                    }
+                    
+                    function onMouseUp() {
+                        document.removeEventListener('mousemove', onMouseMove);
+                        document.removeEventListener('mouseup', onMouseUp);
+                        artefakt.style.cursor = 'grab';
+                        artefakt.style.zIndex = '1';
+                    }
+                    
+                    document.addEventListener('mousemove', onMouseMove);
+                    document.addEventListener('mouseup', onMouseUp);
+                });
+            });
+        }
+    });
+    </script>
+</body>
+</html>
