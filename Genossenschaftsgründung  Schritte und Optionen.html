@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="de" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genossenschaftsgründung: Schritte und Optionen</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #003366; /* Deep Navy */
+            --color-secondary: #009975; /* Teal Green */
+            --color-accent: #FFC72C; /* Bright Yellow */
+            --color-light: #F8F9FA;
+            --color-dark: #343A40;
+        }
+
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background-color: var(--color-light);
+            color: var(--color-dark);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+        }
+
+        .icon-wrapper svg {
+            width: 2rem; /* w-8 */
+            height: 2rem; /* h-8 */
+            color: var(--color-secondary);
+        }
+
+        /* Timeline styles */
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            background-color: #D1D5DB; /* gray-300 */
+        }
+        .timeline-item:last-child:before {
+            height: 1rem; /* h-4 */
+        }
+        .timeline-marker {
+            position: absolute;
+            left: 0;
+            top: 1rem; /* top-4 */
+            width: 1rem; /* w-4 */
+            height: 1rem; /* h-4 */
+            border-radius: 9999px; /* rounded-full */
+            border-width: 4px;
+            border-color: #FFFFFF; /* border-white */
+            background-color: var(--color-primary);
+            box-shadow: 0 0 0 4px var(--color-secondary);
+            transform: translateX(-50%);
+        }
+
+        /* Interactive Tabs for Options */
+        .tab-button.active {
+            color: var(--color-secondary);
+            border-color: var(--color-secondary);
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Asset Deal Visualization */
+        #asset-deal-viz .asset-icon {
+            transition: all 1s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        #asset-deal-viz .company-box {
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+
+        /* Checklist styles */
+        .checklist-item input:checked + label span:first-child {
+            background-color: var(--color-secondary);
+            border-color: var(--color-secondary);
+        }
+        .checklist-item input:checked + label span:first-child svg {
+            display: block;
+        }
+        .checklist-item input:checked + label {
+            color: #9CA3AF; /* text-gray-400 */
+            text-decoration-line: line-through;
+        }
+        
+        /* Scroll animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Cost slider */
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: var(--color-secondary);
+            cursor: pointer;
+            border-radius: 50%;
+            margin-top: -8px;
+        }
+
+        input[type=range]::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            background: var(--color-secondary);
+            cursor: pointer;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Hero Section -->
+    <header class="gradient-bg text-white relative overflow-hidden">
+        <div class="absolute inset-0 bg-black opacity-20"></div>
+        <div class="container mx-auto px-6 py-24 sm:py-32 relative z-10 text-center">
+            <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-4" style="text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);">Gründung einer Genossenschaft</h1>
+            <p class="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto">Ein interaktiver Leitfaden zur Umwandlung einer GmbH in eine eG: Alle Schritte, Optionen und wichtigen Aspekte verständlich erklärt.</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-16 space-y-24">
+        
+        <!-- 1. Grundlagen -->
+        <section id="grundlagen" class="reveal">
+            <h2 class="text-3xl font-bold text-center mb-12">Die Basis: Grundlagen und rechtlicher Rahmen</h2>
+            <div class="max-w-4xl mx-auto grid md:grid-cols-5 gap-8 items-center">
+                <div class="md:col-span-2 flex justify-center">
+                     <div class="relative w-48 h-48">
+                        <div class="absolute inset-0 bg-teal-500 rounded-full animate-ping opacity-20"></div>
+                        <div class="relative flex items-center justify-center w-48 h-48 bg-white shadow-lg rounded-full border-4 border-teal-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:col-span-3">
+                    <h3 class="text-2xl font-bold mb-4">Die Rolle des Genossenschaftsverbands</h3>
+                    <p class="text-lg text-gray-600">Ein Genossenschaftsverband agiert als gesetzlich vorgeschriebener Prüfungsverband. Seine Hauptaufgaben umfassen die Begleitung von Gründungen und die regelmäßige Prüfung bestehender Genossenschaften. Ziel dieser Prüfung ist der Schutz der Interessen von Mitgliedern und Gläubigern. Die Gründung einer eingetragenen Genossenschaft (eG) ist in Deutschland <strong class="text-teal-600">ausschließlich in Zusammenarbeit</strong> mit einem solchen Verband möglich.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Der Prozess -->
+        <section id="prozess" class="reveal">
+            <h2 class="text-3xl font-bold text-center mb-12">Der Weg zur eG: Prozess & Kosten</h2>
+            <div class="grid lg:grid-cols-2 gap-16">
+                <!-- 2.1 Ablauf und Zeitrahmen -->
+                <div class="flex flex-col">
+                    <h3 class="text-2xl font-bold mb-6">Ablauf und Zeitrahmen einer Neugründung</h3>
+                    <p class="mb-8 text-gray-600">Der Prozess einer Neugründung erstreckt sich in der Regel über drei bis sechs Monate. Ein konkretes Beispiel aus dem Buchhandel zeigt, wie wichtig die Planung ist:</p>
+                    
+                    <div class="relative w-full py-4 mb-20">
+                        <!-- Timeline Track -->
+                        <div class="w-full h-2 bg-gray-300 rounded-full"></div>
+                        <!-- Months -->
+                        <div class="absolute top-0 left-0 w-full h-full flex justify-between items-center px-1">
+                            <div class="text-center w-1/6"><span class="text-sm font-semibold">Monat 1</span></div>
+                            <div class="text-center w-1/6"><span class="text-sm font-semibold">Monat 2</span></div>
+                            <div class="text-center w-1/6"><span class="text-sm font-semibold">Monat 3</span></div>
+                            <div class="text-center w-1/6"><span class="text-sm font-semibold">Monat 4</span></div>
+                            <div class="text-center w-1/6"><span class="text-sm font-semibold">Monat 5</span></div>
+                            <div class="text-center w-1/6"><span class="text-sm font-semibold">Monat 6</span></div>
+                        </div>
+                        <!-- Christmas Business Annotation -->
+                        <div class="absolute top-8 left-1/3 w-1/3 mt-4">
+                            <div class="relative px-3 py-2 bg-red-100 border-l-4 border-red-500 text-red-700 rounded-md text-center shadow-lg">
+                                <svg class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 text-red-100" fill="currentColor" viewBox="0 0 100 100"><polygon points="50,0 100,50 0,50"/></svg>
+                                <p class="text-xs font-bold">Achtung: Weihnachtsgeschäft!</p>
+                                <p class="text-xs">Kritische Phase im Buchladen, die bei der Planung zu berücksichtigen ist.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline mt-8">
+                        <div class="timeline-item relative pl-8 sm:pl-12 py-4">
+                            <div class="timeline-marker"></div>
+                            <h4 class="font-bold text-lg text-blue-950">1. Erstellung der Satzung</h4>
+                            <p class="text-gray-600">Das rechtliche Grundgerüst der Genossenschaft. Sie regelt alle internen Verhältnisse, wie Rechte und Pflichten der Mitglieder, Organe und Gewinnverteilung.</p>
+                        </div>
+                        <div class="timeline-item relative pl-8 sm:pl-12 py-4">
+                            <div class="timeline-marker"></div>
+                            <h4 class="font-bold text-lg text-blue-950">2. Erstellung des Geschäftsplans</h4>
+                            <p class="text-gray-600">Der Businessplan beschreibt das Unternehmenskonzept. Der Prüfungsverband führt eine Plausibilitätsprüfung zur wirtschaftlichen Tragfähigkeit durch.</p>
+                        </div>
+                        <div class="timeline-item relative pl-8 sm:pl-12 py-4">
+                            <div class="timeline-marker"></div>
+                            <h4 class="font-bold text-lg text-blue-950">3. Gründungsprüfung und Eintragung</h4>
+                            <p class="text-gray-600">Nach erfolgreicher Prüfung führt der Verband die formale Gründungsprüfung durch. Mit dem positiven Gutachten erfolgt die notarielle Anmeldung und die Eintragung ins Genossenschaftsregister.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2.2 Kostenübersicht -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 p-8">
+                    <h3 class="text-2xl font-bold mb-6">Interaktive Kostenübersicht</h3>
+                    <p class="mb-6 text-gray-600">Die Kosten variieren je nach Komplexität. Passen Sie die Schieberegler an, um eine Schätzung zu erhalten.</p>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <label for="neugruendung-slider" class="font-semibold text-gray-700">Beratung Neugründung</label>
+                            <input id="neugruendung-slider" type="range" min="4500" max="6500" value="5500" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer mt-2">
+                            <div class="text-right font-bold text-xl text-teal-600 mt-1">
+                                <span id="neugruendung-cost">5.500</span> €
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="umwandlung-slider" class="font-semibold text-gray-700">Beratung Umwandlung (komplexer)</label>
+                            <input id="umwandlung-slider" type="range" min="8000" max="10000" value="9000" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer mt-2">
+                            <div class="text-right font-bold text-xl text-teal-600 mt-1">
+                                <span id="umwandlung-cost">9.000</span> €
+                            </div>
+                        </div>
+
+                        <div class="border-t pt-4 mt-4">
+                             <h4 class="font-semibold text-gray-700 mb-2">Zusätzliche Kosten:</h4>
+                             <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                 <li>Notargebühren</li>
+                                 <li>Gerichtskosten für die Eintragung</li>
+                                 <li>Kosten für Steuerberatung</li>
+                                 <li>Kosten für die Unternehmensbewertung</li>
+                             </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Wege von der GmbH zur Genossenschaft -->
+        <section id="optionen" class="reveal">
+            <h2 class="text-3xl font-bold text-center mb-4">Von der GmbH zur Genossenschaft</h2>
+            <p class="text-xl text-center text-gray-600 max-w-3xl mx-auto mb-12">Es gibt drei grundlegende Modelle für die Umwandlung. Wählen Sie eine Option, um den Prozess zu visualisieren.</p>
+            
+            <div class="bg-white rounded-xl shadow-lg p-4 sm:p-8">
+                <div class="border-b border-gray-200 mb-8">
+                    <nav class="-mb-px flex justify-center space-x-2 sm:space-x-8" id="tabs" role="tablist" aria-label="Umwandlungsoptionen">
+                        <button class="tab-button px-6 py-3 font-semibold text-lg border-b-4 border-transparent transition-all duration-300 active" data-target="option1" id="tab-btn-1" role="tab" aria-controls="option1" aria-selected="true">Direkte Umwandlung</button>
+                        <button class="tab-button px-6 py-3 font-semibold text-lg border-b-4 border-transparent transition-all duration-300" data-target="option2" id="tab-btn-2" role="tab" aria-controls="option2" aria-selected="false">Share Deal</button>
+                        <button class="tab-button px-6 py-3 font-semibold text-lg border-b-4 border-transparent transition-all duration-300" data-target="option3" id="tab-btn-3" role="tab" aria-controls="option3" aria-selected="false">Asset Deal</button>
+                    </nav>
+                </div>
+
+                <div id="tab-contents">
+                    <!-- Option 1: Direkte Umwandlung -->
+                    <div id="option1" class="tab-content hidden active" role="tabpanel" aria-labelledby="tab-btn-1">
+                        <div class="grid md:grid-cols-2 gap-8 items-center">
+                            <div>
+                                <h3 class="text-2xl font-bold mb-4">Option 1: Die direkte Umwandlung</h3>
+                                <p class="mb-4 text-gray-600"><strong class="text-blue-950">Prozess:</strong> Die bestehende GmbH wird als juristische Person direkt in eine eG umgewandelt. Die Anteilsverhältnisse der bisherigen Gesellschafter bleiben dabei zunächst unverändert bestehen.</p>
+                                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md">
+                                    <p><strong class="font-bold">Nachteil:</strong> Neue Mitglieder können erst nach der finalen Eintragung der Genossenschaft ins Register beitreten. Dies erschwert die frühzeitige Kapitalbeschaffung zur Finanzierung des Prozesses erheblich.</p>
+                                </div>
+                            </div>
+                            <div class="flex flex-col items-center justify-center p-8 bg-gray-50 rounded-lg">
+                                <div class="flex items-center space-x-8">
+                                    <div class="text-center">
+                                        <div class="w-32 h-32 flex items-center justify-center bg-blue-200 rounded-lg shadow-md">
+                                            <span class="text-2xl font-bold text-blue-800">GmbH</span>
+                                        </div>
+                                        <p class="mt-2 font-semibold">Bestehende GmbH</p>
+                                    </div>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                                    <div class="text-center">
+                                        <div class="w-32 h-32 flex items-center justify-center bg-teal-100 rounded-lg shadow-md border-2 border-teal-600">
+                                            <span class="text-2xl font-bold text-teal-700">eG</span>
+                                        </div>
+                                        <p class="mt-2 font-semibold">Neue Genossenschaft</p>
+                                    </div>
+                                </div>
+                                <p class="mt-4 text-sm text-gray-500 text-center">Juristische Identität wird umgewandelt.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Option 2: Share Deal -->
+                    <div id="option2" class="tab-content hidden" role="tabpanel" aria-labelledby="tab-btn-2">
+                        <div class="grid md:grid-cols-2 gap-8 items-center">
+                             <div>
+                                <h3 class="text-2xl font-bold mb-4">Option 2: Der Share Deal (Anteilskauf)</h3>
+                                <p class="mb-4 text-gray-600"><strong class="text-blue-950">Prozess:</strong> Zunächst wird eine neue eG gegründet. Diese Genossenschaft kauft anschließend sämtliche Geschäftsanteile der bestehenden GmbH. Die GmbH bleibt als eigenständige juristische Person bestehen und wird zu einer Tochtergesellschaft.</p>
+                                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md">
+                                    <p><strong class="font-bold">Nachteil:</strong> Hohe laufende Kosten, da zwei Rechtsformen parallel verwaltet werden müssen (z.B. doppelte Buchführung, doppelte IHK-Beiträge). Gilt oft als unpraktikabel.</p>
+                                </div>
+                            </div>
+                             <div class="flex flex-col items-center justify-center p-8 bg-gray-50 rounded-lg">
+                                <div class="text-center relative border-2 border-teal-600 border-dashed p-8 rounded-lg">
+                                    <div class="w-40 h-40 flex items-center justify-center bg-teal-100 rounded-lg shadow-md">
+                                        <span class="text-2xl font-bold text-teal-700">eG</span>
+                                    </div>
+                                    <p class="mt-2 font-semibold">Muttergesellschaft</p>
+                                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 mt-12">
+                                        <div class="w-24 h-24 flex items-center justify-center bg-blue-200 rounded-lg shadow-inner">
+                                            <span class="text-xl font-bold text-blue-800">GmbH</span>
+                                        </div>
+                                        <p class="mt-1 text-sm font-semibold">Tochtergesellschaft</p>
+                                    </div>
+                                </div>
+                                <p class="mt-4 text-sm text-gray-500 text-center">eG kauft GmbH-Anteile und wird zur Holding.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Option 3: Asset Deal -->
+                    <div id="option3" class="tab-content hidden" role="tabpanel" aria-labelledby="tab-btn-3">
+                        <div class="grid md:grid-cols-2 gap-8 items-center">
+                             <div>
+                                <h3 class="text-2xl font-bold mb-4">Option 3: Der Asset Deal (Vermögenskauf)</h3>
+                                <p class="mb-4 text-gray-600"><strong class="text-blue-950">Prozess:</strong> Eine neue eG wird gegründet. Diese kauft die materiellen und immateriellen Vermögensgegenstände (Waren, Einrichtung, Kundenstamm) von der GmbH. Die GmbH bleibt als "leere Hülle" zurück und wird liquidiert.</p>
+                                <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-md">
+                                    <p><strong class="font-bold">Vorteil:</strong> Ermöglicht Gründung als "eG in Gründung" (eG i.G.). In diesem Status können bereits Mitglieder aufgenommen und Kapital gesammelt werden, was die Finanzierung erleichtert. Gilt als praxistauglichster Weg.</p>
+                                </div>
+                                <div class="flex items-center space-x-4 mt-6">
+                                    <button id="run-asset-deal-viz" class="inline-block bg-teal-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg transform transition-transform duration-300 hover:scale-105 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500">Animation starten</button>
+                                    <button id="reset-asset-deal-viz" class="hidden inline-block bg-gray-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg transform transition-transform duration-300 hover:scale-105 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">Zurücksetzen</button>
+                                </div>
+                            </div>
+                             <div id="asset-deal-viz" class="flex flex-col items-center justify-center p-8 bg-gray-50 rounded-lg min-h-[300px]">
+                                <div class="flex items-start justify-center space-x-6 w-full">
+                                    <!-- GmbH Box -->
+                                    <div id="gmbh-box" class="company-box text-center">
+                                        <div class="relative w-36 h-36 flex items-center justify-center bg-blue-200 rounded-lg shadow-md">
+                                            <div class="absolute inset-0 flex items-center justify-center space-x-1">
+                                                <svg class="asset-icon h-6 w-6 text-blue-600" style="top: 20%; left: 20%;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
+                                                <svg class="asset-icon h-6 w-6 text-blue-600" style="top: 50%; left: 50%;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                                <svg class="asset-icon h-6 w-6 text-blue-600" style="top: 30%; left: 70%;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                                            </div>
+                                        </div>
+                                        <p class="mt-2 font-bold text-xl text-blue-800">GmbH</p>
+                                        <p class="text-sm text-gray-600">(Bestehende GmbH)</p>
+                                    </div>
+                                    <!-- eG Box -->
+                                    <div id="eg-box" class="company-box text-center">
+                                        <div class="relative w-36 h-36 flex items-center justify-center bg-green-200 rounded-lg shadow-md border-2 border-dashed border-green-500">
+                                            <span id="eg-label" class="text-2xl font-bold text-green-800 transition-all duration-500">eG i.G.</span>
+                                        </div>
+                                        <p class="mt-2 font-semibold">Neue Genossenschaft</p>
+                                    </div>
+                                </div>
+                                <p id="viz-status" class="mt-4 text-sm text-gray-500 text-center">eG i.G. kauft Vermögenswerte (Assets) von der GmbH.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Wichtige Aspekte -->
+        <section id="aspekte" class="reveal">
+            <h2 class="text-3xl font-bold text-center mb-12">Wichtige Aspekte und Herausforderungen</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Aspekt 1: Unternehmensbewertung -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 p-6 text-center">
+                    <div class="icon-wrapper flex-shrink-0 w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M4 2a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V4a2 2 0 00-2-2H4zm10.293 4.293a1 1 0 011.414 1.414l-7 7a1 1 0 01-1.414 0l-3-3a1 1 0 011.414-1.414L7 10.586l6.293-6.293z" clip-rule="evenodd" /></svg>
+                    </div>
+                    <h4 class="text-lg font-bold mb-2">Unternehmensbewertung</h4>
+                    <p class="text-gray-600 text-sm">Ein neutrales Gutachten zum Verkehrswert ist unumgänglich, um steuerliche Probleme (z.B. Schenkungssteuer) zu vermeiden.</p>
+                </div>
+                <!-- Aspekt 2: Altgesellschafter -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 p-6 text-center">
+                    <div class="icon-wrapper flex-shrink-0 w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" /></svg>
+                    </div>
+                    <h4 class="text-lg font-bold mb-2">Rolle der Altgesellschafter</h4>
+                    <p class="text-gray-600 text-sm">Die Absichten (Verkauf vs. Mitwirkung) der bisherigen GmbH-Gesellschafter beeinflussen den Finanzierungsbedarf maßgeblich.</p>
+                </div>
+                <!-- Aspekt 3: Finanzierung -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 p-6 text-center">
+                    <div class="icon-wrapper flex-shrink-0 w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M8.433 7.418c.158-.103.346-.195.552-.257l.21-.064a1.003 1.003 0 00.31-.529c.04-.15.06-.312.06-.482a.799.799 0 00-.8-.8a.799.799 0 00-.8.8c0 .17.02.332.06.482c.017.064.043.125.078.182l.006.01.002.004.002.002.001.002c.05.09.112.17.184.242l.043.044c.063.063.132.118.207.166l.042.028a1 1 0 00.22.115l.21.064c.206.062.394.154.552.257c.158.103.295.232.408.382a.996.996 0 00.127.458c.022.079.033.16.033.242a.8.8 0 00-.8.8a.8.8 0 00-.8-.8c0-.082.011-.163.033-.242a.996.996 0 00-.127-.458c-.113-.15-.25-.279-.408-.382zM10 18a8 8 0 100-16 8 8 0 000 16z" /></svg>
+                    </div>
+                    <h4 class="text-lg font-bold mb-2">Finanzierung & Liquidität</h4>
+                    <p class="text-gray-600 text-sm">Ein detaillierter Finanzierungs- und Liquiditätsplan ist zwingend. Der Asset Deal bietet Vorteile bei der Kapitalbeschaffung.</p>
+                </div>
+                <!-- Aspekt 4: Klumpenrisiken -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 p-6 text-center">
+                    <div class="icon-wrapper flex-shrink-0 w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 3.01-1.742 3.01H4.42c-1.53 0-2.493-1.676-1.743-3.01l5.58-9.92zM10 13a1 1 0 110-2 1 1 0 010 2zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+                    </div>
+                    <h4 class="text-lg font-bold mb-2">Umgang mit Klumpenrisiken</h4>
+                    <p class="text-gray-600 text-sm">Wenn ein Mitglied hohe Anteile hält, entsteht ein Liquiditätsrisiko bei Austritt. Satzungsregelungen können dies abfedern.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Checkliste -->
+        <section id="checkliste" class="reveal">
+            <h2 class="text-3xl font-bold text-center mb-12">Ihre interaktive Checkliste für die nächsten Schritte</h2>
+            <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-8">
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm font-semibold text-gray-600">Fortschritt</span>
+                        <span id="progress-text" class="text-sm font-bold text-teal-600">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div id="progress-bar" class="bg-teal-600 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div id="checklist-container" class="space-y-4">
+                    <!-- Items will be injected by JS -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-blue-950 text-white mt-24">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p>&copy; 2024 Interaktiver Leitfaden zur Genossenschaftsgründung. Alle Rechte vorbehalten.</p>
+            <p class="text-sm text-gray-400 mt-2">Diese Seite dient zu Bildungszwecken und stellt keine Rechts- oder Steuerberatung dar.</p>
+            <p class="mt-4 text-sm text-gray-300">„Hinweis: Dieser HTML-Inhalt wurde automatisiert durch KI erstellt. Inhalte können fehlerhaft sein und müssen je nach Kontext validiert werden.“</p>
+        </div>
+    </footer>
+    
+    <button id="to-top-btn" class="hidden fixed bottom-5 right-5 bg-teal-600 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-opacity duration-300 hover:bg-teal-700">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+      </svg>
+    </button>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    // --- Scroll Animations ---
+    const revealElements = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, {
+        threshold: 0.1
+    });
+    revealElements.forEach(el => observer.observe(el));
+
+    // --- Cost Sliders ---
+    const neugruendungSlider = document.getElementById('neugruendung-slider');
+    const umwandlungSlider = document.getElementById('umwandlung-slider');
+    const neugruendungCost = document.getElementById('neugruendung-cost');
+    const umwandlungCost = document.getElementById('umwandlung-cost');
+
+    function formatNumber(num) {
+        return new Intl.NumberFormat('de-DE').format(num);
+    }
+    
+    if (neugruendungSlider) {
+        neugruendungSlider.addEventListener('input', (e) => {
+            neugruendungCost.textContent = formatNumber(e.target.value);
+        });
+        neugruendungCost.textContent = formatNumber(neugruendungSlider.value);
+    }
+
+    if (umwandlungSlider) {
+        umwandlungSlider.addEventListener('input', (e) => {
+            umwandlungCost.textContent = formatNumber(e.target.value);
+        });
+        umwandlungCost.textContent = formatNumber(umwandlungSlider.value);
+    }
+
+    // --- Interactive Tabs for Options ---
+    const tabsContainer = document.getElementById('tabs');
+    const tabContentsContainer = document.getElementById('tab-contents');
+    if (tabsContainer && tabContentsContainer) {
+        const tabButtons = tabsContainer.querySelectorAll('.tab-button');
+        const tabContents = tabContentsContainer.querySelectorAll('.tab-content');
+
+        tabsContainer.addEventListener('click', (event) => {
+            const targetButton = event.target.closest('.tab-button');
+            if (!targetButton) return;
+
+            const targetId = targetButton.dataset.target;
+            const targetContent = document.getElementById(targetId);
+
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active');
+                btn.setAttribute('aria-selected', 'false');
+            });
+            tabContents.forEach(content => content.classList.remove('active'));
+
+            targetButton.classList.add('active');
+            targetButton.setAttribute('aria-selected', 'true');
+            if (targetContent) {
+                targetContent.classList.add('active');
+            }
+        });
+    }
+
+    // --- Asset Deal Visualization ---
+    const runVizBtn = document.getElementById('run-asset-deal-viz');
+    const resetVizBtn = document.getElementById('reset-asset-deal-viz');
+    const gmbhBox = document.getElementById('gmbh-box');
+    const egBox = document.getElementById('eg-box');
+    const egLabel = document.getElementById('eg-label');
+    const vizStatus = document.getElementById('viz-status');
+    const assetIcons = document.querySelectorAll('#asset-deal-viz .asset-icon');
+    
+    const resetViz = () => {
+        gmbhBox.style.opacity = '1';
+        gmbhBox.style.transform = 'translateY(0)';
+        egLabel.textContent = 'eG i.G.';
+        egLabel.parentElement.classList.add('border-dashed');
+        vizStatus.textContent = 'eG i.G. kauft Vermögenswerte (Assets) von der GmbH.';
+        assetIcons.forEach(icon => {
+            icon.style.transform = 'translate(0, 0)';
+            icon.style.opacity = '1';
+        });
+        runVizBtn.classList.remove('hidden');
+        resetVizBtn.classList.add('hidden');
+    };
+
+    if (runVizBtn && resetVizBtn) {
+        runVizBtn.addEventListener('click', () => {
+            // 1. Move assets
+            vizStatus.textContent = 'Assets werden übertragen...';
+            assetIcons.forEach(icon => {
+                icon.style.transform = 'translate(170px, 0)';
+                icon.style.opacity = '0';
+            });
+
+            // 2. GmbH becomes empty shell and fades
+            setTimeout(() => {
+                vizStatus.textContent = 'GmbH wird liquidiert...';
+                gmbhBox.style.opacity = '0.2';
+                gmbhBox.style.transform = 'translateY(20px)';
+            }, 1000);
+            
+            // 3. eG is finalized
+            setTimeout(() => {
+                vizStatus.textContent = 'Die eG ist voll geschäftsfähig!';
+                egLabel.textContent = 'eG';
+                egLabel.parentElement.classList.remove('border-dashed');
+            }, 1500);
+
+            // 4. Toggle buttons
+            runVizBtn.classList.add('hidden');
+            resetVizBtn.classList.remove('hidden');
+        });
+
+        resetVizBtn.addEventListener('click', resetViz);
+        
+        resetViz(); // Initial state
+    }
+    
+    // --- Checklist ---
+    const checklistContainer = document.getElementById('checklist-container');
+    const progressBar = document.getElementById('progress-bar');
+    const progressText = document.getElementById('progress-text');
+
+    const checklistItems = [
+        { id: 'check1', text: 'Interne Klärung mit Altgesellschaftern (Verkauf vs. Mitwirkung).' },
+        { id: 'check2', text: 'Unternehmensbewertung bei Steuerberater/Gutachter beauftragen.' },
+        { id: 'check3', text: 'Datenerfassung für Bewertung (z.B. Inventarliste exportieren).' },
+        { id: 'check4', text: 'Entwurf der Genossenschaftssatzung erarbeiten.' },
+        { id: 'check5', text: 'Detaillierten Business- und Finanzplan erstellen.' },
+        { id: 'check6', text: 'Infoveranstaltung für potenzielle Mitglieder planen.' },
+        { id: 'check7', text: 'Digitale Werkzeuge für das Gründungsteam sicherstellen.' }
+    ];
+
+    let checkedState = {};
+
+    function loadState() {
+        try {
+            const savedState = localStorage.getItem('genossenschaftChecklist');
+            if (savedState) {
+                checkedState = JSON.parse(savedState);
+            }
+        } catch (e) {
+            console.error("Could not load checklist state from localStorage", e);
+            checkedState = {};
+        }
+    }
+
+    function saveState() {
+        try {
+            localStorage.setItem('genossenschaftChecklist', JSON.stringify(checkedState));
+        } catch (e) {
+            console.error("Could not save checklist state to localStorage", e);
+        }
+    }
+
+    function updateProgress() {
+        const totalItems = checklistItems.length;
+        const checkedItems = Object.values(checkedState).filter(Boolean).length;
+        const percentage = totalItems > 0 ? (checkedItems / totalItems) * 100 : 0;
+        
+        if (progressBar) progressBar.style.width = `${percentage}%`;
+        if (progressText) progressText.textContent = `${Math.round(percentage)}%`;
+    }
+
+    function renderChecklist() {
+        if (!checklistContainer) return;
+        checklistContainer.innerHTML = '';
+        checklistItems.forEach(item => {
+            const isChecked = checkedState[item.id] || false;
+            const itemHTML = `
+                <div class="checklist-item relative flex items-start">
+                    <input type="checkbox" id="${item.id}" class="hidden" ${isChecked ? 'checked' : ''}>
+                    <label for="${item.id}" class="flex items-center cursor-pointer text-gray-700">
+                        <span class="w-6 h-6 mr-4 flex-shrink-0 flex items-center justify-center border-2 border-gray-300 rounded-md transition-all duration-200">
+                            <svg class="w-4 h-4 text-white hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                            </svg>
+                        </span>
+                        ${item.text}
+                    </label>
+                </div>
+            `;
+            checklistContainer.innerHTML += itemHTML;
+        });
+        
+        // Add event listeners after rendering
+        checklistContainer.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => {
+                checkedState[e.target.id] = e.target.checked;
+                saveState();
+                updateProgress();
+            });
+        });
+        
+        updateProgress();
+    }
+    
+    if(checklistContainer) {
+        loadState();
+        renderChecklist();
+    }
+    
+    // --- Back to Top Button ---
+    const toTopBtn = document.getElementById('to-top-btn');
+    if (toTopBtn) {
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                toTopBtn.classList.remove('hidden');
+            } else {
+                toTopBtn.classList.add('hidden');
+            }
+        });
+        toTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+
+});
+</script>
+
+</body>
+</html>
